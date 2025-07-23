@@ -35,3 +35,14 @@ async def handle_button_1(update, context):
 async def handle_button_2(update, context):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text("Вы нажали кнопку 2!")
+    
+
+async def callback_handler(update, context):
+    query = update.callback_query
+    await query.answer()
+    
+    handler = HANDLERS.get(query.data)
+    if handler:
+        await handler(update, context)
+    else:
+        await query.edit_message_text("Jib,rf")
