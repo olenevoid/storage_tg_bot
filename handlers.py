@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from keyboards import (main_menu, tos_menu, my_orders, my_box, warehouses_menu,
                        warehouse_menu)
-from demo_dataclasses import get_demo_user, get_demo_warehouses, find_warehouse
+from bot.demo_dataclasses import get_demo_user, get_demo_warehouses, find_warehouse
 
 
 class ParsedQuery:
