@@ -11,35 +11,36 @@ from telegram.ext import (
 
 
 HANDLERS = {}
-
+# создаем декоратор @register_callback()
 def register_callback(callback_data):
     def decorator(function):
         HANDLERS[callback_data] = function
         return function
     return decorator
 
-
+# тут идут наши обработчики
 async def start(update, context):
-    await update.message.reply_text("hi",
-        reply_markup=keyboard.main_keyboard()
+    await update.message.reply_text(
+        "hi",
+        reply_markup=keyboard.get_keyboard('main')
     )
 
 
-@register_callback('terms_of_service')
+@register_callback('faq')
 async def handle_button(update, context):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Условия хранения/FAQ",
-        reply_markup=keyboard.main_keyboard()
+        reply_markup=keyboard.get_keyboard('faq')
     )
     
     
-@register_callback('warehouses')
+@register_callback('order_storage')
 async def handle_button(update, context):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
-        "Выбрать склад",
-        reply_markup=keyboard.main_keyboard()
+        "Как вы хотите передать вещи на склад?",
+        reply_markup=keyboard.get_keyboard('order_storage')
     )
     
 
@@ -48,10 +49,19 @@ async def handle_button(update, context):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Мои заказы",
-        reply_markup=keyboard.main_keyboard()
+        reply_markup=keyboard.get_keyboard('my_orders')
     )
     
 
+@register_callback('back_to_menu')
+async def handle_button(update, context):
+    await update.callback_query.answer()
+    await update.callback_query.edit_message_text(
+        "hi",
+        reply_markup=keyboard.get_keyboard('main')
+    )
+    
+# Функция берет наш callback_data как ключ и ищет по нему функцию для обработки
 async def callback_handler(update, context):
     query = update.callback_query
     await query.answer()
@@ -60,8 +70,12 @@ async def callback_handler(update, context):
     if handler:
         await handler(update, context)
     else:
-        await query.edit_message_text("Неизвестная команда")
+        await query.edit_message_text(
+            "Неизвестная команда",
+            reply_markup=keyboard.get_keyboard('unknown_cmd')
+        )
         
+# Возвращает все обработчики для регистрации в приложении бота
 def get_handlers():
     handlers = [
         CommandHandler('start', start),

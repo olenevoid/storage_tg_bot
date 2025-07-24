@@ -1,29 +1,67 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-    
 
-def main_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        [
-            [
-            InlineKeyboardButton(
-                'Условия хранения/FAQ',
-                callback_data='terms_of_service'
-            ),
-            ],
-            [
-                InlineKeyboardButton(
-                    'Выбрать склад',
-                    callback_data='warehouses'
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    'Мои заказы',
-                    callback_data='my_orders'
-                ),
-            ]
-        ]
-    )
+# Все кнопки бота. Нажатия регестрируются через callback_data
+# в файле handlers.py
+btns = {
+    'faq': InlineKeyboardButton('Условия хранения/FAQ', callback_data='faq'),
+    'order_storage': InlineKeyboardButton('Выбрать склад', callback_data='order_storage'),
+    'my_orders': InlineKeyboardButton('Мои заказы', callback_data='my_orders'),
+    'back_to_menu': InlineKeyboardButton('В главное меню', callback_data='back_to_menu'),
+    'back': InlineKeyboardButton('В главное меню', callback_data='back'),
+    'free_removal': InlineKeyboardButton('Бесплатный вывоз', callback_data='free_removal'),
+    'self_delivery': InlineKeyboardButton('Доставлю сам', callback_data='self_delivery'),
+}
+
+# Ниже создаем клавиатуры из кнопок
+main_keyboard = InlineKeyboardMarkup(
+    [
+        [btns['faq']],
+        [btns['order_storage']],
+        [btns['my_orders']],
+    ]
+)
+
+
+faq_keyboard = InlineKeyboardMarkup(
+    [        
+        [btns['back_to_menu']],
+    ]
+)
+
+
+back_to_menu = InlineKeyboardMarkup(
+    [        
+        [btns['back_to_menu']],
+    ]
+)
+
+
+order_storage_keyboard = InlineKeyboardMarkup(
+    [
+        [btns['free_removal']],
+        [btns['self_delivery']],
+        [btns['back_to_menu']],
+    ]
+)
+
+my_orders_keyboard = InlineKeyboardMarkup(
+    [
+        [btns['back_to_menu']],
+    ]
+)
+
+# Тут создаем словарь, состояние = клавиатура
+keyboards = {
+    'main': main_keyboard,
+    'faq': faq_keyboard,
+    'order_storage': order_storage_keyboard,
+    'my_orders': my_orders_keyboard,
+    'unknown_cmd': back_to_menu,
+}
+
+# Возвращает клавиатуру в зависимости от состояния
+def get_keyboard(state: str):
+    return keyboards[state]
 
 
 # def warehouses_menu(warehouses: list[Warehouse]) -> InlineKeyboardMarkup:
