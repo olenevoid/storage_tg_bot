@@ -24,6 +24,10 @@ async def start(update, context):
         "hi",
         reply_markup=keyboard.get_keyboard('main')
     )
+    
+# штука для того чтобы пользователь не мусорил в чате
+async def unknown_cmd(update, context):
+    await update.message.delete()
 
 
 @register_callback('faq')
@@ -79,6 +83,7 @@ async def callback_handler(update, context):
 def get_handlers():
     handlers = [
         CommandHandler('start', start),
+        MessageHandler( filters.Regex(r'^(?!\/start).*'), unknown_cmd),
         CallbackQueryHandler(callback_handler),
     ]
     return handlers
