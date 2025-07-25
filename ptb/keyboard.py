@@ -56,6 +56,22 @@ my_orders_keyboard = InlineKeyboardMarkup(
     ]
 )
 
+
+ppd_keyboard = InlineKeyboardMarkup(
+    [
+        [btns['yes']],
+        [btns['no']],
+    ]
+)
+
+
+call_courier_keyboard = InlineKeyboardMarkup(
+    [
+        [btns['hand_over_things']],
+        [btns['back_to_menu']],
+    ]
+)
+
 # Тут создаем словарь, состояние = клавиатура
 keyboards = {
     'main': main_keyboard,
@@ -63,6 +79,8 @@ keyboards = {
     'order_storage': order_storage_keyboard,
     'my_orders': my_orders_keyboard,
     'unknown_cmd': back_to_menu,
+    'call_courier': call_courier_keyboard,
+    'ppd_keyboard': ppd_keyboard,
 }
 
 # Возвращает клавиатуру в зависимости от состояния
