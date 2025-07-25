@@ -7,9 +7,14 @@ btns = {
     'order_storage': InlineKeyboardButton('Выбрать склад', callback_data='order_storage'),
     'my_orders': InlineKeyboardButton('Мои заказы', callback_data='my_orders'),
     'back_to_menu': InlineKeyboardButton('В главное меню', callback_data='back_to_menu'),
-    'back': InlineKeyboardButton('В главное меню', callback_data='back'),
+    'back': InlineKeyboardButton('назад', callback_data='back'),
     'free_removal': InlineKeyboardButton('Бесплатный вывоз', callback_data='free_removal'),
     'self_delivery': InlineKeyboardButton('Доставлю сам', callback_data='self_delivery'),
+    'yes': InlineKeyboardButton('Принимаю опд', callback_data='yes'),
+    'no': InlineKeyboardButton('Не принимаю опд', callback_data='no'),
+    'hand_over_things': InlineKeyboardButton('Сдать вещи', callback_data='hand_over_things'),
+    'no': InlineKeyboardButton('Не принимаю опд', callback_data='no'),
+    'ok': InlineKeyboardButton('ОК', callback_data='ok'),
 }
 
 # Ниже создаем клавиатуры из кнопок
@@ -43,6 +48,7 @@ order_storage_keyboard = InlineKeyboardMarkup(
         [btns['back_to_menu']],
     ]
 )
+
 
 my_orders_keyboard = InlineKeyboardMarkup(
     [
