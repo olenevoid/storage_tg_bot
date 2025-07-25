@@ -21,7 +21,7 @@ def register_callback(callback_data):
 # тут идут наши обработчики
 async def start(update, context):
     await update.message.reply_text(
-        "hi",
+        "много примеров, когда аренда склада может пригодиться",
         reply_markup=keyboard.get_keyboard('main')
     )
     
