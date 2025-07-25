@@ -44,8 +44,8 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('end_date', models.DateField()),
                 ('extended_until', models.DateField(blank=True, null=True)),
-                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot.client')),
-                ('location', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='bot.storagelocation')),
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot_django_app.client')),
+                ('location', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='bot_django_app.storagelocation')),
             ],
         ),
         migrations.CreateModel(
@@ -54,8 +54,8 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('notification_type', models.CharField(max_length=100)),
                 ('sent_at', models.DateTimeField(auto_now_add=True)),
-                ('box', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='bot.box')),
-                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot.client')),
+                ('box', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='bot_django_app.box')),
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot_django_app.client')),
             ],
         ),
         migrations.CreateModel(
@@ -64,7 +64,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('utm_source', models.CharField(help_text='Источник, например: google_ads, telegram_bot', max_length=255)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot.client')),
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot_django_app.client')),
             ],
         ),
         migrations.CreateModel(
@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
                 ('estimated_volume', models.CharField(blank=True, max_length=100)),
                 ('is_completed', models.BooleanField(default=False)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot.client')),
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot_django_app.client')),
             ],
         ),
     ]
