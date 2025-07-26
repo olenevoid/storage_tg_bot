@@ -36,7 +36,7 @@ async def unknown_cmd(update, context, params):
 
 
 @register_callback(CallbackName.FAQ)
-async def handle_button(update, context, params):
+async def handle_FAQ(update, context, params):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Условия хранения/FAQ",
@@ -45,7 +45,7 @@ async def handle_button(update, context, params):
 
 
 @register_callback(CallbackName.ORDER_STORAGE)
-async def handle_button(update, context, params):
+async def handle_order_storage(update, context, params):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Как вы хотите передать вещи на склад?",
@@ -54,7 +54,7 @@ async def handle_button(update, context, params):
 
 
 @register_callback(CallbackName.MY_ORDERS)
-async def handle_button(update, context, params):
+async def handle_my_orders(update, context, params):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Мои заказы",
@@ -63,7 +63,7 @@ async def handle_button(update, context, params):
 
 
 @register_callback(CallbackName.MAIN_MENU)
-async def handle_button(update, context, params):
+async def handle_main_menu(update, context, params):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "hi",
