@@ -132,7 +132,7 @@ def get_warehouse_keyboard(page: Page):
         ]
         buttons.append(button)
 
-    buttons.append(_get_page_buttons(page, CallbackName.ORDER_STORAGE))
+    buttons.append(_get_page_buttons(page, CallbackName.SELF_DELIVERY))
 
     buttons.append([btns['back_to_menu']])
 
