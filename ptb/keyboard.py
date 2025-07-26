@@ -92,13 +92,19 @@ def _get_page_buttons(page: Page, callback_name: CallbackName):
     page_buttons = []
 
     if page.has_previous():
-        callback_data = CallbackData(callback_name, params={'page': page.previous_page_number()})
+        callback_data = CallbackData(
+            callback_name,
+            params={'page': page.previous_page_number()}
+        )
         page_buttons.append(
             InlineKeyboardButton('<--', callback_data=callback_data.to_str())
         )
 
     if page.has_next():
-        callback_data = CallbackData(callback_name, params={'page': page.next_page_number()})
+        callback_data = CallbackData(
+            callback_name,
+            params={'page': page.next_page_number()}
+        )
         page_buttons.append(
             InlineKeyboardButton('-->', callback_data=callback_data.to_str())
         )
@@ -127,6 +133,71 @@ def get_warehouse_keyboard(page: Page):
         buttons.append(button)
 
     buttons.append(_get_page_buttons(page, CallbackName.ORDER_STORAGE))
+
+    buttons.append([btns['back_to_menu']])
+
+    return InlineKeyboardMarkup(buttons)
+
+
+def get_my_orders_keyboard(page: Page):
+    buttons = []
+
+    boxes = page.object_list
+
+    for box in boxes:
+        callback_data = CallbackData(
+            CallbackName.MY_BOX,
+            {'id': box.get('id')}
+        )
+
+        text = f'Размер {box.get('size')} на {box.get('location')}'
+
+        button = [
+            InlineKeyboardButton(
+                text,
+                callback_data=callback_data.to_str()
+            )
+        ]
+
+        buttons.append(button)
+
+    buttons.append(_get_page_buttons(page, CallbackName.MY_ORDERS))
+
+    buttons.append([btns['back_to_menu']])
+
+    return InlineKeyboardMarkup(buttons)
+
+
+def get_my_box_keyboard(box_id):
+
+    self_delivery_callback = CallbackData(
+        CallbackName.SELF_DELIVERY,
+        {'box_id': box_id}
+    )
+
+    order_delivery_callback = CallbackData(
+        CallbackName.ORDER_DELIVERY,
+        {'box_id': box_id}
+    )
+
+    buttons = [
+        [
+            InlineKeyboardButton(
+                'Самовывоз',
+                callback_data=self_delivery_callback.to_str()
+            ),
+            InlineKeyboardButton(
+                'Вывоз курьером',
+                callback_data=order_delivery_callback.to_str()
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                'Назад',
+                callback_data=CallbackData(CallbackName.MY_ORDERS).to_str()
+            )
+        ],
+    ]
 
     buttons.append([btns['back_to_menu']])
 

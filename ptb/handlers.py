@@ -15,6 +15,7 @@ from django.core.paginator import Paginator, Page
 
 
 HANDLERS = {}
+PER_PAGE = 2
 
 
 # создаем декоратор @register_callback()
@@ -52,7 +53,7 @@ async def handle_order_storage(update, context, params: dict):
     page_number = params.get('page') or 1
 
     warehouses = await sync_to_async(bot_db.get_all_warehouses)()
-    page: Page = Paginator(warehouses, per_page=1).page(page_number)
+    page: Page = Paginator(warehouses, per_page=PER_PAGE).page(page_number)
 
     kb = keyboard.get_warehouse_keyboard(page)
     await update.callback_query.edit_message_text(
@@ -83,11 +84,42 @@ async def handle_warehouse(update, context, params: dict):
 
 
 @register_callback(CallbackName.MY_ORDERS)
-async def handle_my_orders(update, context, params):
-    await update.callback_query.answer()
+async def handle_my_orders(update: Update, context, params):
+
+    test_tg = 100000001
+    client_tg = test_tg  # update.callback_query.from_user.id
+
+    page_number = params.get('page') or 1
+
+    boxes = await sync_to_async(bot_db.get_all_boxes_for_user)(client_tg)
+
+    page = Paginator(boxes, per_page=2).page(page_number)
+
     await update.callback_query.edit_message_text(
         "Мои заказы",
-        reply_markup=keyboard.get_keyboard('my_orders')
+        reply_markup=keyboard.get_my_orders_keyboard(page)
+    )
+
+
+@register_callback(CallbackName.MY_BOX)
+async def handle_my_box(update: Update, context, params):
+
+    box_id = params.get('id')
+    box = await sync_to_async(bot_db.get_box)(box_id)
+
+    text = (
+        f'Размер ячейки: {box.get('size')}\n'
+        f'Адрес склада: {box.get('address')}\n'
+        f'Арендована до: {box.get('rented_until')}\n'
+        f'Предметы на хранении:\n'
+    )
+
+    for item in box.get('stored_items'):
+        text += f'{item}\n'
+
+    await update.callback_query.edit_message_text(
+        text,
+        reply_markup=keyboard.get_my_box_keyboard(box_id)
     )
 
 

@@ -15,11 +15,13 @@ class CallbackName(Enum):
     BACK = auto()
     FREE_REMOVAL = auto()
     SELF_DELIVERY = auto()
+    ORDER_DELIVERY = auto()
     PERSONAL_DATA_AGREE = auto()
     PERSONAL_DATA_DISAGREE = auto()
     HAND_OVER_THINGS = auto()
     OK = auto()
     WAREHOUSE = auto()
+    MY_BOX = auto()
 
 
 # Класс для создания строки коллбэков с параметрами 
