@@ -8,20 +8,20 @@ PARAM_SEPARATOR = ','
 # Enum для управления коллбэками. 
 # Можно быстро переименовать в одном месте, если понадобится
 class CallbackName(Enum):
-    FAQ = auto()
-    ORDER_STORAGE = auto()
-    MY_ORDERS = auto()
-    MAIN_MENU = auto()
-    BACK = auto()
-    FREE_REMOVAL = auto()
-    SELF_DELIVERY = auto()
-    ORDER_DELIVERY = auto()
-    PERSONAL_DATA_AGREE = auto()
-    PERSONAL_DATA_DISAGREE = auto()
-    HAND_OVER_THINGS = auto()
-    OK = auto()
-    WAREHOUSE = auto()
-    MY_BOX = auto()
+    FAQ = 'faq'
+    ORDER_STORAGE = 'order_storage'
+    MY_ORDERS = 'my_orders'
+    MAIN_MENU = 'main_menu'
+    BACK = 'back'
+    FREE_REMOVAL = 'free_removal'
+    SELF_DELIVERY = 'self_delivery'
+    ORDER_DELIVERY = 'order_delivery'
+    PERSONAL_DATA_AGREE = 'pd_yes'
+    PERSONAL_DATA_DISAGREE = 'pd_no'
+    HAND_OVER_THINGS = 'hand_over_things'
+    OK = 'ok'
+    WAREHOUSE = 'warehouse'
+    MY_BOX = 'my_box'
 
 
 # Класс для создания строки коллбэков с параметрами 
@@ -52,7 +52,7 @@ class CallbackData:
 # Парсит строку в класс CallbackData
 def parse_callback_data_string(callback_data: str) -> CallbackData:
     parsed_callback = callback_data.split(NAME_SEPARATOR)
-    callback_name = CallbackName(int(parsed_callback[0]))
+    callback_name = CallbackName(parsed_callback[0])
     callback_params = {}
 
     if len(parsed_callback) > 1:
