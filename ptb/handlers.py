@@ -9,12 +9,12 @@ from telegram.ext import (
 )
 
 
-MAIN, FAQ, ORDER_STORAGE, MY_SORAGE, STORAGE_LIST, PPD, INPUT_ADDRESS, INPUT_PHONE, FINAL = range(9)
+(MAIN, FAQ, ORDER_STORAGE, MY_SORAGE, STORAGE_LIST, PPD, 
+INPUT_ADDRESS, INPUT_PHONE, FINAL) = range(9)
 
 # тут идут наши обработчики
 async def start(update, context):
-    if 'last_message' in context.user_data:
-        await context.user_data['last_message'].delete()
+    await update.message.delete()
     await update.message.reply_text(
         "много примеров, когда аренда склада может пригодиться",
         reply_markup=keyboard.main_keyboard
