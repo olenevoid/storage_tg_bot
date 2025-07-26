@@ -23,13 +23,20 @@ class StorageLocation(models.Model):
         return self.name
 
 
+class BoxSize(models.Model):
+    code = models.CharField(max_length=10, unique=True)  # 'S', 'M', 'L', etc.
+    name = models.CharField(max_length=50)               # 'Small', 'Medium', etc.
+    volume_m3 = models.DecimalField(max_digits=5, decimal_places=2)
+    price_per_month = models.DecimalField(max_digits=8, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.name} ({self.code}) — {self.volume_m3} м³"
+
+
 class Box(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     location = models.ForeignKey(StorageLocation, on_delete=models.SET_NULL, null=True)
-    size = models.CharField(
-        max_length=10,
-        choices=[('S', 'S'), ('M', 'M'), ('L', 'L')]
-    )
+    size = models.ForeignKey(BoxSize, on_delete=models.PROTECT)
     description = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -37,7 +44,21 @@ class Box(models.Model):
     extended_until = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return f"Box {self.id} ({self.size}) for {self.client.full_name}"
+        return f"Box {self.id} ({self.size.code}) for {self.client.full_name}"
+
+
+class BoxAvailability(models.Model):
+    location = models.ForeignKey(StorageLocation, on_delete=models.CASCADE)
+    size = models.ForeignKey(BoxSize, on_delete=models.CASCADE)
+    total_boxes = models.PositiveIntegerField(default=0)
+    occupied_boxes = models.PositiveIntegerField(default=0)
+
+    @property
+    def available_boxes(self):
+        return self.total_boxes - self.occupied_boxes
+
+    def __str__(self):
+        return f"{self.size.code} at {self.location.name}: {self.available_boxes} available"
 
 
 class StoredItem(models.Model):

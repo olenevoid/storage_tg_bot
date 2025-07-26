@@ -4,7 +4,9 @@ from datetime import timedelta
 
 from .models import (
     Client, StorageLocation, Box, PickupRequest,
-    Notification, OrderSource, StoredItem, PromoCode, PromoUsage
+    Notification, OrderSource, StoredItem,
+    PromoCode, PromoUsage,
+    BoxSize, BoxAvailability
 )
 
 # --- ВСПОМОГАТЕЛЬНЫЕ КОМПОНЕНТЫ ---
@@ -210,3 +212,29 @@ class PromoUsageAdmin(admin.ModelAdmin):
     @admin.display(description="Клиент")
     def client_name(self, obj):
         return obj.client.full_name
+
+
+@admin.register(BoxSize)
+class BoxSizeAdmin(admin.ModelAdmin):
+    list_display = ('code', 'name', 'volume_m3', 'price_per_month')
+    search_fields = ('code', 'name')
+    ordering = ('code',)
+
+
+@admin.register(BoxAvailability)
+class BoxAvailabilityAdmin(admin.ModelAdmin):
+    list_display = ('location_name', 'size_code', 'total_boxes', 'occupied_boxes', 'available_boxes')
+    list_filter = ('location', 'size')
+    ordering = ('location', 'size')
+
+    @admin.display(description="Локация")
+    def location_name(self, obj):
+        return obj.location.name
+
+    @admin.display(description="Размер")
+    def size_code(self, obj):
+        return obj.size.code
+
+    @admin.display(description="Доступно")
+    def available_boxes(self, obj):
+        return obj.available_boxes
