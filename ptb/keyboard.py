@@ -6,19 +6,19 @@ from ptb.callbacks import CallbackData, CallbackName
 btns = {
     'faq': InlineKeyboardButton(
         'Условия хранения/FAQ',
-        callback_data=CallbackData(CallbackName.FAQ).to_str()
+        callback_data='faq'
     ),
     'order_storage': InlineKeyboardButton(
         'Выбрать склад',
-        callback_data=CallbackData(CallbackName.ORDER_STORAGE).to_str()
+        callback_data='order_storage'
     ),
     'my_orders': InlineKeyboardButton(
         'Мои заказы',
-        callback_data=CallbackData(CallbackName.MY_ORDERS).to_str()
+        callback_data='my_orders'
     ),
     'back_to_menu': InlineKeyboardButton(
         'В главное меню',
-        callback_data=CallbackData(CallbackName.MAIN_MENU).to_str()
+        callback_data='back_to_menu'
     ),
     'back': InlineKeyboardButton('назад', callback_data='back'),
     'free_removal': InlineKeyboardButton('Бесплатный вывоз', callback_data='free_removal'),
@@ -84,21 +84,6 @@ call_courier_keyboard = InlineKeyboardMarkup(
         [btns['back_to_menu']],
     ]
 )
-
-# Тут создаем словарь, состояние = клавиатура
-keyboards = {
-    'main': main_keyboard,
-    'faq': faq_keyboard,
-    'order_storage': order_storage_keyboard,
-    'my_orders': my_orders_keyboard,
-    'unknown_cmd': back_to_menu,
-    'call_courier': call_courier_keyboard,
-    'ppd_keyboard': ppd_keyboard,
-}
-
-# Возвращает клавиатуру в зависимости от состояния
-def get_keyboard(state: str):
-    return keyboards[state]
 
 
 # def warehouses_menu(warehouses: list[Warehouse]) -> InlineKeyboardMarkup:
