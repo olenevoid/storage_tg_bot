@@ -1,5 +1,7 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from ptb.callbacks import CallbackData, CallbackName
+from django.core.paginator import Page
+
 
 # Все кнопки бота. Нажатия регестрируются через callback_data
 # в файле handlers.py
@@ -84,6 +86,52 @@ call_courier_keyboard = InlineKeyboardMarkup(
         [btns['back_to_menu']],
     ]
 )
+
+
+def _get_page_buttons(page: Page, callback_name: CallbackName):
+    page_buttons = []
+
+    if page.has_previous():
+        callback_data = CallbackData(callback_name, params={'page': page.previous_page_number()})
+        page_buttons.append(
+            InlineKeyboardButton('<--', callback_data=callback_data.to_str())
+        )
+
+    if page.has_next():
+        callback_data = CallbackData(callback_name, params={'page': page.next_page_number()})
+        page_buttons.append(
+            InlineKeyboardButton('-->', callback_data=callback_data.to_str())
+        )
+
+    return page_buttons
+
+
+def get_warehouse_keyboard(page: Page):
+    buttons = []
+
+    warehouses = page.object_list
+
+    for warehouse in warehouses:
+
+        callback_data = CallbackData(
+            CallbackName.WAREHOUSE,
+            {'id': warehouse.get('id')}
+        )
+
+        button = [
+            InlineKeyboardButton(
+                warehouse.get('name'),
+                callback_data=callback_data.to_str()
+            ),
+        ]
+        buttons.append(button)
+
+    buttons.append(_get_page_buttons(page, CallbackName.ORDER_STORAGE))
+
+    buttons.append([btns['back_to_menu']])
+
+    return InlineKeyboardMarkup(buttons)
+
 
 # Тут создаем словарь, состояние = клавиатура
 keyboards = {

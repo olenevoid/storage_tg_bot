@@ -9,6 +9,9 @@ from telegram.ext import (
     CallbackQueryHandler,
 )
 from ptb.callbacks import parse_callback_data_string, CallbackName
+import bot_django_app.bot_db as bot_db
+from asgiref.sync import sync_to_async
+from django.core.paginator import Paginator, Page
 
 
 HANDLERS = {}
@@ -45,11 +48,37 @@ async def handle_FAQ(update, context, params):
 
 
 @register_callback(CallbackName.ORDER_STORAGE)
-async def handle_order_storage(update, context, params):
-    await update.callback_query.answer()
+async def handle_order_storage(update, context, params: dict):
+    page_number = params.get('page') or 1
+
+    warehouses = await sync_to_async(bot_db.get_all_warehouses)()
+    page: Page = Paginator(warehouses, per_page=1).page(page_number)
+
+    kb = keyboard.get_warehouse_keyboard(page)
     await update.callback_query.edit_message_text(
-        "Как вы хотите передать вещи на склад?",
-        reply_markup=keyboard.get_keyboard('order_storage')
+        "Доступные склады",
+        reply_markup=kb
+    )
+
+
+@register_callback(CallbackName.WAREHOUSE)
+async def handle_warehouse(update, context, params: dict):
+    warehouse = await sync_to_async(bot_db.get_warehouse)(params.get('id'))
+
+    has_delivery_text = 'Нет'
+
+    if warehouse.has_delivery:
+        has_delivery_text = 'Да'
+
+    text = (
+        f'Название: {warehouse.name}\n'
+        f'Адрес: {warehouse.address}\n'
+        f'Есть доставка: {has_delivery_text}\n'
+    )
+
+    await update.callback_query.edit_message_text(
+        text,
+        reply_markup=keyboard.get_keyboard('unknown_cmd')
     )
 
 

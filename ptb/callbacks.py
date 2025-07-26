@@ -19,6 +19,7 @@ class CallbackName(Enum):
     PERSONAL_DATA_DISAGREE = auto()
     HAND_OVER_THINGS = auto()
     OK = auto()
+    WAREHOUSE = auto()
 
 
 # Класс для создания строки коллбэков с параметрами 
