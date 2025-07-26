@@ -1,12 +1,25 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from ptb.callbacks import CallbackData, CallbackName
 
 # Все кнопки бота. Нажатия регестрируются через callback_data
 # в файле handlers.py
 btns = {
-    'faq': InlineKeyboardButton('Условия хранения/FAQ', callback_data='faq'),
-    'order_storage': InlineKeyboardButton('Выбрать склад', callback_data='order_storage'),
-    'my_orders': InlineKeyboardButton('Мои заказы', callback_data='my_orders'),
-    'back_to_menu': InlineKeyboardButton('В главное меню', callback_data='back_to_menu'),
+    'faq': InlineKeyboardButton(
+        'Условия хранения/FAQ',
+        callback_data=CallbackData(CallbackName.FAQ).to_str()
+    ),
+    'order_storage': InlineKeyboardButton(
+        'Выбрать склад',
+        callback_data=CallbackData(CallbackName.ORDER_STORAGE).to_str()
+    ),
+    'my_orders': InlineKeyboardButton(
+        'Мои заказы',
+        callback_data=CallbackData(CallbackName.MY_ORDERS).to_str()
+    ),
+    'back_to_menu': InlineKeyboardButton(
+        'В главное меню',
+        callback_data=CallbackData(CallbackName.MAIN_MENU).to_str()
+    ),
     'back': InlineKeyboardButton('назад', callback_data='back'),
     'free_removal': InlineKeyboardButton('Бесплатный вывоз', callback_data='free_removal'),
     'self_delivery': InlineKeyboardButton('Доставлю сам', callback_data='self_delivery'),
