@@ -254,11 +254,21 @@ async def validate_address(update: Update, context: CallbackContext):
 
 async def handle_input_name(update: Update, context: CallbackContext):
     await update.callback_query.answer()
+
+    text = "Введите ФИО"
+
     await update.callback_query.edit_message_text(
-        "Введите ФИО",
+        "Пройдите все шаги регистрации, либо вернитесь в меню, если передумали",
         reply_markup=keyboards[State.BACK_TO_MENU](),
         parse_mode='HTML'
     )
+
+    await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=text,
+            parse_mode='HTML'
+    )
+
     return State.INPUT_FULL_NAME
 
 
@@ -266,18 +276,19 @@ async def validate_full_name(update: Update, context: CallbackContext):
     name = update.message.text
 
     if validators.name_is_valid(name):
-        text = f'Вы ввели корректное {name}, теперь введите телефон'
+        text = f'Вы ввели корректное имя {name}, теперь введите телефон'
         state = State.INPUT_PHONE
         context.user_data['full_name'] = name
     else:
         text = f'Вы ввели некорректное имя {name}, попробуйте еще раз'
         state = State.INPUT_FULL_NAME
 
-    await update.message.reply_text(
-        text,
-        reply_markup=keyboards[State.BACK_TO_MENU](),
-        parse_mode='HTML'
+    await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=text,
+            parse_mode='HTML'
     )
+
     return state
 
 
@@ -292,11 +303,12 @@ async def validate_phone(update: Update, context: CallbackContext):
         text = f'Вы ввели некорректный телефон {phone}, попробуйте еще раз'
         state = State.INPUT_PHONE
 
-    await update.message.reply_text(
-        text,
-        reply_markup=keyboards[State.BACK_TO_MENU](),
-        parse_mode='HTML'
+    await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=text,
+            parse_mode='HTML'
     )
+
     return state
 
 
@@ -317,12 +329,13 @@ async def validate_email(update: Update, context: CallbackContext):
     else:
         text = f'Вы ввели некорректный имейл {email}, попробуйте еще раз'
         state = State.INPUT_EMAIL
-        keyboard = keyboards[State.BACK_TO_MENU]()
+        keyboard = None
 
-    await update.message.reply_text(
-        text,
-        reply_markup=keyboard,
-        parse_mode='HTML'
+    await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=text,
+            parse_mode='HTML',
+            reply_markup=keyboard
     )
 
     return state
