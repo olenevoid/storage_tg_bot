@@ -68,6 +68,15 @@ def get_all_boxes_for_client(pk) -> list[dict]:
     return boxes
 
 
+def get_all_sizes():
+    serialized_sizes = []
+
+    for size in BoxSize.objects.all():
+        serialized_sizes.append(_serialize_size(size))
+
+    return serialized_sizes
+
+
 def _serialize_stored_items(box_id):
     items = StoredItem.objects.filter(box_id=box_id).all()
 
