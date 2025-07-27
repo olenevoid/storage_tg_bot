@@ -65,11 +65,11 @@ BUTTONS = {
         callback_data=CallbackData(State.WAREHOUSES).to_str()
         ),
     ButtonName.PPD_YES: InlineKeyboardButton(
-        'Да (Продолжить регистрацию)',
+        'Да',
         callback_data=CallbackData(State.INPUT_FULL_NAME).to_str()
     ),
     ButtonName.PPD_NO: InlineKeyboardButton(
-        'Нет (Вернуться в меню)',
+        'Нет',
         callback_data=CallbackData(State.MAIN_MENU).to_str()
     ),
     ButtonName.PPD_DOWNLOAD: InlineKeyboardButton(
