@@ -1,24 +1,26 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from ptb.callbacks import CallbackData, CallbackName
+from ptb.callbacks import CallbackData, State
+from django.core.paginator import Page
+
 
 # Все кнопки бота. Нажатия регестрируются через callback_data
 # в файле handlers.py
 btns = {
     'faq': InlineKeyboardButton(
         'Условия хранения/FAQ',
-        callback_data='faq'
+        callback_data=CallbackData(State.FAQ).to_str()
     ),
     'order_storage': InlineKeyboardButton(
         'Выбрать склад',
-        callback_data='order_storage'
+        callback_data=CallbackData(State.ORDER_STORAGE).to_str()
     ),
     'my_orders': InlineKeyboardButton(
         'Мои заказы',
-        callback_data='my_orders'
+        callback_data=CallbackData(State.MY_ORDERS).to_str()
     ),
     'back_to_menu': InlineKeyboardButton(
         'В главное меню',
-        callback_data='back_to_menu'
+        callback_data=CallbackData(State.MAIN_MENU).to_str()
     ),
     'back': InlineKeyboardButton('назад', callback_data='back'),
     'free_removal': InlineKeyboardButton('Бесплатный вывоз', callback_data='free_removal'),
@@ -30,175 +32,186 @@ btns = {
     'ok': InlineKeyboardButton('ОК', callback_data='ok'),
 }
 
+
 # Ниже создаем клавиатуры из кнопок
-main_keyboard = InlineKeyboardMarkup(
-    [
-        [btns['faq']],
-        [btns['order_storage']],
-        [btns['my_orders']],
+def main_keyboard():
+    return InlineKeyboardMarkup(
+        [
+            [btns['faq']],
+            [btns['order_storage']],
+            [btns['my_orders']],
+        ]
+    )
+
+
+def faq_keyboard():
+    return InlineKeyboardMarkup(
+        [        
+            [btns['back_to_menu']],
+        ]
+    )
+
+
+def back_to_menu_keyboard():
+    return InlineKeyboardMarkup(
+        [        
+            [btns['back_to_menu']],
+        ]
+    )
+
+
+def order_storage_keyboard():
+    return InlineKeyboardMarkup(
+        [
+            [btns['free_removal']],
+            [btns['self_delivery']],
+            [btns['back_to_menu']],
+        ]
+    )
+
+
+def ppd_peyboard():
+    return InlineKeyboardMarkup(
+        [
+            [btns['yes']],
+            [btns['no']],
+        ]
+    )
+
+
+def call_courirer_keyboard():
+    return InlineKeyboardMarkup(
+        [
+            [btns['hand_over_things']],
+            [btns['back_to_menu']],
+        ]
+    )
+
+
+def _get_page_buttons(page: Page, callback_name: State):
+    page_buttons = []
+
+    if page.has_previous():
+        callback_data = CallbackData(
+            callback_name,
+            params={'page': page.previous_page_number()}
+        )
+        page_buttons.append(
+            InlineKeyboardButton('<--', callback_data=callback_data.to_str())
+        )
+
+    if page.has_next():
+        callback_data = CallbackData(
+            callback_name,
+            params={'page': page.next_page_number()}
+        )
+        page_buttons.append(
+            InlineKeyboardButton('-->', callback_data=callback_data.to_str())
+        )
+
+    return page_buttons
+
+
+def warehouses_keyboard(page: Page):
+    buttons = []
+
+    warehouses = page.object_list
+
+    for warehouse in warehouses:
+
+        callback_data = CallbackData(
+            State.WAREHOUSE,
+            {'id': warehouse.get('id')}
+        )
+
+        button = [
+            InlineKeyboardButton(
+                warehouse.get('name'),
+                callback_data=callback_data.to_str()
+            ),
+        ]
+        buttons.append(button)
+
+    buttons.append(_get_page_buttons(page, State.WAREHOUSES))
+
+    buttons.append([btns['back_to_menu']])
+
+    return InlineKeyboardMarkup(buttons)
+
+
+def get_my_orders_keyboard(page: Page):
+    buttons = []
+
+    boxes = page.object_list
+
+    for box in boxes:
+        callback_data = CallbackData(
+            State.MY_BOX,
+            {'id': box.get('id')}
+        )
+
+        text = f'Размер {box.get('size')} на {box.get('location')}'
+
+        button = [
+            InlineKeyboardButton(
+                text,
+                callback_data=callback_data.to_str()
+            )
+        ]
+
+        buttons.append(button)
+
+    buttons.append(_get_page_buttons(page, State.MY_ORDERS))
+
+    buttons.append([btns['back_to_menu']])
+
+    return InlineKeyboardMarkup(buttons)
+
+
+def my_box_keyboard(box_id):
+
+    self_delivery_callback = CallbackData(
+        State.WAREHOUSES,
+        {'box_id': box_id}
+    )
+
+    order_delivery_callback = CallbackData(
+        State.ORDER_DELIVERY,
+        {'box_id': box_id}
+    )
+
+    buttons = [
+        [
+            InlineKeyboardButton(
+                'Самовывоз',
+                callback_data=self_delivery_callback.to_str()
+            ),
+            InlineKeyboardButton(
+                'Вывоз курьером',
+                callback_data=order_delivery_callback.to_str()
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                'Назад',
+                callback_data=CallbackData(State.MY_ORDERS).to_str()
+            )
+        ],
     ]
-)
+
+    buttons.append([btns['back_to_menu']])
+
+    return InlineKeyboardMarkup(buttons)
 
 
-faq_keyboard = InlineKeyboardMarkup(
-    [        
-        [btns['back_to_menu']],
-    ]
-)
-
-
-back_to_menu = InlineKeyboardMarkup(
-    [        
-        [btns['back_to_menu']],
-    ]
-)
-
-
-order_storage_keyboard = InlineKeyboardMarkup(
-    [
-        [btns['free_removal']],
-        [btns['self_delivery']],
-        [btns['back_to_menu']],
-    ]
-)
-
-
-my_orders_keyboard = InlineKeyboardMarkup(
-    [
-        [btns['back_to_menu']],
-    ]
-)
-
-
-ppd_keyboard = InlineKeyboardMarkup(
-    [
-        [btns['yes']],
-        [btns['no']],
-    ]
-)
-
-
-call_courier_keyboard = InlineKeyboardMarkup(
-    [
-        [btns['hand_over_things']],
-        [btns['back_to_menu']],
-    ]
-)
-
-
-# def warehouses_menu(warehouses: list[Warehouse]) -> InlineKeyboardMarkup:
-    
-#     buttons = []
-    
-#     for warehouse in warehouses:
-#         button = [
-#             InlineKeyboardButton(
-#                 warehouse.address,
-#                 callback_data=f'warehouse__{warehouse.id}'
-#             )
-#         ]
-#         buttons.append(button)
-    
-#     main_menu = [
-#         InlineKeyboardButton('Назад', callback_data='main_menu'),
-#     ]
-    
-#     buttons.append(main_menu)
-    
-#     return InlineKeyboardMarkup(buttons)
-
-
-# def warehouse_menu(warehouse: Warehouse) -> InlineKeyboardMarkup:
-    
-#     buttons = [
-#         [
-#             InlineKeyboardButton(
-#                 'Назад',
-#                 callback_data='warehouses'
-#             ),
-#         ]
-#     ]
-    
-#     return InlineKeyboardMarkup(buttons)
-
-
-# def tos_menu() -> InlineKeyboardMarkup:
-    
-#     buttons = [
-#         [
-#             InlineKeyboardButton('Условия хранения', callback_data='terms'),
-#         ],
-#         [
-#             InlineKeyboardButton(
-#                 'Часто задаваемые вопросы',
-#                 callback_data='faq'
-#             ),
-#         ],
-#         [
-#             InlineKeyboardButton(
-#                 'Запрещенные к хранению вещи',
-#                 callback_data='forbidden'
-#             ),
-#         ],
-#         [
-#             InlineKeyboardButton('Назад', callback_data='main_menu'),
-#         ],
-#     ]
-    
-#     return InlineKeyboardMarkup(buttons)
-
-
-# def my_orders(user: User) -> InlineKeyboardMarkup:
-#     buttons = []
-    
-#     for box in user.boxes_in_usage:
-#         box_button = [
-#             InlineKeyboardButton(
-#                 f'{box.name} в {box.address}',
-#                 callback_data=f'my_box__{box.id}'
-#             )
-#         ]
-#         buttons.append(box_button)
-
-#     main_menu = [
-#             InlineKeyboardButton(
-#                 'Назад',
-#                 callback_data='main_menu'
-#             ),
-#         ]
-    
-#     buttons.append(main_menu)
-    
-#     return InlineKeyboardMarkup(buttons)
-
-
-# def my_box(box: Box) -> InlineKeyboardMarkup:
-#     buttons = [
-#         [
-#             InlineKeyboardButton(
-#                 'Продлить',
-#                 callback_data=f'extend_time__{box.id}'
-#             )
-#         ],
-#         [
-#             InlineKeyboardButton(
-#                 'Забрать (самовывоз)',
-#                 callback_data=f'selfpick__{box.id}'
-#             )
-#         ],
-#         [
-#             InlineKeyboardButton(
-#                 'Заказать доставку на дом',
-#                 callback_data=f'home_delivery__{box.id}'
-#             )
-#         ],
-#         [
-#             InlineKeyboardButton(
-#                 'Назад',
-#                 callback_data='my_orders'
-#             ),
-#         ]
-#     ]
-    
-    
-#     return InlineKeyboardMarkup(buttons)
+keyboards = {
+    State.MAIN_MENU: main_keyboard,
+    State.FAQ: faq_keyboard,
+    State.MY_BOX: my_box_keyboard,
+    State.WAREHOUSES: warehouses_keyboard,
+    State.MY_ORDERS: get_my_orders_keyboard,
+    State.ORDER_STORAGE: order_storage_keyboard,
+    State.BACK_TO_MENU: back_to_menu_keyboard,
+    State.PERSONAL_DATA: ppd_peyboard,
+    State.CALL_COURIER: call_courirer_keyboard
+}

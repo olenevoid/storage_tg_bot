@@ -7,25 +7,36 @@ PARAM_SEPARATOR = ','
 
 # Enum для управления коллбэками. 
 # Можно быстро переименовать в одном месте, если понадобится
-class CallbackName(Enum):
-    FAQ = auto()
-    ORDER_STORAGE = auto()
-    MY_ORDERS = auto()
-    MAIN_MENU = auto()
-    BACK = auto()
-    FREE_REMOVAL = auto()
-    SELF_DELIVERY = auto()
-    PERSONAL_DATA_AGREE = auto()
-    PERSONAL_DATA_DISAGREE = auto()
-    HAND_OVER_THINGS = auto()
-    OK = auto()
+class State(Enum):
+    FAQ = 'faq'
+    ORDER_STORAGE = 'order_storage'
+    MY_ORDERS = 'my_orders'
+    MAIN_MENU = 'main_menu'
+    FREE_REMOVAL = 'free_removal'
+    WAREHOUSES = 'self_delivery'
+    ORDER_DELIVERY = 'order_delivery'
+    PERSONAL_DATA = 'ppd'
+    HAND_OVER_THINGS = 'hand_over_things'
+    WAREHOUSE = 'warehouse'
+    MY_BOX = 'my_box'
+    INPUT_ADDRESS = 'input_address'
+    INPUT_PHONE = 'input_phone'
+    FINAL = 'final'
+    BACK_TO_MENU = 'unknown'
+    CALL_COURIER = 'call_courier'
+
+    # Эти, возможно, не нужны
+    BACK = 'back'
+    PERSONAL_DATA_AGREE = 'pd_yes'
+    PERSONAL_DATA_DISAGREE = 'pd_no'
+    OK = 'ok'
 
 
 # Класс для создания строки коллбэков с параметрами 
 # и для удобного доступа к имени коллбэка и параметрам
 class CallbackData:
-    def __init__(self, name: CallbackName, params: dict = {}):
-        self.name: CallbackName = name
+    def __init__(self, name: State, params: dict = {}):
+        self.name: State = name
         self.params: dict = params
 
     @property
@@ -49,7 +60,7 @@ class CallbackData:
 # Парсит строку в класс CallbackData
 def parse_callback_data_string(callback_data: str) -> CallbackData:
     parsed_callback = callback_data.split(NAME_SEPARATOR)
-    callback_name = CallbackName(int(parsed_callback[0]))
+    callback_name = State(parsed_callback[0])
     callback_params = {}
 
     if len(parsed_callback) > 1:
