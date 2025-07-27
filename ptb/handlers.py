@@ -224,7 +224,7 @@ async def handle_warehouse(update: Update, context: CallbackContext):
 async def handle_ppd_agreement(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
-        "тут согласие на обработку данных",
+        strings.PPD,
         reply_markup=keyboards[State.PERSONAL_DATA_AGREEMENT](),
         parse_mode='HTML'
     )
