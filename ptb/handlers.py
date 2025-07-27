@@ -454,6 +454,7 @@ def get_handlers():
             ],
             State.SIGN_UP: [
                 CallbackQueryHandler(handle_signup, f'^{State.SIGN_UP.value}*.*'),
+                CallbackQueryHandler(handle_ppd_agreement, f'^{State.PERSONAL_DATA_AGREEMENT.value}*.*'),
                 CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
             ],
             State.FINAL: [
