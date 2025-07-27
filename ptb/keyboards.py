@@ -114,7 +114,7 @@ def warehouses_keyboard(page: Page):
         ]
         buttons.append(button)
 
-    buttons.append(_get_page_buttons(page, State.WAREHOUSES))
+    buttons.append(_get_page_buttons(page, State.SELECT_WAREHOUSE))
 
     buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
 
@@ -153,7 +153,7 @@ def my_orders_keyboard(page: Page):
 def my_box_keyboard(box_id):
 
     self_delivery_callback = CallbackData(
-        State.WAREHOUSES,
+        State.SELECT_WAREHOUSE,
         {'box_id': box_id}
     )
 
@@ -203,7 +203,7 @@ keyboards = {
     State.MAIN_MENU: main_keyboard,
     State.TERMS_OF_SERVICE: tos_keyboard,
     State.MY_BOX: my_box_keyboard,
-    State.WAREHOUSES: warehouses_keyboard,
+    State.SELECT_WAREHOUSE: warehouses_keyboard,
     State.MY_ORDERS: my_orders_keyboard,
     State.ORDER_STORAGE: order_storage_keyboard,
     State.BACK_TO_MENU: back_to_menu_keyboard,

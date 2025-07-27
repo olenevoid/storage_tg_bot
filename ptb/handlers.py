@@ -191,7 +191,7 @@ async def handle_my_box(update: Update, context: CallbackContext):
     return State.MY_BOX
 
 
-async def handle_self_delivery(update: Update, context: CallbackContext):
+async def handle_select_warehouse(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     params = parse_callback_data_string(update.callback_query.data).params
 
@@ -202,10 +202,10 @@ async def handle_self_delivery(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         "Доступные склады",
-        reply_markup=keyboards[State.WAREHOUSES](page),
+        reply_markup=keyboards[State.SELECT_WAREHOUSE](page),
         parse_mode='HTML'
     )
-    return State.WAREHOUSES
+    return State.SELECT_WAREHOUSE
 
 
 async def handle_warehouse(update: Update, context: CallbackContext):
@@ -405,12 +405,12 @@ def get_handlers():
             ],
             State.ORDER_STORAGE: [
                 CallbackQueryHandler(handle_show_prices, f'^{State.SHOW_PRICES.value}*.*'),
-                CallbackQueryHandler(handle_self_delivery, f'^{State.WAREHOUSES.value}*.*'),
+                CallbackQueryHandler(handle_select_warehouse, f'^{State.SELECT_WAREHOUSE.value}*.*'),
                 CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
-            State.WAREHOUSES: [
-                CallbackQueryHandler(handle_self_delivery, f'^{State.WAREHOUSES.value}*.*'),
+            State.SELECT_WAREHOUSE: [
+                CallbackQueryHandler(handle_select_warehouse, f'^{State.SELECT_WAREHOUSE.value}*.*'),
                 CallbackQueryHandler(handle_warehouse, f'^{State.WAREHOUSE.value}*.*'),
                 CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
