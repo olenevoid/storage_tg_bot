@@ -27,6 +27,9 @@ class State(Enum):
     BACK_TO_MENU = 'unknown'
     CALL_COURIER = 'call_courier'
     SIGN_UP = 'sign_up'
+    FAQ = 'faq'
+    FORBIDDEN_TO_STORE = 'forbidden'
+    DOWNLOAD_TOS = 'tos_download'
     # Эти, возможно, не нужны
     BACK = 'back'
     PERSONAL_DATA_AGREE = 'pd_yes'
