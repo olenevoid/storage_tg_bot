@@ -1,78 +1,21 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from ptb.callbacks import CallbackData, State
 from django.core.paginator import Page
-
-
-# Все кнопки бота. Нажатия регестрируются через callback_data
-# в файле handlers.py
-btns = {
-    'tos': InlineKeyboardButton(
-        'Условия хранения/FAQ',
-        callback_data=CallbackData(State.TERMS_OF_SERVICE).to_str()
-    ),
-    'faq': InlineKeyboardButton(
-        'Частые вопросы',
-        callback_data=CallbackData(State.FAQ).to_str()
-    ),
-    'order_storage': InlineKeyboardButton(
-        'Выбрать склад',
-        callback_data=CallbackData(State.ORDER_STORAGE).to_str()
-    ),
-    'my_orders': InlineKeyboardButton(
-        'Мои заказы',
-        callback_data=CallbackData(State.MY_ORDERS).to_str()
-    ),
-    'tos_download': InlineKeyboardButton(
-        'Скачать условия',
-        callback_data=CallbackData(State.DOWNLOAD_TOS).to_str()
-    ),
-    'back_to_menu': InlineKeyboardButton(
-        'В главное меню',
-        callback_data=CallbackData(State.MAIN_MENU).to_str()
-    ),
-    'forbidden': InlineKeyboardButton(
-        'Запрещенные к хранению вещества',
-        callback_data=CallbackData(State.FORBIDDEN_TO_STORE).to_str()
-    ),
-    'back': InlineKeyboardButton('назад', callback_data='back'),
-    'free_removal': InlineKeyboardButton('Бесплатный вывоз', callback_data='free_removal'),
-    'self_delivery': InlineKeyboardButton('Доставлю сам', callback_data='self_delivery'),
-    'yes': InlineKeyboardButton(
-        'Да',
-        callback_data=CallbackData(State.INPUT_FULL_NAME).to_str()
-    ),
-    'no': InlineKeyboardButton(
-        'Нет (назад в меню)',
-        callback_data=CallbackData(State.MAIN_MENU).to_str()
-        ),
-    'hand_over_things': InlineKeyboardButton('Сдать вещи', callback_data='hand_over_things'),
-    'signup': InlineKeyboardButton(
-        'Зарегистрироваться',
-        callback_data=CallbackData(State.PERSONAL_DATA_AGREEMENT).to_str()
-    ),
-    'confirm_signup': InlineKeyboardButton(
-        'Подтвердить регистрацию',
-        callback_data=CallbackData(State.SIGN_UP).to_str()
-    ),
-    'change_personal_data': InlineKeyboardButton(
-        'Ввести данные заново',
-        callback_data=CallbackData(State.PERSONAL_DATA_AGREEMENT).to_str()
-    )
-}
+from ptb.buttons import BUTTONS, ButtonName
 
 
 # Ниже создаем клавиатуры из кнопок
 def main_keyboard(client: dict = None):
 
     buttons = [
-        [btns['tos']],        
-        [btns['order_storage']],
+        [BUTTONS[ButtonName.TOS]],
+        [BUTTONS[ButtonName.ORDER_STORAGE]],
     ]
 
     if client:
-        buttons.append([btns['my_orders']])
+        buttons.append([BUTTONS[ButtonName.MY_ORDERS]])
     else:
-        buttons.append([btns['signup']])
+        buttons.append([BUTTONS[ButtonName.SIGNUP]])
 
     return InlineKeyboardMarkup(buttons)
 
@@ -80,10 +23,10 @@ def main_keyboard(client: dict = None):
 def tos_keyboard():
     return InlineKeyboardMarkup(
         [
-            [btns['tos_download']],
-            [btns['faq']],
-            [btns['forbidden']],
-            [btns['back_to_menu']],
+            [BUTTONS[ButtonName.TOS_DOWNLOAD]],
+            [BUTTONS[ButtonName.FAQ]],
+            [BUTTONS[ButtonName.FORBIDDEN]],
+            [BUTTONS[ButtonName.BACK_TO_MENU]],
         ]
     )
 
@@ -91,7 +34,7 @@ def tos_keyboard():
 def back_to_menu_keyboard():
     return InlineKeyboardMarkup(
         [
-            [btns['back_to_menu']],
+            [BUTTONS[ButtonName.BACK_TO_MENU]],
         ]
     )
 
@@ -99,9 +42,9 @@ def back_to_menu_keyboard():
 def order_storage_keyboard():
     return InlineKeyboardMarkup(
         [
-            [btns['free_removal']],
-            [btns['self_delivery']],
-            [btns['back_to_menu']],
+            [BUTTONS[ButtonName.FREE_REMOVAL]],
+            [BUTTONS[ButtonName.SELF_DELIVERY]],
+            [BUTTONS[ButtonName.BACK_TO_MENU]],
         ]
     )
 
@@ -109,8 +52,8 @@ def order_storage_keyboard():
 def ppd_peyboard():
     return InlineKeyboardMarkup(
         [
-            [btns['yes']],
-            [btns['no']],
+            [BUTTONS[ButtonName.PPD_YES]],
+            [BUTTONS[ButtonName.PPD_NO]],
         ]
     )
 
@@ -118,8 +61,8 @@ def ppd_peyboard():
 def call_courirer_keyboard():
     return InlineKeyboardMarkup(
         [
-            [btns['hand_over_things']],
-            [btns['back_to_menu']],
+            [BUTTONS[ButtonName.HAND_OVER_THINGS]],
+            [BUTTONS[ButtonName.BACK_TO_MENU]],
         ]
     )
 
@@ -170,7 +113,7 @@ def warehouses_keyboard(page: Page):
 
     buttons.append(_get_page_buttons(page, State.WAREHOUSES))
 
-    buttons.append([btns['back_to_menu']])
+    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
 
     return InlineKeyboardMarkup(buttons)
 
@@ -199,7 +142,7 @@ def my_orders_keyboard(page: Page):
 
     buttons.append(_get_page_buttons(page, State.MY_ORDERS))
 
-    buttons.append([btns['back_to_menu']])
+    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
 
     return InlineKeyboardMarkup(buttons)
 
@@ -235,7 +178,7 @@ def my_box_keyboard(box_id):
         ],
     ]
 
-    buttons.append([btns['back_to_menu']])
+    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
 
     return InlineKeyboardMarkup(buttons)
 
@@ -243,12 +186,12 @@ def my_box_keyboard(box_id):
 def signup_keyboard():
     buttons = [
         [
-            btns['confirm_signup'],
-            btns['change_personal_data']
+            BUTTONS[ButtonName.CONFIRM_SIGNUP],
+            BUTTONS[ButtonName.CHANGE_PERSONAL_DATA]
         ]
     ]
 
-    buttons.append([btns['back_to_menu']])
+    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
 
     return InlineKeyboardMarkup(buttons)
 
