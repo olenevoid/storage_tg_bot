@@ -62,14 +62,14 @@ BUTTONS = {
     ),
     ButtonName.SELF_DELIVERY: InlineKeyboardButton(
         'Привезу сам',
-        callback_data=CallbackData(State.SELF_DELIVERY).to_str()
+        callback_data=CallbackData(State.WAREHOUSES).to_str()
         ),
     ButtonName.PPD_YES: InlineKeyboardButton(
-        'Да',
+        'Да (Продолжить регистрацию)',
         callback_data=CallbackData(State.INPUT_FULL_NAME).to_str()
     ),
     ButtonName.PPD_NO: InlineKeyboardButton(
-        'Нет (назад в меню)',
+        'Нет (Вернуться в меню)',
         callback_data=CallbackData(State.MAIN_MENU).to_str()
     ),
     ButtonName.PPD_DOWNLOAD: InlineKeyboardButton(
