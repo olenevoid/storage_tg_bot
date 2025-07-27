@@ -4,7 +4,6 @@ from django.core.paginator import Page
 from ptb.buttons import BUTTONS, ButtonName
 
 
-# Ниже создаем клавиатуры из кнопок
 def main_keyboard(client: dict = None):
 
     buttons = [
@@ -42,7 +41,8 @@ def back_to_menu_keyboard():
 def order_storage_keyboard():
     return InlineKeyboardMarkup(
         [
-            [BUTTONS[ButtonName.FREE_REMOVAL]],
+            [BUTTONS[ButtonName.SHOW_PRICES]],
+            [BUTTONS[ButtonName.COURIER_DELIVERY]],
             [BUTTONS[ButtonName.SELF_DELIVERY]],
             [BUTTONS[ButtonName.BACK_TO_MENU]],
         ]

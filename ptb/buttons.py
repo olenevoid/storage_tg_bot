@@ -11,7 +11,7 @@ class ButtonName(Enum):
     TOS_DOWNLOAD = auto()
     BACK_TO_MENU = auto()
     FORBIDDEN = auto()
-    FREE_REMOVAL = auto()
+    COURIER_DELIVERY = auto()
     SELF_DELIVERY = auto()
     PPD_YES = auto()
     PPD_NO = auto()
@@ -19,9 +19,14 @@ class ButtonName(Enum):
     SIGNUP = auto()
     CONFIRM_SIGNUP = auto()
     CHANGE_PERSONAL_DATA = auto()
+    SHOW_PRICES = auto()
 
 
 BUTTONS = {
+    ButtonName.SHOW_PRICES: InlineKeyboardButton(
+        'Показать расценки',
+        callback_data=CallbackData(State.SHOW_PRICES).to_str()
+    ),
     ButtonName.TOS: InlineKeyboardButton(
         'Условия хранения/FAQ',
         callback_data=CallbackData(State.TERMS_OF_SERVICE).to_str()
@@ -31,7 +36,7 @@ BUTTONS = {
         callback_data=CallbackData(State.FAQ).to_str()
     ),
     ButtonName.ORDER_STORAGE: InlineKeyboardButton(
-        'Выбрать склад',
+        'Заказать ячейку',
         callback_data=CallbackData(State.ORDER_STORAGE).to_str()
     ),
     ButtonName.MY_ORDERS: InlineKeyboardButton(
@@ -50,8 +55,14 @@ BUTTONS = {
         'Запрещенные к хранению вещества',
         callback_data=CallbackData(State.FORBIDDEN_TO_STORE).to_str()
     ),
-    ButtonName.FREE_REMOVAL: InlineKeyboardButton('Бесплатный вывоз', callback_data='free_removal'),
-    ButtonName.SELF_DELIVERY: InlineKeyboardButton('Доставлю сам', callback_data='self_delivery'),
+    ButtonName.COURIER_DELIVERY: InlineKeyboardButton(
+        'Вывоз курьером',
+        callback_data=CallbackData(State.COURIER_DELIVERY).to_str()
+    ),
+    ButtonName.SELF_DELIVERY: InlineKeyboardButton(
+        'Привезу сам',
+        callback_data=CallbackData(State.SELF_DELIVERY).to_str()
+        ),
     ButtonName.PPD_YES: InlineKeyboardButton(
         'Да',
         callback_data=CallbackData(State.INPUT_FULL_NAME).to_str()
