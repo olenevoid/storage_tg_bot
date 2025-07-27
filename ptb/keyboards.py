@@ -18,18 +18,29 @@ btns = {
         'Мои заказы',
         callback_data=CallbackData(State.MY_ORDERS).to_str()
     ),
+    'tos_download': InlineKeyboardButton(
+        'Скачать условия',
+        callback_data=CallbackData(State.DOWNLOAD_TOS).to_str()
+    ),
     'back_to_menu': InlineKeyboardButton(
         'В главное меню',
         callback_data=CallbackData(State.MAIN_MENU).to_str()
+    ),
+    'forbidden': InlineKeyboardButton(
+        'Запрещенные к хранению вещества',
+        callback_data=CallbackData(State.FORBIDDEN_TO_STORE).to_str()
     ),
     'back': InlineKeyboardButton('назад', callback_data='back'),
     'free_removal': InlineKeyboardButton('Бесплатный вывоз', callback_data='free_removal'),
     'self_delivery': InlineKeyboardButton('Доставлю сам', callback_data='self_delivery'),
     'yes': InlineKeyboardButton(
-        'Принимаю опд',
+        'Да',
         callback_data=CallbackData(State.INPUT_FULL_NAME).to_str()
     ),
-    'no': InlineKeyboardButton('Не принимаю опд', callback_data='no'),
+    'no': InlineKeyboardButton(
+        'Нет (назад в меню)',
+        callback_data=CallbackData(State.MAIN_MENU).to_str()
+        ),
     'hand_over_things': InlineKeyboardButton('Сдать вещи', callback_data='hand_over_things'),
     'signup': InlineKeyboardButton(
         'Зарегистрироваться',
@@ -50,7 +61,7 @@ btns = {
 def main_keyboard(client: dict = None):
 
     buttons = [
-        [btns['faq']],
+        [btns['faq']],        
         [btns['order_storage']],
     ]
 
@@ -65,6 +76,9 @@ def main_keyboard(client: dict = None):
 def tos_keyboard():
     return InlineKeyboardMarkup(
         [
+            [btns['tos_download']],
+            [btns['faq']],
+            [btns['forbidden']],
             [btns['back_to_menu']],
         ]
     )
