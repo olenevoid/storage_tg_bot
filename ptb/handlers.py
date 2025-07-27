@@ -213,16 +213,26 @@ async def handle_warehouse(update: Update, context: CallbackContext):
     params = parse_callback_data_string(update.callback_query.data).params
     warehouse = await sync_to_async(bot_db.get_warehouse)(params.get('id'))
 
+    boxes = warehouse.get('boxes')
+
     has_delivery_text = 'Нет'
 
-    if warehouse.has_delivery:
+    if warehouse.get('has_delivery'):
         has_delivery_text = 'Да'
 
     text = (
-        f'Название: {warehouse.name}\n'
-        f'Адрес: {warehouse.address}\n'
+        f'Название: {warehouse.get('name')}\n'
+        f'Адрес: {warehouse.get('address')}\n'
         f'Есть доставка: {has_delivery_text}\n'
     )
+
+    for box in boxes:
+        size = box.get('size')
+        text += (
+            f'Ячейка: {size.get('code')}\n'
+            f'Цена: {size.get('price')}\n'
+            f'Свободно: {box.get('available')}\n\n'
+        )
 
     await update.callback_query.edit_message_text(
         text,
