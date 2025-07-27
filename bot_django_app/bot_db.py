@@ -5,7 +5,13 @@ import django
 os. environ.setdefault('DJANGO_SETTINGS_MODULE', 'bot_core.settings')
 django.setup()
 
-from bot_django_app.models import Client, StorageLocation, Box, StoredItem, BoxSize
+from bot_django_app.models import (Client,
+                                   StorageLocation,
+                                   Box,
+                                   StoredItem,
+                                   BoxSize,
+                                   BoxAvailability
+                                   )
 
 
 # TODO: Переделать все методы для async
@@ -45,11 +51,21 @@ def client_exists(telegram_id) -> bool:
 
 
 def get_all_warehouses() -> list[dict]:
-    return [warehouse.__dict__ for warehouse in StorageLocation.objects.all()]
+    return [_serialize_warehouse(warehouse) for warehouse in StorageLocation.objects.all()]
 
 
 def get_warehouse(pk: int) -> StorageLocation:
-    return StorageLocation.objects.get(pk=pk)
+    location = StorageLocation.objects.get(pk=pk)    
+    warehouse = _serialize_warehouse(location)
+
+    return warehouse
+
+
+def get_available_boxes_for_location(
+        location: StorageLocation) -> list[BoxAvailability] | None:
+    if BoxAvailability.objects.filter(location=location).exists():
+        return BoxAvailability.objects.filter(location=location).all()
+    return None
 
 
 def get_box(box_id):
@@ -124,3 +140,34 @@ def _serialize_client(client: Client):
     }
 
     return serialized_client
+
+
+def _serialize_available_boxes(box_availabilities: list[BoxAvailability]):
+    available_boxes = []
+
+    for box in box_availabilities:
+        available_boxes.append(
+            {
+                'size': _serialize_size(box.size),
+                'total': box.total_boxes,
+                'occupied': box.occupied_boxes,
+                'available': box.available_boxes
+            }
+        )
+
+    return available_boxes
+
+
+def _serialize_warehouse(location: StorageLocation) -> dict:
+    warehouse_boxes = get_available_boxes_for_location(location)
+
+    warehouse = {
+        'id': location.pk,
+        'name': location.name,
+        'address': location.address,
+        'has_delivery': location.has_delivery,
+        'is_active': location.is_active,
+        'boxes': _serialize_available_boxes(warehouse_boxes)
+    }
+
+    return warehouse
