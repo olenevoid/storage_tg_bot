@@ -13,6 +13,9 @@ import bot_django_app.bot_db as bot_db
 from asgiref.sync import sync_to_async
 from django.core.paginator import Paginator, Page
 from ptb import validators
+import ptb.strings as strings
+from bot_core.settings import BASE_DIR
+from os import path
 
 
 PER_PAGE = 2
@@ -25,7 +28,7 @@ async def start(update: Update, context: CallbackContext):
     client = await sync_to_async(bot_db.find_client_by_tg)(telegram_id)
 
     await update.message.reply_text(
-        "много примеров, когда аренда склада может пригодиться",
+        strings.MAIN_MENU,
         reply_markup=keyboards[State.MAIN_MENU](client)
     )
     return State.MAIN_MENU
@@ -42,18 +45,53 @@ async def handle_back_menu(update: Update, context: CallbackContext):
     client = await sync_to_async(bot_db.find_client_by_tg)(telegram_id)
 
     await update.callback_query.edit_message_text(
-        "много примеров, когда аренда склада может пригодиться",
+        strings.MAIN_MENU,
         reply_markup=keyboards[State.MAIN_MENU](client)
     )
     return State.MAIN_MENU
+
+
+async def handle_tos(update: Update, context: CallbackContext):
+    await update.callback_query.answer()
+
+    await update.callback_query.edit_message_text(
+        strings.TOS,
+        reply_markup=keyboards[State.TERMS_OF_SERVICE](),
+        parse_mode='HTML'
+    )
+    return State.TERMS_OF_SERVICE
+
+
+async def handle_download_tos(update: Update, context: CallbackContext):
+    await update.callback_query.answer()
+
+    tos_path = path.join(BASE_DIR, 'files/tos.pdf')
+    with open(tos_path, 'rb') as file:
+        await context.bot.send_document(
+            chat_id=update.effective_chat.id,
+            document=file
+        )
+    return State.TERMS_OF_SERVICE
 
 
 async def handle_faq(update: Update, context: CallbackContext):
     await update.callback_query.answer()
 
     await update.callback_query.edit_message_text(
-        "Условия хранения/FAQ",
-        reply_markup=keyboards[State.TERMS_OF_SERVICE]()
+        strings.FAQ,
+        reply_markup=keyboards[State.TERMS_OF_SERVICE](),
+        parse_mode='HTML'
+    )
+    return State.TERMS_OF_SERVICE
+
+
+async def handle_forbidden(update: Update, context: CallbackContext):
+    await update.callback_query.answer()
+
+    await update.callback_query.edit_message_text(
+        strings.FORBIDDEN,
+        reply_markup=keyboards[State.TERMS_OF_SERVICE](),
+        parse_mode='HTML'
     )
     return State.TERMS_OF_SERVICE
 
@@ -292,13 +330,16 @@ def get_handlers():
         entry_points=[CommandHandler("start", start)],
         states={
             State.MAIN_MENU: [
-                CallbackQueryHandler(handle_faq, f'^{State.TERMS_OF_SERVICE.value}*.*'),
+                CallbackQueryHandler(handle_tos, f'^{State.TERMS_OF_SERVICE.value}*.*'),
                 CallbackQueryHandler(handle_order_storage, f'^{State.ORDER_STORAGE.value}*.*'),
                 CallbackQueryHandler(handle_ppd_agreement, f'^{State.PERSONAL_DATA_AGREEMENT.value}*.*'),
                 CallbackQueryHandler(handle_my_orders, f'^{State.MY_ORDERS.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.TERMS_OF_SERVICE: [
+                CallbackQueryHandler(handle_download_tos, f'^{State.DOWNLOAD_TOS.value}*.*'),
+                CallbackQueryHandler(handle_faq, f'^{State.FAQ.value}*.*'),
+                CallbackQueryHandler(handle_forbidden, f'^{State.FORBIDDEN_TO_STORE.value}*.*'),
                 CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
