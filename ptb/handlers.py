@@ -74,7 +74,9 @@ async def handle_my_orders(update: Update, context: CallbackContext):
 
     page_number = params.get('page') or 1
 
-    boxes = await sync_to_async(bot_db.get_all_boxes_for_client)(client_tg)
+    client = await sync_to_async(bot_db.find_client_by_tg)(telegram_id)
+
+    boxes = client.get('boxes')
 
     page = Paginator(boxes, per_page=2).page(page_number)
 
