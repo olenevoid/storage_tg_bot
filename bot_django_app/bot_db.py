@@ -72,3 +72,18 @@ def _serialize_size(size: BoxSize):
     }
 
     return serialized_size
+
+
+def _serialize_client(client: Client):
+    boxes = get_all_boxes_for_client(client.pk)
+
+    serialized_client = {
+        'id': client.pk,
+        'tg_id': client.telegram_id,
+        'full_name': client.full_name,
+        'consent_given': client.consent_given,
+        'created_at': client.created_at.strftime('%d-%m-%Y'),
+        'boxes': boxes
+    }
+
+    return serialized_client
