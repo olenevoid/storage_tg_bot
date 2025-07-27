@@ -155,7 +155,7 @@ async def handle_warehouse(update: Update, context: CallbackContext):
     return State.WAREHOUSE
 
 
-async def handle_personal_data_agreement(update: Update, context: CallbackContext):
+async def handle_ppd_agreement(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "тут согласие на обработку данных",
@@ -294,7 +294,7 @@ def get_handlers():
             State.MAIN_MENU: [
                 CallbackQueryHandler(handle_faq, f'^{State.FAQ.value}*.*'),
                 CallbackQueryHandler(handle_order_storage, f'^{State.ORDER_STORAGE.value}*.*'),
-                CallbackQueryHandler(handle_personal_data_agreement, f'^{State.PERSONAL_DATA_AGREEMENT.value}*.*'),
+                CallbackQueryHandler(handle_ppd_agreement, f'^{State.PERSONAL_DATA_AGREEMENT.value}*.*'),
                 CallbackQueryHandler(handle_my_orders, f'^{State.MY_ORDERS.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
