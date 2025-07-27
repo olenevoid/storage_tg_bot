@@ -6,9 +6,13 @@ from django.core.paginator import Page
 # Все кнопки бота. Нажатия регестрируются через callback_data
 # в файле handlers.py
 btns = {
-    'faq': InlineKeyboardButton(
+    'tos': InlineKeyboardButton(
         'Условия хранения/FAQ',
         callback_data=CallbackData(State.TERMS_OF_SERVICE).to_str()
+    ),
+    'faq': InlineKeyboardButton(
+        'Частые вопросы',
+        callback_data=CallbackData(State.FAQ).to_str()
     ),
     'order_storage': InlineKeyboardButton(
         'Выбрать склад',
@@ -61,7 +65,7 @@ btns = {
 def main_keyboard(client: dict = None):
 
     buttons = [
-        [btns['faq']],        
+        [btns['tos']],        
         [btns['order_storage']],
     ]
 
