@@ -52,6 +52,7 @@ def order_storage_keyboard():
 def ppd_peyboard():
     return InlineKeyboardMarkup(
         [
+            [BUTTONS[ButtonName.PPD_DOWNLOAD]],
             [BUTTONS[ButtonName.PPD_YES]],
             [BUTTONS[ButtonName.PPD_NO]],
         ]

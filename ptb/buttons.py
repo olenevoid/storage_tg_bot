@@ -15,6 +15,7 @@ class ButtonName(Enum):
     SELF_DELIVERY = auto()
     PPD_YES = auto()
     PPD_NO = auto()
+    PPD_DOWNLOAD = auto()
     HAND_OVER_THINGS = auto()
     SIGNUP = auto()
     CONFIRM_SIGNUP = auto()
@@ -70,7 +71,11 @@ BUTTONS = {
     ButtonName.PPD_NO: InlineKeyboardButton(
         'Нет (назад в меню)',
         callback_data=CallbackData(State.MAIN_MENU).to_str()
-        ),
+    ),
+    ButtonName.PPD_DOWNLOAD: InlineKeyboardButton(
+        'Скачать полную версию',
+        callback_data=CallbackData(State.DOWNLOAD_PPD).to_str()
+    ),
     ButtonName.HAND_OVER_THINGS: InlineKeyboardButton('Сдать вещи', callback_data='hand_over_things'),
     ButtonName.SIGNUP: InlineKeyboardButton(
         'Зарегистрироваться',
