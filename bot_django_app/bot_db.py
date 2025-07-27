@@ -11,8 +11,8 @@ from bot_django_app.models import Client, StorageLocation, Box, StoredItem, BoxS
 # TODO: Переделать все методы для async
 
 
-def get_user(id_user) -> Client | None:
-    return Client.objects.get(telegram_id=id_user)
+def get_client(pk):
+    return Client.objects.get(pk=pk)
 
 
 async def user_exists(id_user) -> bool:
