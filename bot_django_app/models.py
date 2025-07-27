@@ -1,12 +1,20 @@
 from django.db import models
 
 
-class Client(models.Model):
+class Role(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class User(models.Model):
     full_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=20)
     email = models.EmailField(blank=True, null=True)
     telegram_id = models.BigIntegerField(unique=True)
     consent_given = models.BooleanField(default=False)
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -24,17 +32,17 @@ class StorageLocation(models.Model):
 
 
 class BoxSize(models.Model):
-    code = models.CharField(max_length=10, unique=True)  # 'S', 'M', 'L', etc.
-    name = models.CharField(max_length=50)               # 'Small', 'Medium', etc.
+    code = models.CharField(max_length=10, unique=True)
+    name = models.CharField(max_length=50)
     volume_m3 = models.DecimalField(max_digits=5, decimal_places=2)
     price_per_month = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):
-        return f"{self.name} ({self.code}) — {self.volume_m3} м³"
+        return f"{self.name} ({self.code}) — {self.volume_m3} м³\xb3"
 
 
 class Box(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     location = models.ForeignKey(StorageLocation, on_delete=models.SET_NULL, null=True)
     size = models.ForeignKey(BoxSize, on_delete=models.PROTECT)
     description = models.TextField(blank=True)
@@ -44,7 +52,7 @@ class Box(models.Model):
     extended_until = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return f"Box {self.id} ({self.size.code}) for {self.client.full_name}"
+        return f"Box {self.id} ({self.size.code}) for {self.user.full_name}"
 
 
 class BoxAvailability(models.Model):
@@ -72,7 +80,7 @@ class StoredItem(models.Model):
 
 
 class PickupRequest(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     address = models.TextField()
     preferred_date = models.DateField()
     preferred_time = models.CharField(max_length=50, blank=True)
@@ -82,26 +90,26 @@ class PickupRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Pickup for {self.client.full_name} on {self.preferred_date}"
+        return f"Pickup for {self.user.full_name} on {self.preferred_date}"
 
 
 class Notification(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     box = models.ForeignKey(Box, on_delete=models.CASCADE, null=True, blank=True)
     notification_type = models.CharField(max_length=100)
     sent_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Notification to {self.client.full_name} ({self.notification_type})"
+        return f"Notification to {self.user.full_name} ({self.notification_type})"
 
 
 class OrderSource(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     utm_source = models.CharField(max_length=255, help_text="Источник, например: google_ads, telegram_bot")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.utm_source} for {self.client.full_name}"
+        return f"{self.utm_source} for {self.user.full_name}"
 
 
 class PromoCode(models.Model):
@@ -122,8 +130,8 @@ class PromoCode(models.Model):
 
 class PromoUsage(models.Model):
     promo = models.ForeignKey(PromoCode, on_delete=models.CASCADE)
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     used_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.client.full_name} used {self.promo.code}"
+        return f"{self.user.full_name} used {self.promo.code}"

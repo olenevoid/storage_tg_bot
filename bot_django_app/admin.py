@@ -3,15 +3,12 @@ from django.utils.timezone import now
 from datetime import timedelta
 
 from .models import (
-    Client, StorageLocation, Box, PickupRequest,
+    User, StorageLocation, Box, PickupRequest,
     Notification, OrderSource, StoredItem,
     PromoCode, PromoUsage,
     BoxSize, BoxAvailability
 )
 
-# --- ВСПОМОГАТЕЛЬНЫЕ КОМПОНЕНТЫ ---
-
-# Фильтр "Заканчивается скоро"
 class EndingSoonFilter(admin.SimpleListFilter):
     title = 'Заканчивается скоро'
     parameter_name = 'ending_soon'
@@ -30,26 +27,26 @@ class EndingSoonFilter(admin.SimpleListFilter):
             return queryset.filter(end_date__range=(today, today + timedelta(days=30)))
         return queryset
 
-# Inline: Предметы, хранящиеся в боксе
+
 class StoredItemInline(admin.TabularInline):
     model = StoredItem
     extra = 1
 
-# Actions для промокодов
+
 @admin.action(description='Активировать выбранные промокоды')
 def activate_promo_codes(modeladmin, request, queryset):
     updated = queryset.update(is_active=True)
     modeladmin.message_user(request, f"{updated} промокодов активировано")
+
 
 @admin.action(description='Деактивировать выбранные промокоды')
 def deactivate_promo_codes(modeladmin, request, queryset):
     updated = queryset.update(is_active=False)
     modeladmin.message_user(request, f"{updated} промокодов деактивировано")
 
-# --- АДМИНКИ ---
 
-@admin.register(Client)
-class ClientAdmin(admin.ModelAdmin):
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'phone', 'telegram_id', 'email', 'consent_given', 'created_at')
     search_fields = ('full_name', 'phone', 'telegram_id', 'email')
     list_filter = ('consent_given', 'created_at')
@@ -67,8 +64,8 @@ class StorageLocationAdmin(admin.ModelAdmin):
 class BoxAdmin(admin.ModelAdmin):
     list_display = (
         'id',
-        'client_name',
-        'client_phone',
+        'user_name',
+        'user_phone',
         'size',
         'location_name',
         'is_active',
@@ -78,17 +75,17 @@ class BoxAdmin(admin.ModelAdmin):
         'extended_until',
     )
     list_filter = ('size', 'is_active', 'created_at', 'end_date', EndingSoonFilter)
-    search_fields = ('client__full_name', 'description')
+    search_fields = ('user__full_name', 'description')
     ordering = ('-created_at',)
     inlines = [StoredItemInline]
 
     @admin.display(description="Клиент")
-    def client_name(self, obj):
-        return obj.client.full_name
+    def user_name(self, obj):
+        return obj.user.full_name
 
     @admin.display(description="Телефон")
-    def client_phone(self, obj):
-        return obj.client.phone
+    def user_phone(self, obj):
+        return obj.user.phone
 
     @admin.display(description="Склад")
     def location_name(self, obj):
@@ -105,8 +102,8 @@ class BoxAdmin(admin.ModelAdmin):
 @admin.register(PickupRequest)
 class PickupRequestAdmin(admin.ModelAdmin):
     list_display = (
-        'client_name',
-        'client_phone',
+        'user_name',
+        'user_phone',
         'address',
         'preferred_date',
         'preferred_time',
@@ -114,38 +111,38 @@ class PickupRequestAdmin(admin.ModelAdmin):
         'created_at'
     )
     list_filter = ('preferred_date', 'is_completed')
-    search_fields = ('client__full_name', 'address', 'comment')
+    search_fields = ('user__full_name', 'address', 'comment')
     ordering = ('-created_at',)
 
     @admin.display(description="Клиент")
-    def client_name(self, obj):
-        return obj.client.full_name
+    def user_name(self, obj):
+        return obj.user.full_name
 
     @admin.display(description="Телефон")
-    def client_phone(self, obj):
-        return obj.client.phone
+    def user_phone(self, obj):
+        return obj.user.phone
 
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = (
-        'client_name',
-        'client_phone',
+        'user_name',
+        'user_phone',
         'notification_type',
         'box_id',
         'sent_at'
     )
     list_filter = ('notification_type', 'sent_at')
-    search_fields = ('client__full_name', 'notification_type')
+    search_fields = ('user__full_name', 'notification_type')
     ordering = ('-sent_at',)
 
     @admin.display(description="Клиент")
-    def client_name(self, obj):
-        return obj.client.full_name
+    def user_name(self, obj):
+        return obj.user.full_name
 
     @admin.display(description="Телефон")
-    def client_phone(self, obj):
-        return obj.client.phone
+    def user_phone(self, obj):
+        return obj.user.phone
 
     @admin.display(description="Box ID")
     def box_id(self, obj):
@@ -155,29 +152,29 @@ class NotificationAdmin(admin.ModelAdmin):
 @admin.register(OrderSource)
 class OrderSourceAdmin(admin.ModelAdmin):
     list_display = (
-        'client_name',
-        'client_phone',
+        'user_name',
+        'user_phone',
         'utm_source',
         'created_at'
     )
     list_filter = ('utm_source',)
-    search_fields = ('client__full_name', 'utm_source')
+    search_fields = ('user__full_name', 'utm_source')
     ordering = ('-created_at',)
 
     @admin.display(description="Клиент")
-    def client_name(self, obj):
-        return obj.client.full_name
+    def user_name(self, obj):
+        return obj.user.full_name
 
     @admin.display(description="Телефон")
-    def client_phone(self, obj):
-        return obj.client.phone
+    def user_phone(self, obj):
+        return obj.user.phone
 
 
 @admin.register(StoredItem)
 class StoredItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'quantity', 'box_id', 'client_name', 'added_at')
+    list_display = ('name', 'quantity', 'box_id', 'user_name', 'added_at')
     list_filter = ('added_at',)
-    search_fields = ('name', 'box__client__full_name')
+    search_fields = ('name', 'box__user__full_name')
     ordering = ('-added_at',)
 
     @admin.display(description="Box ID")
@@ -185,8 +182,8 @@ class StoredItemAdmin(admin.ModelAdmin):
         return obj.box.id
 
     @admin.display(description="Клиент")
-    def client_name(self, obj):
-        return obj.box.client.full_name
+    def user_name(self, obj):
+        return obj.box.user.full_name
 
 
 @admin.register(PromoCode)
@@ -200,9 +197,9 @@ class PromoCodeAdmin(admin.ModelAdmin):
 
 @admin.register(PromoUsage)
 class PromoUsageAdmin(admin.ModelAdmin):
-    list_display = ('promo_code', 'client_name', 'used_at')
+    list_display = ('promo_code', 'user_name', 'used_at')
     list_filter = ('used_at',)
-    search_fields = ('promo__code', 'client__full_name')
+    search_fields = ('promo__code', 'user__full_name')
     ordering = ('-used_at',)
 
     @admin.display(description="Промокод")
@@ -210,8 +207,8 @@ class PromoUsageAdmin(admin.ModelAdmin):
         return obj.promo.code
 
     @admin.display(description="Клиент")
-    def client_name(self, obj):
-        return obj.client.full_name
+    def user_name(self, obj):
+        return obj.user.full_name
 
 
 @admin.register(BoxSize)
