@@ -57,7 +57,7 @@ def get_box(box_id):
     return _serialize_box(box)
 
 
-def get_all_boxes_for_client(pk) -> dict:
+def get_all_boxes_for_client(pk) -> list[dict]:
     client = get_client(pk=pk)
     if not Box.objects.filter(client=client).exists():
         return []
