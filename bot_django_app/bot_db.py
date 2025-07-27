@@ -59,6 +59,9 @@ def get_box(box_id):
 
 def get_all_boxes_for_client(pk) -> dict:
     client = get_client(pk=pk)
+    if not Box.objects.filter(client=client).exists():
+        return []
+
     boxes = []
     for box in Box.objects.filter(client=client).all():
         boxes.append(_serialize_box(box))
