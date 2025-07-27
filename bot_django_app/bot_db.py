@@ -104,6 +104,7 @@ def _serialize_size(size: BoxSize):
         'id': size.pk,
         'code': size.code,
         'name': size.name,
+        'volume_m3': size.volume_m3,
         'price': size.price_per_month
     }
 
