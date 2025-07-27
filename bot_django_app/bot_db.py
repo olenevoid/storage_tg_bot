@@ -15,8 +15,32 @@ def get_client(pk):
     return Client.objects.get(pk=pk)
 
 
-async def user_exists(id_user) -> bool:
-    user_exists = await Client.objects.filter(telegram_id=id_user).aexists()
+async def acreate_client(client: dict):
+    new_client = Client()
+    new_client.full_name = client.get('full_name')
+    new_client.telegram_id = client.get('telegram_id')
+    new_client.phone = client.get('phone')
+    new_client.email = client.get('email')
+    new_client.consent_given = True
+
+    await new_client.asave()
+
+
+def find_client_by_tg(telegram_id) -> dict | None:
+    client_exists_in_db = client_exists(telegram_id)
+    if client_exists_in_db:
+        client = Client.objects.get(telegram_id=telegram_id)
+        return _serialize_client(client)
+    return None
+
+
+async def aclient_exists(telegram_id) -> bool:
+    user_exists = await Client.objects.filter(telegram_id=telegram_id).aexists()
+    return user_exists
+
+
+def client_exists(telegram_id) -> bool:
+    user_exists = Client.objects.filter(telegram_id=telegram_id).exists()
     return user_exists
 
 
