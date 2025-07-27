@@ -52,7 +52,7 @@ def _serialize_box(box: Box):
 
     serialized_box = {
             'id': box.pk,
-            'size': box.size,
+            'size': 'тут будет размер',
             'location': box.location.name,
             'address': box.location.address,
             'description': box.description,
