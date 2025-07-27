@@ -25,28 +25,46 @@ btns = {
     'back': InlineKeyboardButton('назад', callback_data='back'),
     'free_removal': InlineKeyboardButton('Бесплатный вывоз', callback_data='free_removal'),
     'self_delivery': InlineKeyboardButton('Доставлю сам', callback_data='self_delivery'),
-    'yes': InlineKeyboardButton('Принимаю опд', callback_data='yes'),
+    'yes': InlineKeyboardButton(
+        'Принимаю опд',
+        callback_data=CallbackData(State.INPUT_FULL_NAME).to_str()
+    ),
     'no': InlineKeyboardButton('Не принимаю опд', callback_data='no'),
     'hand_over_things': InlineKeyboardButton('Сдать вещи', callback_data='hand_over_things'),
-    'no': InlineKeyboardButton('Не принимаю опд', callback_data='no'),
-    'ok': InlineKeyboardButton('ОК', callback_data='ok'),
+    'signup': InlineKeyboardButton(
+        'Зарегистрироваться',
+        callback_data=CallbackData(State.PERSONAL_DATA_AGREEMENT).to_str()
+    ),
+    'confirm_signup': InlineKeyboardButton(
+        'Подтвердить регистрацию',
+        callback_data=CallbackData(State.SIGN_UP).to_str()
+    ),
+    'change_personal_data': InlineKeyboardButton(
+        'Ввести данные заново',
+        callback_data=CallbackData(State.PERSONAL_DATA_AGREEMENT).to_str()
+    )
 }
 
 
 # Ниже создаем клавиатуры из кнопок
-def main_keyboard():
-    return InlineKeyboardMarkup(
-        [
-            [btns['faq']],
-            [btns['order_storage']],
-            [btns['my_orders']],
-        ]
-    )
+def main_keyboard(client: dict = None):
+
+    buttons = [
+        [btns['faq']],
+        [btns['order_storage']],
+    ]
+
+    if client:
+        buttons.append([btns['my_orders']])
+    else:
+        buttons.append([btns['signup']])
+
+    return InlineKeyboardMarkup(buttons)
 
 
 def faq_keyboard():
     return InlineKeyboardMarkup(
-        [        
+        [
             [btns['back_to_menu']],
         ]
     )
@@ -54,7 +72,7 @@ def faq_keyboard():
 
 def back_to_menu_keyboard():
     return InlineKeyboardMarkup(
-        [        
+        [
             [btns['back_to_menu']],
         ]
     )
@@ -139,7 +157,7 @@ def warehouses_keyboard(page: Page):
     return InlineKeyboardMarkup(buttons)
 
 
-def get_my_orders_keyboard(page: Page):
+def my_orders_keyboard(page: Page):
     buttons = []
 
     boxes = page.object_list
@@ -204,14 +222,28 @@ def my_box_keyboard(box_id):
     return InlineKeyboardMarkup(buttons)
 
 
+def signup_keyboard():
+    buttons = [
+        [
+            btns['confirm_signup'],
+            btns['change_personal_data']
+        ]
+    ]
+
+    buttons.append([btns['back_to_menu']])
+
+    return InlineKeyboardMarkup(buttons)
+
+
 keyboards = {
     State.MAIN_MENU: main_keyboard,
     State.FAQ: faq_keyboard,
     State.MY_BOX: my_box_keyboard,
     State.WAREHOUSES: warehouses_keyboard,
-    State.MY_ORDERS: get_my_orders_keyboard,
+    State.MY_ORDERS: my_orders_keyboard,
     State.ORDER_STORAGE: order_storage_keyboard,
     State.BACK_TO_MENU: back_to_menu_keyboard,
-    State.PERSONAL_DATA: ppd_peyboard,
-    State.CALL_COURIER: call_courirer_keyboard
+    State.PERSONAL_DATA_AGREEMENT: ppd_peyboard,
+    State.CALL_COURIER: call_courirer_keyboard,
+    State.SIGN_UP: signup_keyboard,
 }
