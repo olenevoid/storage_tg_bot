@@ -8,7 +8,7 @@ from django.core.paginator import Page
 btns = {
     'faq': InlineKeyboardButton(
         'Условия хранения/FAQ',
-        callback_data=CallbackData(State.FAQ).to_str()
+        callback_data=CallbackData(State.TERMS_OF_SERVICE).to_str()
     ),
     'order_storage': InlineKeyboardButton(
         'Выбрать склад',
@@ -62,7 +62,7 @@ def main_keyboard(client: dict = None):
     return InlineKeyboardMarkup(buttons)
 
 
-def faq_keyboard():
+def tos_keyboard():
     return InlineKeyboardMarkup(
         [
             [btns['back_to_menu']],
@@ -237,7 +237,7 @@ def signup_keyboard():
 
 keyboards = {
     State.MAIN_MENU: main_keyboard,
-    State.FAQ: faq_keyboard,
+    State.TERMS_OF_SERVICE: tos_keyboard,
     State.MY_BOX: my_box_keyboard,
     State.WAREHOUSES: warehouses_keyboard,
     State.MY_ORDERS: my_orders_keyboard,

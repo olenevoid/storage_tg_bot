@@ -8,7 +8,7 @@ PARAM_SEPARATOR = ','
 # Enum для управления коллбэками. 
 # Можно быстро переименовать в одном месте, если понадобится
 class State(Enum):
-    FAQ = 'faq'
+    TERMS_OF_SERVICE = 'faq'
     ORDER_STORAGE = 'order_storage'
     MY_ORDERS = 'my_orders'
     MAIN_MENU = 'main_menu'

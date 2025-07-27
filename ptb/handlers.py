@@ -53,9 +53,9 @@ async def handle_faq(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         "Условия хранения/FAQ",
-        reply_markup=keyboards[State.FAQ]()
+        reply_markup=keyboards[State.TERMS_OF_SERVICE]()
     )
-    return State.FAQ
+    return State.TERMS_OF_SERVICE
 
 
 async def handle_order_storage(update: Update, context: CallbackContext):
@@ -292,18 +292,18 @@ def get_handlers():
         entry_points=[CommandHandler("start", start)],
         states={
             State.MAIN_MENU: [
-                CallbackQueryHandler(handle_faq, f'^{State.FAQ.value}*.*'),
+                CallbackQueryHandler(handle_faq, f'^{State.TERMS_OF_SERVICE.value}*.*'),
                 CallbackQueryHandler(handle_order_storage, f'^{State.ORDER_STORAGE.value}*.*'),
                 CallbackQueryHandler(handle_ppd_agreement, f'^{State.PERSONAL_DATA_AGREEMENT.value}*.*'),
                 CallbackQueryHandler(handle_my_orders, f'^{State.MY_ORDERS.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
-            State.FAQ: [
+            State.TERMS_OF_SERVICE: [
                 CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.ORDER_STORAGE: [
-                CallbackQueryHandler(handle_self_delivery, f'^{State.WAREHOUSES.value}*.*'),                
+                CallbackQueryHandler(handle_self_delivery, f'^{State.WAREHOUSES.value}*.*'),
                 CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
