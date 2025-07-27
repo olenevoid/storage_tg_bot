@@ -1,5 +1,5 @@
 from telegram import Update
-from ptb.keyboard import keyboards
+from ptb.keyboards import keyboards
 from telegram.ext import (
     filters,
     CommandHandler,
@@ -85,9 +85,11 @@ async def handle_my_box(update: Update, context):
 
     box_id = params.get('id')
     box = await sync_to_async(bot_db.get_box)(box_id)
+    box_size = box.get('size')
 
     text = (
-        f'Размер ячейки: {box.get('size')}\n'
+        f'Размер ячейки: {box_size.get('code')}\n'
+        f'Цена в месяц: {box_size.get('price')}\n'
         f'Адрес склада: {box.get('address')}\n'
         f'Арендована до: {box.get('rented_until')}\n'
         f'Предметы на хранении:\n'

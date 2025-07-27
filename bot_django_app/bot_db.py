@@ -5,7 +5,7 @@ import django
 os. environ.setdefault('DJANGO_SETTINGS_MODULE', 'bot_core.settings')
 django.setup()
 
-from bot_django_app.models import Client, StorageLocation, Box, StoredItem
+from bot_django_app.models import Client, StorageLocation, Box, StoredItem, BoxSize
 
 
 # TODO: Переделать все методы для async
@@ -52,7 +52,7 @@ def _serialize_box(box: Box):
 
     serialized_box = {
             'id': box.pk,
-            'size': 'тут будет размер',
+            'size': _serialize_size(box.size),
             'location': box.location.name,
             'address': box.location.address,
             'description': box.description,
@@ -61,3 +61,14 @@ def _serialize_box(box: Box):
     }
 
     return serialized_box
+
+
+def _serialize_size(size: BoxSize):
+    serialized_size = {
+        'id': size.pk,
+        'code': size.code,
+        'name': size.name,
+        'price': size.price_per_month
+    }
+
+    return serialized_size
