@@ -7,6 +7,7 @@ PARAM_SEPARATOR = ','
 
 # Enum для управления коллбэками. 
 # Можно быстро переименовать в одном месте, если понадобится
+# TODO С этим я немного обосрался. Если успею, снова разделю на стейты и коллбеки
 class State(Enum):
     TERMS_OF_SERVICE = 'faq'
     ORDER_STORAGE = 'order_storage'
@@ -17,6 +18,7 @@ class State(Enum):
     SELF_DELIVERY = 'self_delivery'
     ORDER_DELIVERY = 'order_delivery'
     PERSONAL_DATA_AGREEMENT = 'ppd'
+    DOWNLOAD_PPD = 'download_ppd'
     HAND_OVER_THINGS = 'hand_over_things'
     WAREHOUSE = 'warehouse_details'
     MY_BOX = 'my_box'

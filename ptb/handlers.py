@@ -74,6 +74,18 @@ async def handle_download_tos(update: Update, context: CallbackContext):
     return State.TERMS_OF_SERVICE
 
 
+async def handle_download_ppd(update: Update, context: CallbackContext):
+    await update.callback_query.answer()
+
+    tos_path = path.join(BASE_DIR, 'files/ppd.pdf')
+    with open(tos_path, 'rb') as file:
+        await context.bot.send_document(
+            chat_id=update.effective_chat.id,
+            document=file
+        )
+    return State.PERSONAL_DATA_AGREEMENT
+
+
 async def handle_faq(update: Update, context: CallbackContext):
     await update.callback_query.answer()
 
@@ -409,6 +421,7 @@ def get_handlers():
             ],
             State.PERSONAL_DATA_AGREEMENT: [
                 CallbackQueryHandler(handle_input_name, f'^{State.INPUT_FULL_NAME.value}*.*'),
+                CallbackQueryHandler(handle_download_ppd, f'^{State.DOWNLOAD_PPD.value}*.*'),
                 CallbackQueryHandler(handle_back_menu, f'^{State.PERSONAL_DATA_DISAGREE.value}*.*'),
                 CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
