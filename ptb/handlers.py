@@ -99,8 +99,32 @@ async def handle_forbidden(update: Update, context: CallbackContext):
 async def handle_order_storage(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
-        "Как вы хотите передать вещи на склад?",
-        reply_markup=keyboards[State.ORDER_STORAGE]()
+        strings.ORDER_STORAGE,
+        reply_markup=keyboards[State.ORDER_STORAGE](),
+        parse_mode='HTML'
+    )
+    return State.ORDER_STORAGE
+
+
+async def handle_show_prices(update: Update, context: CallbackContext):
+    await update.callback_query.answer()
+
+    sizes = await sync_to_async(bot_db.get_all_sizes)()
+
+    text = ''
+
+    for size in sizes:
+        text += (
+            f'<b>Размер:</b> {size.get('code')}\n'
+            f'<b>Объем:</b> {size.get('volume_m3')}\n'
+            f'<b>Цена в месяц:</b> {size.get('price')} р.\n'
+            '\n'
+        )
+
+    await update.callback_query.edit_message_text(
+        text,
+        reply_markup=keyboards[State.ORDER_STORAGE](),
+        parse_mode='HTML'
     )
     return State.ORDER_STORAGE
 
@@ -120,7 +144,8 @@ async def handle_my_orders(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         "Мои заказы",
-        reply_markup=keyboards[State.MY_ORDERS](page)
+        reply_markup=keyboards[State.MY_ORDERS](page),
+        parse_mode='HTML'
     )
 
     return State.MY_ORDERS
@@ -147,7 +172,8 @@ async def handle_my_box(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         text,
-        reply_markup=keyboards[State.MY_BOX](box_id)
+        reply_markup=keyboards[State.MY_BOX](box_id),
+        parse_mode='HTML'
     )
 
     return State.MY_BOX
@@ -164,7 +190,8 @@ async def handle_self_delivery(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         "Доступные склады",
-        reply_markup=keyboards[State.WAREHOUSES](page)
+        reply_markup=keyboards[State.WAREHOUSES](page),
+        parse_mode='HTML'
     )
     return State.WAREHOUSES
 
@@ -187,7 +214,8 @@ async def handle_warehouse(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         text,
-        reply_markup=keyboards[State.BACK_TO_MENU]()
+        reply_markup=keyboards[State.BACK_TO_MENU](),
+        parse_mode='HTML'
     )
 
     return State.WAREHOUSE
@@ -197,7 +225,8 @@ async def handle_ppd_agreement(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "тут согласие на обработку данных",
-        reply_markup=keyboards[State.PERSONAL_DATA_AGREEMENT]()
+        reply_markup=keyboards[State.PERSONAL_DATA_AGREEMENT](),
+        parse_mode='HTML'
     )
     return State.PERSONAL_DATA_AGREEMENT
 
@@ -205,7 +234,8 @@ async def handle_ppd_agreement(update: Update, context: CallbackContext):
 async def validate_address(update: Update, context: CallbackContext):
     await update.message.reply_text(
         "Введите номер телефона",
-        reply_markup=keyboards[State.BACK_TO_MENU]()
+        reply_markup=keyboards[State.BACK_TO_MENU](),
+        parse_mode='HTML'
     )
     return State.FINAL
 
@@ -214,7 +244,8 @@ async def handle_input_name(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "Введите ФИО",
-        reply_markup=keyboards[State.BACK_TO_MENU]()
+        reply_markup=keyboards[State.BACK_TO_MENU](),
+        parse_mode='HTML'
     )
     return State.INPUT_FULL_NAME
 
@@ -232,7 +263,8 @@ async def validate_full_name(update: Update, context: CallbackContext):
 
     await update.message.reply_text(
         text,
-        reply_markup=keyboards[State.BACK_TO_MENU]()
+        reply_markup=keyboards[State.BACK_TO_MENU](),
+        parse_mode='HTML'
     )
     return state
 
@@ -250,7 +282,8 @@ async def validate_phone(update: Update, context: CallbackContext):
 
     await update.message.reply_text(
         text,
-        reply_markup=keyboards[State.BACK_TO_MENU]()
+        reply_markup=keyboards[State.BACK_TO_MENU](),
+        parse_mode='HTML'
     )
     return state
 
@@ -276,7 +309,8 @@ async def validate_email(update: Update, context: CallbackContext):
 
     await update.message.reply_text(
         text,
-        reply_markup=keyboard
+        reply_markup=keyboard,
+        parse_mode='HTML'
     )
 
     return state
@@ -303,7 +337,8 @@ async def handle_signup(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         text,
-        reply_markup=keyboards[State.BACK_TO_MENU]()
+        reply_markup=keyboards[State.BACK_TO_MENU](),
+        parse_mode='HTML'
     )
     return State.SIGN_UP
 
@@ -344,6 +379,7 @@ def get_handlers():
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.ORDER_STORAGE: [
+                CallbackQueryHandler(handle_show_prices, f'^{State.SHOW_PRICES.value}*.*'),
                 CallbackQueryHandler(handle_self_delivery, f'^{State.WAREHOUSES.value}*.*'),
                 CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
