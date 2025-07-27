@@ -7,7 +7,7 @@ from telegram.ext import (
     CallbackQueryHandler,
     ConversationHandler,
 )
-from ptb.callbacks import State, CallbackData, parse_callback_data_string
+from ptb.callbacks import State, parse_callback_data_string
 import bot_django_app.bot_db as bot_db
 from asgiref.sync import sync_to_async
 from django.core.paginator import Paginator, Page
@@ -15,8 +15,6 @@ from django.core.paginator import Paginator, Page
 
 PER_PAGE = 2
 
-'''(MAIN, FAQ, ORDER_STORAGE, MY_SORAGE, MY_BOX, STORAGE_LIST, STORAGE_DETAILS, PPD, 
-INPUT_ADDRESS, INPUT_PHONE, FINAL) = range(11)'''
 
 # тут идут наши обработчики
 async def start(update, context):
