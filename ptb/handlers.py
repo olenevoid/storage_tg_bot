@@ -70,8 +70,7 @@ async def handle_order_storage(update: Update, context: CallbackContext):
 async def handle_my_orders(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     params = parse_callback_data_string(update.callback_query.data).params
-    test_tg = 100000001
-    client_tg = test_tg  # update.callback_query.from_user.id
+    telegram_id = update.callback_query.from_user.id
 
     page_number = params.get('page') or 1
 
