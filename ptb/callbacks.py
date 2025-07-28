@@ -7,6 +7,7 @@ PARAM_SEPARATOR = ','
 
 # Enum для управления коллбэками. 
 # Можно быстро переименовать в одном месте, если понадобится
+# Текст коллбэка должен быть уникальным
 class CallbackName(Enum):
     TERMS_OF_SERVICE = 'tos'
     ORDER_STORAGE = 'order_storage'
@@ -33,6 +34,7 @@ class CallbackName(Enum):
     FORBIDDEN_TO_STORE = 'forbidden'
     DOWNLOAD_TOS = 'tos_download'
     SHOW_PRICES = 'show_prices'
+    MY_ACCOUNT = 'my_account'
     # Эти, возможно, не нужны
     BACK = 'back'
     PERSONAL_DATA_AGREE = 'pd_yes'
