@@ -405,8 +405,11 @@ def get_handlers():
                 CallbackQueryHandler(handle_tos, get_pattern(CallbackName.TERMS_OF_SERVICE)),
                 CallbackQueryHandler(handle_order_storage, get_pattern(CallbackName.ORDER_STORAGE)),
                 CallbackQueryHandler(handle_ppd_agreement, get_pattern(CallbackName.PERSONAL_DATA_AGREEMENT)),
-                CallbackQueryHandler(handle_my_orders, get_pattern(CallbackName.MY_ORDERS)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
+            ],
+            State.MY_ACCOUNT: [
+                CallbackQueryHandler(handle_my_orders, get_pattern(CallbackName.MY_ORDERS)),
+                CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
             ],
             State.TERMS_OF_SERVICE: [
                 CallbackQueryHandler(handle_download_tos, get_pattern(CallbackName.DOWNLOAD_TOS)),
