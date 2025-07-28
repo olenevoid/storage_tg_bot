@@ -41,13 +41,35 @@ async def unknown_cmd(update: Update, context: CallbackContext):
 async def handle_back_menu(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     telegram_id = update.callback_query.from_user.id
-    client = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
+    user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
 
     await update.callback_query.edit_message_text(
         strings.MAIN_MENU,
-        reply_markup=keyboards[KeyboardName.MAIN_MENU](client)
+        reply_markup=keyboards[KeyboardName.MAIN_MENU](user)
     )
     return State.MAIN_MENU
+
+
+async def handle_my_account(update: Update, context: CallbackContext):
+    await update.callback_query.answer()
+    telegram_id = update.callback_query.from_user.id
+    user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
+    
+    text = (
+        f'<b>Личные данные пользователя</b>\n\n'
+        f'<b>Роль:</b> {user.get('role')}\n\n'
+        f'<b>ФИО:</b> {user.get('full_name')}\n\n'
+        f'<b>Телефон:</b> {user.get('phone')}\n\n'
+        f'<b>E-mail:</b> {user.get('email')}\n\n'        
+        f'<b>Зарегистрирован с:</b> {user.get('created_at')}\n\n'
+        )
+
+    await update.callback_query.edit_message_text(
+        text,
+        reply_markup=keyboards[KeyboardName.MY_ACCOUNT](user),
+        parse_mode='HTML'
+    )
+    return State.MY_ACCOUNT
 
 
 async def handle_tos(update: Update, context: CallbackContext):
@@ -403,6 +425,7 @@ def get_handlers():
         states={
             State.MAIN_MENU: [
                 CallbackQueryHandler(handle_tos, get_pattern(CallbackName.TERMS_OF_SERVICE)),
+                CallbackQueryHandler(handle_my_account, get_pattern(CallbackName.MY_ACCOUNT)),
                 CallbackQueryHandler(handle_order_storage, get_pattern(CallbackName.ORDER_STORAGE)),
                 CallbackQueryHandler(handle_ppd_agreement, get_pattern(CallbackName.PERSONAL_DATA_AGREEMENT)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
