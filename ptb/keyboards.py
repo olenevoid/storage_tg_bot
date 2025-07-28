@@ -3,6 +3,7 @@ from ptb.callbacks import CallbackData, CallbackName
 from django.core.paginator import Page
 from ptb.buttons import BUTTONS, ButtonName
 from ptb.settings import State
+from enum import Enum, auto
 
 
 def main_keyboard(client: dict = None):
@@ -200,15 +201,29 @@ def signup_keyboard():
     return InlineKeyboardMarkup(buttons)
 
 
+class KeyboardName(Enum):
+    MAIN_MENU = auto()
+    TERMS_OF_SERVICE = auto()
+    MY_BOX = auto()    
+    SELECT_WAREHOUSE = auto()
+    ORDER_STORAGE = auto()
+    MY_ORDERS = auto()
+    BACK_TO_MENU = auto()
+    PERSONAL_DATA_AGREEMENT = auto()
+    WAREHOUSE = auto()
+    SIGN_UP = auto()
+    CALL_COURIER = auto()
+
+
 keyboards = {
-    State.MAIN_MENU: main_keyboard,
-    State.TERMS_OF_SERVICE: tos_keyboard,
-    State.MY_BOX: my_box_keyboard,
-    State.SELECT_WAREHOUSE: warehouses_keyboard,
-    State.MY_ORDERS: my_orders_keyboard,
-    State.ORDER_STORAGE: order_storage_keyboard,
-    State.BACK_TO_MENU: back_to_menu_keyboard,
-    State.PERSONAL_DATA_AGREEMENT: ppd_peyboard,
-    State.CALL_COURIER: call_courirer_keyboard,
-    State.SIGN_UP: signup_keyboard,
+    KeyboardName.MAIN_MENU: main_keyboard,
+    KeyboardName.TERMS_OF_SERVICE: tos_keyboard,
+    KeyboardName.MY_BOX: my_box_keyboard,
+    KeyboardName.SELECT_WAREHOUSE: warehouses_keyboard,
+    KeyboardName.MY_ORDERS: my_orders_keyboard,
+    KeyboardName.ORDER_STORAGE: order_storage_keyboard,
+    KeyboardName.BACK_TO_MENU: back_to_menu_keyboard,
+    KeyboardName.PERSONAL_DATA_AGREEMENT: ppd_peyboard,
+    KeyboardName.CALL_COURIER: call_courirer_keyboard,
+    KeyboardName.SIGN_UP: signup_keyboard,
 }

@@ -1,5 +1,5 @@
 from telegram import Update
-from ptb.keyboards import keyboards
+from ptb.keyboards import keyboards, KeyboardName
 from telegram.ext import (
     filters,
     CommandHandler,
@@ -28,7 +28,7 @@ async def start(update: Update, context: CallbackContext):
 
     await update.message.reply_text(
         strings.MAIN_MENU,
-        reply_markup=keyboards[State.MAIN_MENU](client)
+        reply_markup=keyboards[KeyboardName.MAIN_MENU](client)
     )
     return State.MAIN_MENU
 
@@ -45,7 +45,7 @@ async def handle_back_menu(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         strings.MAIN_MENU,
-        reply_markup=keyboards[State.MAIN_MENU](client)
+        reply_markup=keyboards[KeyboardName.MAIN_MENU](client)
     )
     return State.MAIN_MENU
 
@@ -55,7 +55,7 @@ async def handle_tos(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         strings.TOS,
-        reply_markup=keyboards[State.TERMS_OF_SERVICE](),
+        reply_markup=keyboards[KeyboardName.TERMS_OF_SERVICE](),
         parse_mode='HTML'
     )
     return State.TERMS_OF_SERVICE
@@ -90,7 +90,7 @@ async def handle_faq(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         strings.FAQ,
-        reply_markup=keyboards[State.TERMS_OF_SERVICE](),
+        reply_markup=keyboards[KeyboardName.TERMS_OF_SERVICE](),
         parse_mode='HTML'
     )
     return State.TERMS_OF_SERVICE
@@ -101,7 +101,7 @@ async def handle_forbidden(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         strings.FORBIDDEN,
-        reply_markup=keyboards[State.TERMS_OF_SERVICE](),
+        reply_markup=keyboards[KeyboardName.TERMS_OF_SERVICE](),
         parse_mode='HTML'
     )
     return State.TERMS_OF_SERVICE
@@ -111,7 +111,7 @@ async def handle_order_storage(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         strings.ORDER_STORAGE,
-        reply_markup=keyboards[State.ORDER_STORAGE](),
+        reply_markup=keyboards[KeyboardName.ORDER_STORAGE](),
         parse_mode='HTML'
     )
     return State.ORDER_STORAGE
@@ -134,7 +134,7 @@ async def handle_show_prices(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         text,
-        reply_markup=keyboards[State.ORDER_STORAGE](),
+        reply_markup=keyboards[KeyboardName.ORDER_STORAGE](),
         parse_mode='HTML'
     )
     return State.ORDER_STORAGE
@@ -155,7 +155,7 @@ async def handle_my_orders(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         "Мои заказы",
-        reply_markup=keyboards[State.MY_ORDERS](page),
+        reply_markup=keyboards[KeyboardName.MY_ORDERS](page),
         parse_mode='HTML'
     )
 
@@ -183,7 +183,7 @@ async def handle_my_box(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         text,
-        reply_markup=keyboards[State.MY_BOX](box_id),
+        reply_markup=keyboards[KeyboardName.MY_BOX](box_id),
         parse_mode='HTML'
     )
 
@@ -204,7 +204,7 @@ async def handle_select_warehouse(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         "Доступные склады",
-        reply_markup=keyboards[State.SELECT_WAREHOUSE](page),
+        reply_markup=keyboards[KeyboardName.SELECT_WAREHOUSE](page),
         parse_mode='HTML'
     )
     return State.SELECT_WAREHOUSE
@@ -238,7 +238,7 @@ async def handle_warehouse(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         text,
-        reply_markup=keyboards[State.BACK_TO_MENU](),
+        reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
         parse_mode='HTML'
     )
 
@@ -249,7 +249,7 @@ async def handle_ppd_agreement(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         strings.PPD,
-        reply_markup=keyboards[State.PERSONAL_DATA_AGREEMENT](),
+        reply_markup=keyboards[KeyboardName.PERSONAL_DATA_AGREEMENT](),
         parse_mode='HTML'
     )
     return State.PERSONAL_DATA_AGREEMENT
@@ -258,7 +258,7 @@ async def handle_ppd_agreement(update: Update, context: CallbackContext):
 async def validate_address(update: Update, context: CallbackContext):
     await update.message.reply_text(
         "Введите номер телефона",
-        reply_markup=keyboards[State.BACK_TO_MENU](),
+        reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
         parse_mode='HTML'
     )
     return State.FINAL
@@ -271,7 +271,7 @@ async def handle_input_name(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         "Пройдите все шаги регистрации, либо вернитесь в меню, если передумали",
-        reply_markup=keyboards[State.BACK_TO_MENU](),
+        reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
         parse_mode='HTML'
     )
 
@@ -336,7 +336,7 @@ async def validate_email(update: Update, context: CallbackContext):
             f'Имейл: {context.user_data['email']}\n'
         )
         state = State.SIGN_UP
-        keyboard = keyboards[State.SIGN_UP]()
+        keyboard = keyboards[KeyboardName.SIGN_UP]()
 
     else:
         text = f'Вы ввели некорректный имейл {email}, попробуйте еще раз'
@@ -374,7 +374,7 @@ async def handle_signup(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         text,
-        reply_markup=keyboards[State.BACK_TO_MENU](),
+        reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
         parse_mode='HTML'
     )
     return State.SIGN_UP
@@ -384,7 +384,7 @@ async def handle_yes(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "ВВедите адрес от куда забрать вещи",
-        reply_markup=keyboards[State.BACK_TO_MENU]()
+        reply_markup=keyboards[KeyboardName.BACK_TO_MENU]()
     )
     return State.INPUT_ADDRESS
 
@@ -393,7 +393,7 @@ async def handle_final(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     await update.callback_query.edit_message_text(
         "С вами скоро свяжутся",
-        reply_markup=keyboards[State.BACK_TO_MENU]()
+        reply_markup=keyboards[KeyboardName.BACK_TO_MENU]()
     )
 
 
