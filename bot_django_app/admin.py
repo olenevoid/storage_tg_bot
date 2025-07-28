@@ -6,7 +6,7 @@ from .models import (
     User, StorageLocation, Box, PickupRequest,
     Notification, OrderSource, StoredItem,
     PromoCode, PromoUsage,
-    BoxSize, BoxAvailability
+    BoxSize, BoxAvailability, Role
 )
 
 class EndingSoonFilter(admin.SimpleListFilter):
@@ -235,3 +235,5 @@ class BoxAvailabilityAdmin(admin.ModelAdmin):
     @admin.display(description="Доступно")
     def available_boxes(self, obj):
         return obj.available_boxes
+    
+admin.site.register(Role)
