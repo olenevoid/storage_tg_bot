@@ -40,6 +40,10 @@ async def unknown_cmd(update: Update, context: CallbackContext):
 
 async def handle_back_menu(update: Update, context: CallbackContext):
     await update.callback_query.answer()
+    
+    # Очищаем сохраненные пользовательские данные при возвращении в меню
+    context.user_data.clear()
+    
     telegram_id = update.callback_query.from_user.id
     user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
 
@@ -288,7 +292,9 @@ async def handle_select_warehouse(update: Update, context: CallbackContext):
 async def handle_warehouse(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     params = parse_callback_data_string(update.callback_query.data).params
-    warehouse = await sync_to_async(bot_db.get_warehouse)(params.get('id'))
+    warehouse_id = params.get('id')
+    context.user_data['warehouse_id'] = warehouse_id
+    warehouse = await sync_to_async(bot_db.get_warehouse)(warehouse_id)
 
     boxes = warehouse.get('boxes')
 
@@ -311,6 +317,77 @@ async def handle_warehouse(update: Update, context: CallbackContext):
             f'Свободно: {box.get('available')}\n\n'
         )
 
+    await update.callback_query.edit_message_text(
+        text,
+        reply_markup=keyboards[KeyboardName.SELECT_BOX](boxes),
+        parse_mode='HTML'
+    )
+
+    return State.WAREHOUSE
+
+
+async def handle_input_period(update: Update, context: CallbackContext):
+    await update.callback_query.answer()
+
+    edit_message_text = "Пройдите все шаги, либо вернитесь в меню, если передумали"
+    new_message_text = "Введите количество месяцев для аренды"
+
+    await update.callback_query.edit_message_text(
+        edit_message_text,
+        reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
+        parse_mode='HTML'
+    )
+
+    await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=new_message_text,
+            parse_mode='HTML'
+    )
+
+    return State.INPUT_RENT_PERIOD
+
+
+async def validate_period(update: Update, context: CallbackContext):
+    period = update.message.text
+    if validators.period_is_valid(period):
+        text = (
+            'Выбран период: {period}\n'
+            'Теперь введите промокод, если он у вас есть'
+        )
+        context.user_data['period'] = int(period)
+        
+        state = State.INPUT_PROMO
+    else:
+        text = 'Введен некорректный период: {period}'
+        state = State.INPUT_RENT_PERIOD
+
+    await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=text,
+            parse_mode='HTML'
+    )
+
+    return state
+
+
+async def validate_promo(update: Update, context: CallbackContext):
+    pass
+
+
+async def handle_confirm_box_rent(update: Update, context: CallbackContext):
+    params = parse_callback_data_string(update.callback_query.data).params
+    warehouse_id = context.user_data['warehouse_id']
+    size_id = params.get('size_id')
+    warehouse = await sync_to_async(bot_db.get_warehouse)(warehouse_id)
+    size = await sync_to_async(bot_db.get_box_size)(size_id)
+    
+    
+    text = (
+        'Выбрана ячейка <b>{size_code}</b> объемом {volume}\n'
+        'По адресу:{warehouse_name} {address}\n'
+        'Цена за месяц: {price}\n'
+    )
+    
     await update.callback_query.edit_message_text(
         text,
         reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
@@ -525,6 +602,19 @@ def get_handlers():
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.WAREHOUSE: [
+                CallbackQueryHandler(handle_input_period, get_pattern(CallbackName.SELECT_BOX)),
+                CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
+            ],
+            State.INPUT_RENT_PERIOD: [
+                MessageHandler(filters.TEXT, validate_period),
+                CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
+            ],
+            State.INPUT_PROMO: [
+                MessageHandler(filters.TEXT, validate_promo),
+                CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
+            ],
+            State.CONFIRM_BOX_RENT: [
+                
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
             ],
             State.INPUT_ADDRESS: [
