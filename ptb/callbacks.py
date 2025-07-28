@@ -37,6 +37,8 @@ class CallbackName(Enum):
     MY_ACCOUNT = 'my_account'
     CREATE_COURIER_DELIVERY_REQUEST = 'create_delivery_request'
     SELECT_BOX = 'select_box'
+    SELECT_RENT_PERIOD = 'select_period'
+    CONFIRM_BOX_RENT = 'confirm_box_rent'
     # Эти, возможно, не нужны
     BACK = 'back'
     PERSONAL_DATA_AGREE = 'pd_yes'
