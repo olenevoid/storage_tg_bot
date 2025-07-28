@@ -449,11 +449,10 @@ async def validate_email(update: Update, context: CallbackContext):
 async def handle_signup(update: Update, context: CallbackContext):
     await update.callback_query.answer()
 
-    text = (
-        'Пользователь зарегистрирован\n'
-        f'Имя: {context.user_data['full_name']}\n'
-        f'Телефон: {context.user_data['phone']}\n'
-        f'Имейл: {context.user_data['email']}\n'
+    text = strings.USER_REGISTRATION_COMPLETE.format(
+        full_name=context.user_data['full_name'],
+        phone=context.user_data['phone'],
+        email=context.user_data['email']
     )
 
     client = {
