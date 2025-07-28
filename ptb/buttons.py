@@ -7,6 +7,7 @@ class ButtonName(Enum):
     TOS = auto()
     FAQ = auto()
     ORDER_STORAGE = auto()
+    MY_ACCOUNT = auto()
     MY_ORDERS = auto()
     TOS_DOWNLOAD = auto()
     BACK_TO_MENU = auto()
@@ -24,6 +25,10 @@ class ButtonName(Enum):
 
 
 BUTTONS = {
+    ButtonName.MY_ACCOUNT: InlineKeyboardButton(
+        'Личный кабинет',
+        callback_data=CallbackData(CallbackName.MY_ACCOUNT).to_str()
+    ),
     ButtonName.SHOW_PRICES: InlineKeyboardButton(
         'Показать расценки',
         callback_data=CallbackData(CallbackName.SHOW_PRICES).to_str()
