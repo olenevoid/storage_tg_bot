@@ -35,6 +35,7 @@ class CallbackName(Enum):
     DOWNLOAD_TOS = 'tos_download'
     SHOW_PRICES = 'show_prices'
     MY_ACCOUNT = 'my_account'
+    CREATE_COURIER_DELIVERY_REQUEST = 'create_delivery_request'
     # Эти, возможно, не нужны
     BACK = 'back'
     PERSONAL_DATA_AGREE = 'pd_yes'
