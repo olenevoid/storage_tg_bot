@@ -33,6 +33,6 @@ class State(Enum):
 
 # Значения должны совпадать с ролями в БД
 class RoleName(Enum):
-    Administrator = 'Администратор'
-    Courier = 'Курьер'
-    Client = 'Клиент'
+    Administrator = 'manager'
+    Courier = 'courier'
+    Client = 'client'
