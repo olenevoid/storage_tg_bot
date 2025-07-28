@@ -65,6 +65,10 @@ class CallbackData:
         return self.name.value
 
 
+def get_pattern(callback_name: CallbackName):
+    return f'^(?:(.*{callback_name.value}.*(?=__))|(.*{callback_name.value}[^_]*))$'
+
+
 # Парсит строку в класс CallbackData
 def parse_callback_data_string(callback_data: str) -> CallbackData:
     parsed_callback = callback_data.split(NAME_SEPARATOR)
