@@ -24,9 +24,14 @@ class ButtonName(Enum):
     CHANGE_PERSONAL_DATA = auto()
     SHOW_PRICES = auto()
     NO_PROMO = auto()
+    CONFIRM_RENT = auto()
 
 
 BUTTONS = {
+    ButtonName.CONFIRM_RENT: InlineKeyboardButton(
+        'Подтвердить аренду',
+        callback_data=CallbackData(CallbackName.CONFIRM_BOX_RENT).to_str()
+    ),
     ButtonName.NO_PROMO: InlineKeyboardButton(
         'Нет промокода',
         callback_data=CallbackData(CallbackName.NO_PROMO).to_str()

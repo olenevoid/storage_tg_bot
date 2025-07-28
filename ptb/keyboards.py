@@ -203,7 +203,7 @@ def signup_keyboard():
 
 def my_account(user: dict):
     buttons = []
-        
+
     if user.get('boxes'):
         buttons.append([BUTTONS[ButtonName.MY_ORDERS]])
 
@@ -216,9 +216,9 @@ def courier_delivery_request():
     buttons = [
         [BUTTONS[ButtonName.COURIER_DELIVERY_YES]]
     ]
-    
+
     buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
-    
+
     return InlineKeyboardMarkup(buttons)
 
 
@@ -228,7 +228,7 @@ def select_box(boxes: list[dict]):
     for box in boxes:
         size = box.get('size')
         callback_data = CallbackData(CallbackName.SELECT_BOX, {'size_id': size.get('id')})
-        
+
         button = InlineKeyboardButton(
             size.get('code'),
             callback_data=callback_data.to_str()
@@ -237,7 +237,7 @@ def select_box(boxes: list[dict]):
         buttons.append([button])
 
     buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
-    
+
     return InlineKeyboardMarkup(buttons)
 
 
@@ -245,9 +245,19 @@ def promo():
     buttons = [
         [BUTTONS[ButtonName.NO_PROMO]],
     ]
-    
+
     buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
-    
+
+    return InlineKeyboardMarkup(buttons)
+
+
+def confirm_rent():
+    buttons = [
+        [BUTTONS[ButtonName.CONFIRM_RENT]]
+    ]
+
+    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+
     return InlineKeyboardMarkup(buttons)
 
 
@@ -255,7 +265,7 @@ class KeyboardName(Enum):
     MAIN_MENU = auto()
     MY_ACCOUNT = auto()
     TERMS_OF_SERVICE = auto()
-    MY_BOX = auto()    
+    MY_BOX = auto()
     SELECT_WAREHOUSE = auto()
     SELECT_BOX = auto()
     ORDER_STORAGE = auto()
@@ -267,6 +277,7 @@ class KeyboardName(Enum):
     CALL_COURIER = auto()
     CREATE_COURIER_DELIVERY_REQUEST = auto()
     PROMO = auto()
+    CONFIRM_RENT = auto()
 
 
 keyboards: dict[KeyboardName, callable] = {
@@ -283,5 +294,6 @@ keyboards: dict[KeyboardName, callable] = {
     KeyboardName.MY_ACCOUNT: my_account,
     KeyboardName.CREATE_COURIER_DELIVERY_REQUEST: courier_delivery_request,
     KeyboardName.SELECT_BOX: select_box,
-    KeyboardName.PROMO: promo
+    KeyboardName.PROMO: promo,
+    KeyboardName.CONFIRM_RENT: confirm_rent
 }
