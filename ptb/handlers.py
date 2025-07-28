@@ -411,7 +411,7 @@ async def handle_confirm_box_rent(update: Update, context: CallbackContext):
 
     await update.callback_query.edit_message_text(
         text,
-        reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
+        reply_markup=keyboards[KeyboardName.CONFIRM_RENT](),
         parse_mode='HTML'
     )
 
@@ -679,7 +679,7 @@ def get_handlers():
                 ),
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
-            ],                
+            ],
         },
         fallbacks=[CommandHandler("start", start)],
     )
