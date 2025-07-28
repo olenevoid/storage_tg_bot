@@ -18,7 +18,6 @@ from bot_core.settings import BASE_DIR
 from os import path
 import ptb.settings as settings
 from ptb.settings import State
-import re
 
 
 # тут идут наши обработчики
@@ -497,8 +496,7 @@ async def validate_full_name(update: Update, context: CallbackContext):
 
 
 async def validate_phone(update: Update, context: CallbackContext):
-    pattern = r'^(7|8)\d{10}$'
-    if re.match(pattern, update.message.text):
+    if validators.phone_is_valid(update.message.text):
         await update.message.reply_text(
             "Вы ввели корректный телефон, теперь введите имейл",
         )

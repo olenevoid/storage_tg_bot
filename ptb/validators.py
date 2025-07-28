@@ -1,4 +1,5 @@
 from ptb.settings import MAX_RENT_PERIOD
+import re
 
 
 def name_is_valid(full_name: str) -> bool:
@@ -6,7 +7,8 @@ def name_is_valid(full_name: str) -> bool:
 
 
 def phone_is_valid(phone: str) -> bool:
-    return len(phone) > 2
+    pattern = r'^(7|8)\d{10}$'
+    return re.match(pattern, phone)
 
 
 def email_is_valid(email: str) -> bool:
