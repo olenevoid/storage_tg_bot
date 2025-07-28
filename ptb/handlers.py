@@ -88,7 +88,7 @@ async def handle_tos(update: Update, context: CallbackContext):
 async def handle_download_tos(update: Update, context: CallbackContext):
     await update.callback_query.answer()
 
-    tos_path = path.join(BASE_DIR, 'files/tos.pdf')
+    tos_path = path.join(BASE_DIR, f'{settings.STATIC}/tos.pdf')
     with open(tos_path, 'rb') as file:
         await context.bot.send_document(
             chat_id=update.effective_chat.id,
@@ -100,7 +100,7 @@ async def handle_download_tos(update: Update, context: CallbackContext):
 async def handle_download_ppd(update: Update, context: CallbackContext):
     await update.callback_query.answer()
 
-    tos_path = path.join(BASE_DIR, 'files/ppd.pdf')
+    tos_path = path.join(BASE_DIR, f'{settings.STATIC}/ppd.pdf')
     with open(tos_path, 'rb') as file:
         await context.bot.send_document(
             chat_id=update.effective_chat.id,
