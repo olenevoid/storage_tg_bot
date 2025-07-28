@@ -14,7 +14,7 @@ def main_keyboard(client: dict = None):
     ]
 
     if client:
-        buttons.append([BUTTONS[ButtonName.MY_ORDERS]])
+        buttons.append([BUTTONS[ButtonName.MY_ACCOUNT]])
     else:
         buttons.append([BUTTONS[ButtonName.SIGNUP]])
 
@@ -201,8 +201,20 @@ def signup_keyboard():
     return InlineKeyboardMarkup(buttons)
 
 
+def my_account(user: dict):
+    buttons = []
+        
+    if user.get('boxes'):
+        buttons.append([BUTTONS[ButtonName.MY_ORDERS]])
+
+    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+
+    return InlineKeyboardMarkup(buttons)
+
+
 class KeyboardName(Enum):
     MAIN_MENU = auto()
+    MY_ACCOUNT = auto()
     TERMS_OF_SERVICE = auto()
     MY_BOX = auto()    
     SELECT_WAREHOUSE = auto()
@@ -226,4 +238,5 @@ keyboards: dict[KeyboardName, callable] = {
     KeyboardName.PERSONAL_DATA_AGREEMENT: ppd_peyboard,
     KeyboardName.CALL_COURIER: call_courirer_keyboard,
     KeyboardName.SIGN_UP: signup_keyboard,
+    KeyboardName.MY_ACCOUNT: my_account,
 }
