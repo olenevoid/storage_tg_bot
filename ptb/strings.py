@@ -46,3 +46,10 @@ FORBIDDEN = (
     '1. Оружие\n'
     '2. Жидкости\n'
 )
+
+USER_REGISTRATION_COMPLETE = (
+        'Пользователь зарегистрирован\n'
+        'Имя: {full_name}\n'
+        'Телефон: {phone}\n'
+        'Имейл: {email}\n'
+)
