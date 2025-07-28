@@ -5,7 +5,7 @@ import django
 os. environ.setdefault('DJANGO_SETTINGS_MODULE', 'bot_core.settings')
 django.setup()
 
-from bot_django_app.models import (Client,
+from bot_django_app.models import (User,
                                    StorageLocation,
                                    Box,
                                    StoredItem,
@@ -18,11 +18,11 @@ from bot_django_app.models import (Client,
 
 
 def get_client(pk):
-    return Client.objects.get(pk=pk)
+    return User.objects.get(pk=pk)
 
 
 async def acreate_client(client: dict):
-    new_client = Client()
+    new_client = User()
     new_client.full_name = client.get('full_name')
     new_client.telegram_id = client.get('telegram_id')
     new_client.phone = client.get('phone')
@@ -35,18 +35,18 @@ async def acreate_client(client: dict):
 def find_client_by_tg(telegram_id) -> dict | None:
     client_exists_in_db = client_exists(telegram_id)
     if client_exists_in_db:
-        client = Client.objects.get(telegram_id=telegram_id)
+        client = User.objects.get(telegram_id=telegram_id)
         return _serialize_client(client)
     return None
 
 
 async def aclient_exists(telegram_id) -> bool:
-    user_exists = await Client.objects.filter(telegram_id=telegram_id).aexists()
+    user_exists = await User.objects.filter(telegram_id=telegram_id).aexists()
     return user_exists
 
 
 def client_exists(telegram_id) -> bool:
-    user_exists = Client.objects.filter(telegram_id=telegram_id).exists()
+    user_exists = User.objects.filter(telegram_id=telegram_id).exists()
     return user_exists
 
 
@@ -127,7 +127,7 @@ def _serialize_size(size: BoxSize):
     return serialized_size
 
 
-def _serialize_client(client: Client):
+def _serialize_client(client: User):
     boxes = get_all_boxes_for_client(client.pk)
 
     serialized_client = {
