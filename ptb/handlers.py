@@ -54,15 +54,17 @@ async def handle_my_account(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     telegram_id = update.callback_query.from_user.id
     user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
+
+    no_orders = f'{'' if user.get('boxes') else 'Нет активных заказов'}'
     
-    text = (
-        f'<b>Личные данные пользователя</b>\n\n'
-        f'<b>Роль:</b> {user.get('role')}\n\n'
-        f'<b>ФИО:</b> {user.get('full_name')}\n\n'
-        f'<b>Телефон:</b> {user.get('phone')}\n\n'
-        f'<b>E-mail:</b> {user.get('email')}\n\n'        
-        f'<b>Зарегистрирован с:</b> {user.get('created_at')}\n\n'
-        )
+    text = strings.MY_ACCOUNT.format(
+        role=user.get('role'),
+        full_name=user.get('full_name'),
+        phone=user.get('phone'),
+        email=user.get('email'),
+        created_at=user.get('created_at'),
+        no_orders = no_orders
+    )
 
     await update.callback_query.edit_message_text(
         text,
