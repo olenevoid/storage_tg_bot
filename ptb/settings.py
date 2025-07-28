@@ -5,6 +5,7 @@ from enum import Enum, auto
 env.read_env()
 
 STATIC = 'static'
+MAX_RENT_PERIOD = 12
 TG_BOT_TOKEN = env.str("TG_BOT_TOKEN")
 BUTTONS_PER_PAGE = 4
 
