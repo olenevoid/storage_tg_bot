@@ -500,7 +500,7 @@ async def validate_phone(update: Update, context: CallbackContext):
     pattern = r'^(7|8)\d{10}$'
     if re.match(pattern, update.message.text):
         await update.message.reply_text(
-            "Вы ввели корректный телефон {phone}, теперь введите имейл",
+            "Вы ввели корректный телефон, теперь введите имейл",
             reply_markup=keyboards[KeyboardName.SIGN_UP]
         )
         context.user_data['phone'] = update.message.text
