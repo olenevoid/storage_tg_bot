@@ -18,6 +18,7 @@ from bot_core.settings import BASE_DIR
 from os import path
 import ptb.settings as settings
 from ptb.settings import State
+import re
 
 
 # тут идут наши обработчики
@@ -496,23 +497,20 @@ async def validate_full_name(update: Update, context: CallbackContext):
 
 
 async def validate_phone(update: Update, context: CallbackContext):
-    phone = update.message.text
-
-    if validators.phone_is_valid(phone):
-        text = f'Вы ввели корректный телефон {phone}, теперь введите имейл'
-        state = State.INPUT_EMAIL
-        context.user_data['phone'] = phone
+    pattern = r'^(7|8)\d{10}$'
+    if re.match(pattern, update.message.text):
+        await update.message.reply_text(
+            "Вы ввели корректный телефон {phone}, теперь введите имейл",
+            reply_markup=keyboards[KeyboardName.SIGN_UP]
+        )
+        context.user_data['phone'] = update.message.text
+        return State.INPUT_EMAIL
     else:
-        text = f'Вы ввели некорректный телефон {phone}, попробуйте еще раз'
-        state = State.INPUT_PHONE
-
-    await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=text,
-            parse_mode='HTML'
-    )
-
-    return state
+        await update.message.reply_text(
+            "введите номер в формате 7(8)1234567890",
+            reply_markup=keyboards[KeyboardName.SIGN_UP]
+        )
+        return State.INPUT_PHONE
 
 
 async def validate_email(update: Update, context: CallbackContext):
