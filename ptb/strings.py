@@ -53,3 +53,7 @@ USER_REGISTRATION_COMPLETE = (
         'Телефон: {phone}\n'
         'Имейл: {email}\n'
 )
+
+SELECT_WAREHOUSE = (
+    'Выберите удобный вам склад из списка ниже:'
+)

@@ -278,7 +278,7 @@ async def handle_select_warehouse(update: Update, context: CallbackContext):
     ).page(page_number)
 
     await update.callback_query.edit_message_text(
-        "Доступные склады",
+        strings.SELECT_WAREHOUSE,
         reply_markup=keyboards[KeyboardName.SELECT_WAREHOUSE](page),
         parse_mode='HTML'
     )
