@@ -214,7 +214,58 @@ async def handle_my_box(update: Update, context: CallbackContext):
     return State.MY_BOX
 
 
+async def handle_input_address(update: Update, context: CallbackContext):
+    telegram_id = update.effective_chat.id
+    user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
+
+    if not user:
+        await update.callback_query.edit_message_text(
+            strings.PPD,
+            reply_markup=keyboards[KeyboardName.PERSONAL_DATA_AGREEMENT](),
+            parse_mode='HTML'
+        )
+        return State.PERSONAL_DATA_AGREEMENT
+
+    text = (
+        'Введите свой адрес, чтобы мы могли отправить курьера\n'
+        'Или вернитесь в меню для отмены'
+    )
+
+    await update.callback_query.edit_message_text(
+        text,
+        reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
+        parse_mode='HTML'
+    )
+    return State.INPUT_ADDRESS
+
+
+async def handle_create_courier_delivery_request(update: Update, context: CallbackContext):
+    address = context.user_data.get('address')
+    
+    text = 'Заявка создана, ждите звонка'
+    
+    await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=text,
+            reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
+            parse_mode='HTML'
+    )
+
+    return State.CREATE_COURIER_DELIVERY_REQUEST
+
+
 async def handle_select_warehouse(update: Update, context: CallbackContext):
+    telegram_id = update.effective_chat.id
+    user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
+    
+    if not user:
+        await update.callback_query.edit_message_text(
+            strings.PPD,
+            reply_markup=keyboards[KeyboardName.PERSONAL_DATA_AGREEMENT](),
+            parse_mode='HTML'
+        )
+        return State.PERSONAL_DATA_AGREEMENT
+    
     await update.callback_query.answer()
     params = parse_callback_data_string(update.callback_query.data).params
 
@@ -280,12 +331,30 @@ async def handle_ppd_agreement(update: Update, context: CallbackContext):
 
 
 async def validate_address(update: Update, context: CallbackContext):
-    await update.message.reply_text(
-        "Введите номер телефона",
-        reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
-        parse_mode='HTML'
+    address = update.message.text
+
+    if validators.name_is_valid(address):
+        context.user_data['address'] = address
+        text = (
+            f'Ваш адрес: {address}\n\n'
+            'Создать заявку для вызова курьера?'
+        )
+        state = State.CREATE_COURIER_DELIVERY_REQUEST
+        keyboard = keyboards[KeyboardName.CREATE_COURIER_DELIVERY_REQUEST]()
+        
+    else:
+        text = f'Вы ввели некорректный {address}, попробуйте еще раз'
+        state = State.INPUT_ADDRESS
+        keyboard = None
+
+    await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=text,
+            parse_mode='HTML',
+            reply_markup=keyboard
     )
-    return State.FINAL
+
+    return state
 
 
 async def handle_input_name(update: Update, context: CallbackContext):
@@ -445,6 +514,7 @@ def get_handlers():
             ],
             State.ORDER_STORAGE: [
                 CallbackQueryHandler(handle_show_prices, get_pattern(CallbackName.SHOW_PRICES)),
+                CallbackQueryHandler(handle_input_address, get_pattern(CallbackName.COURIER_DELIVERY)),
                 CallbackQueryHandler(handle_select_warehouse, get_pattern(CallbackName.SELECT_WAREHOUSE)),
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
@@ -497,8 +567,11 @@ def get_handlers():
                 CallbackQueryHandler(handle_ppd_agreement, get_pattern(CallbackName.PERSONAL_DATA_AGREEMENT)),
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
             ],
-            State.FINAL: [
-                CallbackQueryHandler(handle_final, get_pattern(CallbackName.HAND_OVER_THINGS)),
+            State.CREATE_COURIER_DELIVERY_REQUEST: [
+                CallbackQueryHandler(
+                    handle_create_courier_delivery_request,
+                    get_pattern(CallbackName.CREATE_COURIER_DELIVERY_REQUEST)
+                ),
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],                
