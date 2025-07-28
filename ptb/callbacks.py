@@ -68,7 +68,7 @@ class CallbackData:
 
 
 def get_pattern(callback_name: CallbackName):
-    return f'^(?:(.*{callback_name.value}.*(?=__))|(.*{callback_name.value}[^_]*))$'
+    return f'^({callback_name.value})(?:__.*)?$'
 
 
 # Парсит строку в класс CallbackData
