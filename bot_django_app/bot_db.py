@@ -137,6 +137,7 @@ def _serialize_user(user: User):
         'tg_id': user.telegram_id,
         'role': user.role.name,
         'full_name': user.full_name,
+        'email': user.email,
         'consent_given': user.consent_given,
         'created_at': user.created_at.strftime('%d-%m-%Y'),
         'boxes': boxes
