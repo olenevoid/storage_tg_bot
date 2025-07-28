@@ -328,6 +328,9 @@ async def handle_warehouse(update: Update, context: CallbackContext):
 
 async def handle_input_period(update: Update, context: CallbackContext):
     await update.callback_query.answer()
+    
+    params = parse_callback_data_string(update.callback_query.data).params
+    context.user_data['size_id'] = params.get('size_id')
 
     edit_message_text = "Пройдите все шаги, либо вернитесь в меню, если передумали"
     new_message_text = "Введите количество месяцев для аренды"
@@ -355,16 +358,18 @@ async def validate_period(update: Update, context: CallbackContext):
             'Теперь введите промокод, если он у вас есть'
         )
         context.user_data['period'] = int(period)
-        
         state = State.INPUT_PROMO
+        keyboard = keyboards[KeyboardName.PROMO]()
     else:
         text = 'Введен некорректный период: {period}'
         state = State.INPUT_RENT_PERIOD
+        keyboard = None
 
     await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=text,
-            parse_mode='HTML'
+            parse_mode='HTML',
+            reply_markup=keyboard
     )
 
     return state
@@ -375,26 +380,42 @@ async def validate_promo(update: Update, context: CallbackContext):
 
 
 async def handle_confirm_box_rent(update: Update, context: CallbackContext):
-    params = parse_callback_data_string(update.callback_query.data).params
+    size_id = context.user_data['size_id']
     warehouse_id = context.user_data['warehouse_id']
-    size_id = params.get('size_id')
+
+    print('size_id', size_id)
     warehouse = await sync_to_async(bot_db.get_warehouse)(warehouse_id)
     size = await sync_to_async(bot_db.get_box_size)(size_id)
-    
-    
-    text = (
+
+    raw_text = (
         'Выбрана ячейка <b>{size_code}</b> объемом {volume}\n'
         'По адресу:{warehouse_name} {address}\n'
         'Цена за месяц: {price}\n'
+        'Срок аренды: {period}\n'
+        'Итоговая сумма: {sum}'
     )
-    
+
+    price = float(size.get('price'))
+    period = context.user_data['period']
+    sum = int(price * period)
+
+    text = raw_text.format(
+        size_code=size.get('code'),
+        volume=size.get('volume'),
+        warehouse_name=warehouse.get('name'),
+        address=warehouse.get('address'),
+        price=price,
+        period=period,
+        sum=sum
+    )
+
     await update.callback_query.edit_message_text(
         text,
         reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
         parse_mode='HTML'
     )
 
-    return State.WAREHOUSE
+    return State.CONFIRM_BOX_RENT
 
 
 async def handle_ppd_agreement(update: Update, context: CallbackContext):
@@ -611,6 +632,7 @@ def get_handlers():
             ],
             State.INPUT_PROMO: [
                 MessageHandler(filters.TEXT, validate_promo),
+                CallbackQueryHandler(handle_confirm_box_rent, get_pattern(CallbackName.NO_PROMO)),
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
             ],
             State.CONFIRM_BOX_RENT: [
