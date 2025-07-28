@@ -75,6 +75,11 @@ def get_box(box_id):
     return _serialize_box(box)
 
 
+def get_box_size(pk):
+    box_size = BoxSize.objects.get(pk=pk)
+    return _serialize_size(box_size)
+
+
 def get_all_boxes_for_user(pk) -> list[dict]:
     user = get_user(pk=pk)
     if not Box.objects.filter(user=user).exists():
