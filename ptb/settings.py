@@ -11,6 +11,7 @@ BUTTONS_PER_PAGE = 4
 
 class State(Enum):
     MAIN_MENU = auto()
+    MY_ACCOUNT = auto()
     TERMS_OF_SERVICE = auto()
     ORDER_STORAGE = auto()
     SELECT_WAREHOUSE = auto()
