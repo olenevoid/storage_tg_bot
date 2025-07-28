@@ -212,6 +212,16 @@ def my_account(user: dict):
     return InlineKeyboardMarkup(buttons)
 
 
+def courier_delivery_request():
+    buttons = [
+        [BUTTONS[ButtonName.COURIER_DELIVERY_YES]]
+    ]
+    
+    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    
+    return InlineKeyboardMarkup(buttons)
+
+
 class KeyboardName(Enum):
     MAIN_MENU = auto()
     MY_ACCOUNT = auto()
@@ -225,6 +235,7 @@ class KeyboardName(Enum):
     WAREHOUSE = auto()
     SIGN_UP = auto()
     CALL_COURIER = auto()
+    CREATE_COURIER_DELIVERY_REQUEST = auto()
 
 
 keyboards: dict[KeyboardName, callable] = {
@@ -239,4 +250,5 @@ keyboards: dict[KeyboardName, callable] = {
     KeyboardName.CALL_COURIER: call_courirer_keyboard,
     KeyboardName.SIGN_UP: signup_keyboard,
     KeyboardName.MY_ACCOUNT: my_account,
+    KeyboardName.CREATE_COURIER_DELIVERY_REQUEST: courier_delivery_request,
 }

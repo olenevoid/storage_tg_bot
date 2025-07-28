@@ -13,6 +13,7 @@ class ButtonName(Enum):
     BACK_TO_MENU = auto()
     FORBIDDEN = auto()
     COURIER_DELIVERY = auto()
+    COURIER_DELIVERY_YES = auto()
     SELF_DELIVERY = auto()
     PPD_YES = auto()
     PPD_NO = auto()
@@ -25,6 +26,10 @@ class ButtonName(Enum):
 
 
 BUTTONS = {
+    ButtonName.COURIER_DELIVERY_YES: InlineKeyboardButton(
+        'Подтвердить',
+        callback_data=CallbackData(CallbackName.CREATE_COURIER_DELIVERY_REQUEST).to_str()
+    ),
     ButtonName.MY_ACCOUNT: InlineKeyboardButton(
         'Личный кабинет',
         callback_data=CallbackData(CallbackName.MY_ACCOUNT).to_str()
