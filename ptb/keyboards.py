@@ -222,22 +222,23 @@ def courier_delivery_request():
     return InlineKeyboardMarkup(buttons)
 
 
-def select_box(box_sizes: list[dict]):
+def select_box(boxes: list[dict]):
     buttons = []
 
-    for box_size in box_sizes:
-
+    for box in boxes:
+        size = box.get('size')
+        callback_data = CallbackData(CallbackName.SELECT_BOX, {'size_id': size.get('id')})
+        
         button = InlineKeyboardButton(
-            box_size.get('code'),
-            callback_data=CallbackData(
-                CallbackName.SELECT_BOX,
-                {'size_id': box_size.get('id')}
-            ).to_str()
+            size.get('code'),
+            callback_data=callback_data.to_str()
         )
 
         buttons.append([button])
 
     buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    
+    return InlineKeyboardMarkup(buttons)
 
 
 class KeyboardName(Enum):
