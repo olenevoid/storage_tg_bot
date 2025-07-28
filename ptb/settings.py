@@ -24,8 +24,6 @@ class State(Enum):
     INPUT_EMAIL = auto()
     SIGN_UP = auto()
     FINAL = auto()
-    BACK_TO_MENU = auto()
-    CALL_COURIER = auto()
 
 
 # Значения должны совпадать с ролями в БД
