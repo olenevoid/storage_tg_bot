@@ -16,9 +16,7 @@ from ptb import validators
 import ptb.strings as strings
 from bot_core.settings import BASE_DIR
 from os import path
-
-
-PER_PAGE = 2
+import ptb.settings as settings
 
 
 # тут идут наши обработчики
@@ -198,7 +196,10 @@ async def handle_select_warehouse(update: Update, context: CallbackContext):
     page_number = params.get('page') or 1
 
     warehouses = await sync_to_async(bot_db.get_all_warehouses)()
-    page: Page = Paginator(warehouses, per_page=PER_PAGE).page(page_number)
+    page: Page = Paginator(
+        warehouses,
+        per_page=settings.BUTTONS_PER_PAGE
+    ).page(page_number)
 
     await update.callback_query.edit_message_text(
         "Доступные склады",

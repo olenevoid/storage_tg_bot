@@ -1,12 +1,10 @@
 from telegram.ext import ApplicationBuilder
 from ptb.handlers import get_handlers
-from environs import Env
-env = Env()
-env.read_env()
+from ptb.settings import TG_BOT_TOKEN
 
 
 def main():
-    app = ApplicationBuilder().token(env.str("TG_BOT_TOKEN")).build()
+    app = ApplicationBuilder().token(TG_BOT_TOKEN).build()
 
     app.add_handler(get_handlers())
 
