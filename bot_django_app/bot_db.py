@@ -34,6 +34,10 @@ async def acreate_user(user: dict, role_name: str = 'Клиент'):
     await new_user.asave()
 
 
+async def aphone_number_exists(phone: str):
+    return await User.objects.filter(phone).aexists()
+
+
 def find_user_by_tg(telegram_id) -> dict | None:
     user_exists_in_db = user_exists(telegram_id)
     if user_exists_in_db:
