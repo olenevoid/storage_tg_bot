@@ -104,14 +104,16 @@ class PickupRequestAdmin(admin.ModelAdmin):
     list_display = (
         'user_name',
         'user_phone',
+        'type',
+        'executor_name',
         'address',
         'preferred_date',
         'preferred_time',
-        'is_completed',
-        'created_at'
+        'status',
+        'created_at',
     )
-    list_filter = ('preferred_date', 'is_completed')
-    search_fields = ('user__full_name', 'address', 'comment')
+    list_filter = ('type', 'status', 'preferred_date')
+    search_fields = ('user__full_name', 'address', 'comment', 'executor__full_name')
     ordering = ('-created_at',)
 
     @admin.display(description="Клиент")
@@ -121,6 +123,10 @@ class PickupRequestAdmin(admin.ModelAdmin):
     @admin.display(description="Телефон")
     def user_phone(self, obj):
         return obj.user.phone
+
+    @admin.display(description="Исполнитель")
+    def executor_name(self, obj):
+        return obj.executor.full_name if obj.executor else '—'
 
 
 @admin.register(Notification)

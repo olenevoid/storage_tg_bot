@@ -80,17 +80,40 @@ class StoredItem(models.Model):
 
 
 class PickupRequest(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    address = models.TextField()
+    TYPE_CHOICES = [
+        ('deliver', 'Доставка на склад'),
+        ('withdraw', 'Вывоз со склада'),
+    ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Ожидает'),
+        ('in_progress', 'В работе'),
+        ('completed', 'Выполнена'),
+        ('cancelled', 'Отменена'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pickup_requests')
+    executor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_pickup_requests',
+        limit_choices_to={'role__name__in': ['courier', 'executor', 'исполнитель']},  
+        help_text="Исполнитель заявки (курьер)"
+    )
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, default='deliver')
+    address = models.TextField(help_text="Адрес для забора или доставки вещей")
     preferred_date = models.DateField()
     preferred_time = models.CharField(max_length=50, blank=True)
     comment = models.TextField(blank=True)
     estimated_volume = models.CharField(max_length=100, blank=True)
-    is_completed = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)  
 
     def __str__(self):
-        return f"Pickup for {self.user.full_name} on {self.preferred_date}"
+        return f"{self.get_type_display()} для {self.user.full_name} на {self.preferred_date} (Статус: {self.get_status_display()})"
 
 
 class Notification(models.Model):
