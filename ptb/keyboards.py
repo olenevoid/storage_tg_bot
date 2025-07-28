@@ -1,7 +1,8 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from ptb.callbacks import CallbackData, State
+from ptb.callbacks import CallbackData, CallbackName
 from django.core.paginator import Page
 from ptb.buttons import BUTTONS, ButtonName
+from ptb.settings import State
 
 
 def main_keyboard(client: dict = None):
@@ -70,7 +71,7 @@ def call_courirer_keyboard():
     )
 
 
-def _get_page_buttons(page: Page, callback_name: State):
+def _get_page_buttons(page: Page, callback_name: CallbackName):
     page_buttons = []
 
     if page.has_previous():
@@ -102,7 +103,7 @@ def warehouses_keyboard(page: Page):
     for warehouse in warehouses:
 
         callback_data = CallbackData(
-            State.WAREHOUSE,
+            CallbackName.WAREHOUSE,
             {'id': warehouse.get('id')}
         )
 
@@ -114,7 +115,7 @@ def warehouses_keyboard(page: Page):
         ]
         buttons.append(button)
 
-    buttons.append(_get_page_buttons(page, State.SELECT_WAREHOUSE))
+    buttons.append(_get_page_buttons(page, CallbackName.SELECT_WAREHOUSE))
 
     buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
 
@@ -128,7 +129,7 @@ def my_orders_keyboard(page: Page):
 
     for box in boxes:
         callback_data = CallbackData(
-            State.MY_BOX,
+            CallbackName.MY_BOX,
             {'id': box.get('id')}
         )
 
@@ -143,7 +144,7 @@ def my_orders_keyboard(page: Page):
 
         buttons.append(button)
 
-    buttons.append(_get_page_buttons(page, State.MY_ORDERS))
+    buttons.append(_get_page_buttons(page, CallbackName.MY_ORDERS))
 
     buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
 
@@ -153,12 +154,12 @@ def my_orders_keyboard(page: Page):
 def my_box_keyboard(box_id):
 
     self_delivery_callback = CallbackData(
-        State.SELECT_WAREHOUSE,
+        CallbackName.SELECT_WAREHOUSE,
         {'box_id': box_id}
     )
 
     order_delivery_callback = CallbackData(
-        State.ORDER_DELIVERY,
+        CallbackName.ORDER_DELIVERY,
         {'box_id': box_id}
     )
 
@@ -176,7 +177,7 @@ def my_box_keyboard(box_id):
         [
             InlineKeyboardButton(
                 'Назад',
-                callback_data=CallbackData(State.MY_ORDERS).to_str()
+                callback_data=CallbackData(CallbackName.MY_ORDERS).to_str()
             )
         ],
     ]

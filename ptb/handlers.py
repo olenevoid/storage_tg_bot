@@ -8,7 +8,7 @@ from telegram.ext import (
     ConversationHandler,
     CallbackContext
 )
-from ptb.callbacks import State, parse_callback_data_string
+from ptb.callbacks import CallbackName, parse_callback_data_string
 import bot_django_app.bot_db as bot_db
 from asgiref.sync import sync_to_async
 from django.core.paginator import Paginator, Page
@@ -17,6 +17,7 @@ import ptb.strings as strings
 from bot_core.settings import BASE_DIR
 from os import path
 import ptb.settings as settings
+from ptb.settings import State
 
 
 # тут идут наши обработчики
@@ -401,76 +402,76 @@ def get_handlers():
         entry_points=[CommandHandler("start", start)],
         states={
             State.MAIN_MENU: [
-                CallbackQueryHandler(handle_tos, f'^{State.TERMS_OF_SERVICE.value}*.*'),
-                CallbackQueryHandler(handle_order_storage, f'^{State.ORDER_STORAGE.value}*.*'),
-                CallbackQueryHandler(handle_ppd_agreement, f'^{State.PERSONAL_DATA_AGREEMENT.value}*.*'),
-                CallbackQueryHandler(handle_my_orders, f'^{State.MY_ORDERS.value}*.*'),
+                CallbackQueryHandler(handle_tos, f'^{CallbackName.TERMS_OF_SERVICE.value}*.*'),
+                CallbackQueryHandler(handle_order_storage, f'^{CallbackName.ORDER_STORAGE.value}*.*'),
+                CallbackQueryHandler(handle_ppd_agreement, f'^{CallbackName.PERSONAL_DATA_AGREEMENT.value}*.*'),
+                CallbackQueryHandler(handle_my_orders, f'^{CallbackName.MY_ORDERS.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.TERMS_OF_SERVICE: [
-                CallbackQueryHandler(handle_download_tos, f'^{State.DOWNLOAD_TOS.value}*.*'),
-                CallbackQueryHandler(handle_faq, f'^{State.FAQ.value}*.*'),
-                CallbackQueryHandler(handle_forbidden, f'^{State.FORBIDDEN_TO_STORE.value}*.*'),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_download_tos, f'^{CallbackName.DOWNLOAD_TOS.value}*.*'),
+                CallbackQueryHandler(handle_faq, f'^{CallbackName.FAQ.value}*.*'),
+                CallbackQueryHandler(handle_forbidden, f'^{CallbackName.FORBIDDEN_TO_STORE.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.ORDER_STORAGE: [
-                CallbackQueryHandler(handle_show_prices, f'^{State.SHOW_PRICES.value}*.*'),
-                CallbackQueryHandler(handle_select_warehouse, f'^{State.SELECT_WAREHOUSE.value}*.*'),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_show_prices, f'^{CallbackName.SHOW_PRICES.value}*.*'),
+                CallbackQueryHandler(handle_select_warehouse, f'^{CallbackName.SELECT_WAREHOUSE.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.SELECT_WAREHOUSE: [
-                CallbackQueryHandler(handle_select_warehouse, f'^{State.SELECT_WAREHOUSE.value}*.*'),
-                CallbackQueryHandler(handle_warehouse, f'^{State.WAREHOUSE.value}*.*'),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_select_warehouse, f'^{CallbackName.SELECT_WAREHOUSE.value}*.*'),
+                CallbackQueryHandler(handle_warehouse, f'^{CallbackName.WAREHOUSE.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.WAREHOUSE: [
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
             ],
             State.INPUT_ADDRESS: [
                 MessageHandler(filters.ALL, validate_address),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
             ],
             State.MY_ORDERS: [
-                CallbackQueryHandler(handle_my_box, f'^{State.MY_BOX.value}*.*'),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_my_box, f'^{CallbackName.MY_BOX.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.MY_BOX: [
-                CallbackQueryHandler(handle_my_orders, f'^{State.MY_ORDERS.value}*.*'),
-                CallbackQueryHandler(handle_my_box, f'^{State.MY_BOX.value}*.*'),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_my_orders, f'^{CallbackName.MY_ORDERS.value}*.*'),
+                CallbackQueryHandler(handle_my_box, f'^{CallbackName.MY_BOX.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
             ],
             State.PERSONAL_DATA_AGREEMENT: [
-                CallbackQueryHandler(handle_input_name, f'^{State.INPUT_FULL_NAME.value}*.*'),
-                CallbackQueryHandler(handle_download_ppd, f'^{State.DOWNLOAD_PPD.value}*.*'),
-                CallbackQueryHandler(handle_back_menu, f'^{State.PERSONAL_DATA_DISAGREE.value}*.*'),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_input_name, f'^{CallbackName.INPUT_FULL_NAME.value}*.*'),
+                CallbackQueryHandler(handle_download_ppd, f'^{CallbackName.DOWNLOAD_PPD.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.PERSONAL_DATA_DISAGREE.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.INPUT_FULL_NAME: [
                 MessageHandler(filters.ALL, validate_full_name),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
             ],
             State.INPUT_PHONE: [
                 MessageHandler(filters.ALL, validate_phone),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
             ],
             State.INPUT_EMAIL: [
                 MessageHandler(filters.ALL, validate_email),
-                CallbackQueryHandler(handle_signup, f'^{State.SIGN_UP.value}*.*'),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_signup, f'^{CallbackName.SIGN_UP.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
             ],
             State.SIGN_UP: [
-                CallbackQueryHandler(handle_signup, f'^{State.SIGN_UP.value}*.*'),
-                CallbackQueryHandler(handle_ppd_agreement, f'^{State.PERSONAL_DATA_AGREEMENT.value}*.*'),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_signup, f'^{CallbackName.SIGN_UP.value}*.*'),
+                CallbackQueryHandler(handle_ppd_agreement, f'^{CallbackName.PERSONAL_DATA_AGREEMENT.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
             ],
             State.FINAL: [
-                CallbackQueryHandler(handle_final, f'^{State.HAND_OVER_THINGS.value}*.*'),
-                CallbackQueryHandler(handle_back_menu, f'^{State.MAIN_MENU.value}*.*'),
+                CallbackQueryHandler(handle_final, f'^{CallbackName.HAND_OVER_THINGS.value}*.*'),
+                CallbackQueryHandler(handle_back_menu, f'^{CallbackName.MAIN_MENU.value}*.*'),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],                
         },

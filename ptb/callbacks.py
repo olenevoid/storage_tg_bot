@@ -7,8 +7,7 @@ PARAM_SEPARATOR = ','
 
 # Enum для управления коллбэками. 
 # Можно быстро переименовать в одном месте, если понадобится
-# TODO С этим я немного обосрался. Если успею, снова разделю на стейты и коллбеки
-class State(Enum):
+class CallbackName(Enum):
     TERMS_OF_SERVICE = 'faq'
     ORDER_STORAGE = 'order_storage'
     MY_ORDERS = 'my_orders'
@@ -44,8 +43,8 @@ class State(Enum):
 # Класс для создания строки коллбэков с параметрами 
 # и для удобного доступа к имени коллбэка и параметрам
 class CallbackData:
-    def __init__(self, name: State, params: dict = {}):
-        self.name: State = name
+    def __init__(self, name: CallbackName, params: dict = {}):
+        self.name: CallbackName = name
         self.params: dict = params
 
     @property
@@ -69,7 +68,7 @@ class CallbackData:
 # Парсит строку в класс CallbackData
 def parse_callback_data_string(callback_data: str) -> CallbackData:
     parsed_callback = callback_data.split(NAME_SEPARATOR)
-    callback_name = State(parsed_callback[0])
+    callback_name = CallbackName(parsed_callback[0])
     callback_params = {}
 
     if len(parsed_callback) > 1:
