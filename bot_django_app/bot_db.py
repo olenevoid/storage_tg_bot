@@ -10,7 +10,8 @@ from bot_django_app.models import (User,
                                    Box,
                                    StoredItem,
                                    BoxSize,
-                                   BoxAvailability
+                                   BoxAvailability,
+                                   Role
                                    )
 
 
@@ -21,13 +22,14 @@ def get_user(pk):
     return User.objects.get(pk=pk)
 
 
-async def acreate_user(user: dict):
+async def acreate_user(user: dict, role_name: str = 'Клиент'):
     new_user = User()
     new_user.full_name = user.get('full_name')
     new_user.telegram_id = user.get('telegram_id')
     new_user.phone = user.get('phone')
     new_user.email = user.get('email')
     new_user.consent_given = True
+    new_user.role = await Role.objects.aget(name=role_name)
 
     await new_user.asave()
 
@@ -133,6 +135,7 @@ def _serialize_user(user: User):
     serialized_user = {
         'id': user.pk,
         'tg_id': user.telegram_id,
+        'role': user.role.name,
         'full_name': user.full_name,
         'consent_given': user.consent_given,
         'created_at': user.created_at.strftime('%d-%m-%Y'),
