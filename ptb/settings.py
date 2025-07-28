@@ -24,7 +24,7 @@ class State(Enum):
     INPUT_PHONE = auto()
     INPUT_EMAIL = auto()
     SIGN_UP = auto()
-    FINAL = auto()
+    CREATE_COURIER_DELIVERY_REQUEST = auto()
 
 
 # Значения должны совпадать с ролями в БД
