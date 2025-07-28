@@ -215,7 +215,7 @@ class KeyboardName(Enum):
     CALL_COURIER = auto()
 
 
-keyboards = {
+keyboards: dict[KeyboardName, callable] = {
     KeyboardName.MAIN_MENU: main_keyboard,
     KeyboardName.TERMS_OF_SERVICE: tos_keyboard,
     KeyboardName.MY_BOX: my_box_keyboard,
