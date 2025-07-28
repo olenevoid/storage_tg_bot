@@ -383,7 +383,6 @@ async def handle_confirm_box_rent(update: Update, context: CallbackContext):
     size_id = context.user_data['size_id']
     warehouse_id = context.user_data['warehouse_id']
 
-    print('size_id', size_id)
     warehouse = await sync_to_async(bot_db.get_warehouse)(warehouse_id)
     size = await sync_to_async(bot_db.get_box_size)(size_id)
 
