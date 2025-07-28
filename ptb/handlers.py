@@ -501,14 +501,12 @@ async def validate_phone(update: Update, context: CallbackContext):
     if re.match(pattern, update.message.text):
         await update.message.reply_text(
             "Вы ввели корректный телефон, теперь введите имейл",
-            reply_markup=keyboards[KeyboardName.SIGN_UP]
         )
         context.user_data['phone'] = update.message.text
         return State.INPUT_EMAIL
     else:
         await update.message.reply_text(
             "введите номер в формате 7(8)1234567890",
-            reply_markup=keyboards[KeyboardName.SIGN_UP]
         )
         return State.INPUT_PHONE
 
