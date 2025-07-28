@@ -17,35 +17,35 @@ from bot_django_app.models import (User,
 # TODO: Переделать все методы для async
 
 
-def get_client(pk):
+def get_user(pk):
     return User.objects.get(pk=pk)
 
 
-async def acreate_client(client: dict):
-    new_client = User()
-    new_client.full_name = client.get('full_name')
-    new_client.telegram_id = client.get('telegram_id')
-    new_client.phone = client.get('phone')
-    new_client.email = client.get('email')
-    new_client.consent_given = True
+async def acreate_user(user: dict):
+    new_user = User()
+    new_user.full_name = user.get('full_name')
+    new_user.telegram_id = user.get('telegram_id')
+    new_user.phone = user.get('phone')
+    new_user.email = user.get('email')
+    new_user.consent_given = True
 
-    await new_client.asave()
+    await new_user.asave()
 
 
-def find_client_by_tg(telegram_id) -> dict | None:
-    client_exists_in_db = client_exists(telegram_id)
-    if client_exists_in_db:
-        client = User.objects.get(telegram_id=telegram_id)
-        return _serialize_client(client)
+def find_user_by_tg(telegram_id) -> dict | None:
+    user_exists_in_db = user_exists(telegram_id)
+    if user_exists_in_db:
+        user = User.objects.get(telegram_id=telegram_id)
+        return _serialize_user(user)
     return None
 
 
-async def aclient_exists(telegram_id) -> bool:
+async def auser_exists(telegram_id) -> bool:
     user_exists = await User.objects.filter(telegram_id=telegram_id).aexists()
     return user_exists
 
 
-def client_exists(telegram_id) -> bool:
+def user_exists(telegram_id) -> bool:
     user_exists = User.objects.filter(telegram_id=telegram_id).exists()
     return user_exists
 
@@ -73,13 +73,13 @@ def get_box(box_id):
     return _serialize_box(box)
 
 
-def get_all_boxes_for_client(pk) -> list[dict]:
-    client = get_client(pk=pk)
-    if not Box.objects.filter(client=client).exists():
+def get_all_boxes_for_user(pk) -> list[dict]:
+    user = get_user(pk=pk)
+    if not Box.objects.filter(user=user).exists():
         return []
 
     boxes = []
-    for box in Box.objects.filter(client=client).all():
+    for box in Box.objects.filter(user=user).all():
         boxes.append(_serialize_box(box))
     return boxes
 
@@ -127,19 +127,19 @@ def _serialize_size(size: BoxSize):
     return serialized_size
 
 
-def _serialize_client(client: User):
-    boxes = get_all_boxes_for_client(client.pk)
+def _serialize_user(user: User):
+    boxes = get_all_boxes_for_user(user.pk)
 
-    serialized_client = {
-        'id': client.pk,
-        'tg_id': client.telegram_id,
-        'full_name': client.full_name,
-        'consent_given': client.consent_given,
-        'created_at': client.created_at.strftime('%d-%m-%Y'),
+    serialized_user = {
+        'id': user.pk,
+        'tg_id': user.telegram_id,
+        'full_name': user.full_name,
+        'consent_given': user.consent_given,
+        'created_at': user.created_at.strftime('%d-%m-%Y'),
         'boxes': boxes
     }
 
-    return serialized_client
+    return serialized_user
 
 
 def _serialize_available_boxes(box_availabilities: list[BoxAvailability]):

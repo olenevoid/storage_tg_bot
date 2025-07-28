@@ -25,7 +25,7 @@ PER_PAGE = 2
 async def start(update: Update, context: CallbackContext):
     await update.message.delete()
     telegram_id = update.message.from_user.id
-    client = await sync_to_async(bot_db.find_client_by_tg)(telegram_id)
+    client = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
 
     await update.message.reply_text(
         strings.MAIN_MENU,
@@ -42,7 +42,7 @@ async def unknown_cmd(update: Update, context: CallbackContext):
 async def handle_back_menu(update: Update, context: CallbackContext):
     await update.callback_query.answer()
     telegram_id = update.callback_query.from_user.id
-    client = await sync_to_async(bot_db.find_client_by_tg)(telegram_id)
+    client = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
 
     await update.callback_query.edit_message_text(
         strings.MAIN_MENU,
@@ -148,7 +148,7 @@ async def handle_my_orders(update: Update, context: CallbackContext):
 
     page_number = params.get('page') or 1
 
-    client = await sync_to_async(bot_db.find_client_by_tg)(telegram_id)
+    client = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
 
     boxes = client.get('boxes')
 
@@ -368,7 +368,7 @@ async def handle_signup(update: Update, context: CallbackContext):
         'telegram_id': update.callback_query.from_user.id
     }
 
-    await bot_db.acreate_client(client)
+    await bot_db.acreate_user(client)
 
     await update.callback_query.edit_message_text(
         text,
