@@ -23,9 +23,14 @@ class ButtonName(Enum):
     CONFIRM_SIGNUP = auto()
     CHANGE_PERSONAL_DATA = auto()
     SHOW_PRICES = auto()
+    NO_PROMO = auto()
 
 
 BUTTONS = {
+    ButtonName.NO_PROMO: InlineKeyboardButton(
+        'Нет промокода',
+        callback_data=CallbackData(CallbackName.NO_PROMO).to_str()
+    ),
     ButtonName.COURIER_DELIVERY_YES: InlineKeyboardButton(
         'Подтвердить',
         callback_data=CallbackData(CallbackName.CREATE_COURIER_DELIVERY_REQUEST).to_str()

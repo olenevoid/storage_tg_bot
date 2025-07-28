@@ -241,6 +241,16 @@ def select_box(boxes: list[dict]):
     return InlineKeyboardMarkup(buttons)
 
 
+def promo():
+    buttons = [
+        [BUTTONS[ButtonName.NO_PROMO]],
+    ]
+    
+    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    
+    return InlineKeyboardMarkup(buttons)
+
+
 class KeyboardName(Enum):
     MAIN_MENU = auto()
     MY_ACCOUNT = auto()
@@ -256,6 +266,7 @@ class KeyboardName(Enum):
     SIGN_UP = auto()
     CALL_COURIER = auto()
     CREATE_COURIER_DELIVERY_REQUEST = auto()
+    PROMO = auto()
 
 
 keyboards: dict[KeyboardName, callable] = {
@@ -271,5 +282,6 @@ keyboards: dict[KeyboardName, callable] = {
     KeyboardName.SIGN_UP: signup_keyboard,
     KeyboardName.MY_ACCOUNT: my_account,
     KeyboardName.CREATE_COURIER_DELIVERY_REQUEST: courier_delivery_request,
-    KeyboardName.SELECT_BOX: select_box
+    KeyboardName.SELECT_BOX: select_box,
+    KeyboardName.PROMO: promo
 }
