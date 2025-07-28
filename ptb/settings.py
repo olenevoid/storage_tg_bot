@@ -1,8 +1,7 @@
-from environs import Env
+from environs import env
 from enum import Enum
 
 
-env = Env()
 env.read_env()
 
 
