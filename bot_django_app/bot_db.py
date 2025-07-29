@@ -67,6 +67,15 @@ def find_user_by_tg(telegram_id) -> dict | None:
     return None
 
 
+@transaction.atomic
+def add_new_items_to_box(items: list, box_id):
+    box = Box.objects.get(pk=box_id)
+    
+    for item in items:
+        StoredItem.objects.create(
+            box=box,
+            name=item
+        )
 async def auser_exists(telegram_id) -> bool:
     user_exists = await User.objects.filter(telegram_id=telegram_id).aexists()
     return user_exists
