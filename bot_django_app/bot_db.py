@@ -141,6 +141,13 @@ def get_all_sizes():
     return serialized_sizes
 
 
+def find_promocode(code: str) -> PromoCode | None:
+    code = code.upper()
+    if PromoCode.objects.filter(code=code).exists():
+        return _serialize_promocode(PromoCode.objects.get(code=code))
+    return None
+
+
 def _serialize_stored_items(box_id):
     items = StoredItem.objects.filter(box_id=box_id).all()
 
