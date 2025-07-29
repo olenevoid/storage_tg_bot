@@ -25,9 +25,24 @@ class ButtonName(Enum):
     SHOW_PRICES = auto()
     NO_PROMO = auto()
     CONFIRM_RENT = auto()
+    OPEN_QR = auto()
+    ADD_THINGS = auto()
+    REMOVE_THINGS = auto()
 
 
 BUTTONS = {
+    ButtonName.REMOVE_THINGS: InlineKeyboardButton(
+      'Забрать вещи',
+      callback_data=CallbackData(CallbackName.REMOVE_THINGS).to_str()
+    ),
+    ButtonName.ADD_THINGS: InlineKeyboardButton(
+      'Положить вещи',
+      callback_data=CallbackData(CallbackName.ADD_THINGS).to_str()
+    ),
+    ButtonName.OPEN_QR: InlineKeyboardButton(
+        'Открыть через QR',
+        callback_data=CallbackData(CallbackName.OPEN_QR).to_str()
+    ),
     ButtonName.CONFIRM_RENT: InlineKeyboardButton(
         'Подтвердить аренду',
         callback_data=CallbackData(CallbackName.CONFIRM_BOX_RENT).to_str()
