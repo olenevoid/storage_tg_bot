@@ -262,6 +262,20 @@ def confirm_rent():
     return InlineKeyboardMarkup(buttons)
 
 
+def open_box():
+    buttons = [
+        [BUTTONS[ButtonName.OPEN_QR]],
+        [
+            BUTTONS[ButtonName.ADD_THINGS],
+            BUTTONS[ButtonName.REMOVE_THINGS]
+        ]
+    ]
+
+    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+
+    return InlineKeyboardMarkup(buttons)
+
+
 class KeyboardName(Enum):
     MAIN_MENU = auto()
     MY_ACCOUNT = auto()
@@ -279,6 +293,7 @@ class KeyboardName(Enum):
     CREATE_COURIER_DELIVERY_REQUEST = auto()
     PROMO = auto()
     CONFIRM_RENT = auto()
+    OPEN_BOX = auto()
 
 
 keyboards: dict[KeyboardName, callable] = {
@@ -296,5 +311,6 @@ keyboards: dict[KeyboardName, callable] = {
     KeyboardName.CREATE_COURIER_DELIVERY_REQUEST: courier_delivery_request,
     KeyboardName.SELECT_BOX: select_box,
     KeyboardName.PROMO: promo,
-    KeyboardName.CONFIRM_RENT: confirm_rent
+    KeyboardName.CONFIRM_RENT: confirm_rent,
+    KeyboardName.OPEN_BOX: open_box
 }
