@@ -33,11 +33,11 @@ class ButtonName(Enum):
 BUTTONS = {
     ButtonName.REMOVE_THINGS: InlineKeyboardButton(
       'Забрать вещи',
-      callback_data=CallbackData(CallbackName.REMOVE_THINGS).to_str()
+      callback_data=CallbackData(CallbackName.REMOVE_ITEMS).to_str()
     ),
     ButtonName.ADD_THINGS: InlineKeyboardButton(
       'Положить вещи',
-      callback_data=CallbackData(CallbackName.ADD_THINGS).to_str()
+      callback_data=CallbackData(CallbackName.PUT_NEW_ITEMS).to_str()
     ),
     ButtonName.OPEN_QR: InlineKeyboardButton(
         'Получить QR для открытия',
