@@ -59,16 +59,7 @@ async def handle_my_account(update: Update, context: CallbackContext):
     telegram_id = update.callback_query.from_user.id
     user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
 
-    no_orders = f'{'' if user.get('boxes') else 'Нет активных заказов'}'
-    
-    text = strings.MY_ACCOUNT.format(
-        role=user.get('role'),
-        full_name=user.get('full_name'),
-        phone=user.get('phone'),
-        email=user.get('email'),
-        created_at=user.get('created_at'),
-        no_orders = no_orders
-    )
+    text = strings.get_user_details(user)
 
     await update.callback_query.edit_message_text(
         text,
@@ -150,15 +141,7 @@ async def handle_show_prices(update: Update, context: CallbackContext):
 
     sizes = await sync_to_async(bot_db.get_all_sizes)()
 
-    text = ''
-
-    for size in sizes:
-        text += (
-            f'<b>Размер:</b> {size.get('code')}\n'
-            f'<b>Объем:</b> {size.get('volume_m3')}\n'
-            f'<b>Цена в месяц:</b> {size.get('price')} р.\n'
-            '\n'
-        )
+    text = strings.get_sizes_with_details(sizes)
 
     await update.callback_query.edit_message_text(
         text,
@@ -236,14 +219,14 @@ async def handle_send_qr(update: Update, context: CallbackContext):
 
 
 async def handle_put_items_to_box(update: Update, context: CallbackContext):
-    text = ('Введите через запятую названия предметов, которые положили в хранилище')
-    
+    text = strings.WRITE_DOWN_STORED_ITEMS
+
     menu_message = await update.callback_query.edit_message_text(
         text,
         reply_markup=keyboards[KeyboardName.OPEN_BOX](),
         parse_mode='HTML'
     )
-    
+
     context.user_data['menu_message_id'] = menu_message.message_id
 
     return State.PUT_ITEMS_INTO_BOX
@@ -251,13 +234,13 @@ async def handle_put_items_to_box(update: Update, context: CallbackContext):
 
 async def validate_new_items(update: Update, context: CallbackContext):
     box_id = context.user_data['box_id']
-    
+
     items: list[str] = update.message.text.split(',')
-    
+
     parsed_items = [item.strip() for item in items if item]
-    
+
     await sync_to_async(bot_db.add_new_items_to_box)(parsed_items, box_id)
-    
+
     box = await sync_to_async(bot_db.get_box)(box_id)
     text = strings.get_box_details(box)
 
@@ -273,7 +256,7 @@ async def validate_new_items(update: Update, context: CallbackContext):
 
 
 async def handle_remove_items_from_box(update: Update, context: CallbackContext):
-    text = ('Нажмите на предметы, которые хотите удалить')    
+    text = strings.SELECT_RETRIEVED_ITEMS
     box_id = context.user_data['box_id']
     params = parse_callback_data_string(update.callback_query.data).params
 
@@ -304,10 +287,7 @@ async def handle_input_address(update: Update, context: CallbackContext):
         )
         return State.PERSONAL_DATA_AGREEMENT
 
-    text = (
-        'Введите свой адрес, чтобы мы могли отправить курьера\n'
-        'Или вернитесь в меню для отмены'
-    )
+    text = strings.ENTER_YOU_ADDRESS_FOR_COURIER
 
     await update.callback_query.edit_message_text(
         text,
@@ -319,9 +299,9 @@ async def handle_input_address(update: Update, context: CallbackContext):
 
 async def handle_create_courier_delivery_request(update: Update, context: CallbackContext):
     address = context.user_data.get('address')
-    
-    text = 'Заявка создана, ждите звонка'
-    
+
+    text = strings.DELIVERY_REQUEST_CREATED
+
     await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=text,
@@ -335,7 +315,7 @@ async def handle_create_courier_delivery_request(update: Update, context: Callba
 async def handle_select_warehouse(update: Update, context: CallbackContext):
     telegram_id = update.effective_chat.id
     user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
-    
+
     if not user:
         await update.callback_query.edit_message_text(
             strings.PPD,
@@ -343,7 +323,7 @@ async def handle_select_warehouse(update: Update, context: CallbackContext):
             parse_mode='HTML'
         )
         return State.PERSONAL_DATA_AGREEMENT
-    
+
     await update.callback_query.answer()
     params = parse_callback_data_string(update.callback_query.data).params
 
@@ -369,27 +349,7 @@ async def handle_warehouse(update: Update, context: CallbackContext):
     warehouse_id = params.get('id')
     context.user_data['warehouse_id'] = warehouse_id
     warehouse = await sync_to_async(bot_db.get_warehouse)(warehouse_id)
-
-    boxes = warehouse.get('boxes')
-
-    has_delivery_text = 'Нет'
-
-    if warehouse.get('has_delivery'):
-        has_delivery_text = 'Да'
-
-    text = (
-        f'Название: {warehouse.get('name')}\n'
-        f'Адрес: {warehouse.get('address')}\n'
-        f'Есть доставка: {has_delivery_text}\n'
-    )
-
-    for box in boxes:
-        size = box.get('size')
-        text += (
-            f'Ячейка: {size.get('code')}\n'
-            f'Цена: {size.get('price')}\n'
-            f'Свободно: {box.get('available')}\n\n'
-        )
+    text = strings.get_warehouse_details(warehouse)
 
     await update.callback_query.edit_message_text(
         text,
@@ -402,12 +362,12 @@ async def handle_warehouse(update: Update, context: CallbackContext):
 
 async def handle_input_period(update: Update, context: CallbackContext):
     await update.callback_query.answer()
-    
+
     params = parse_callback_data_string(update.callback_query.data).params
     context.user_data['size_id'] = params.get('size_id')
 
-    edit_message_text = "Пройдите все шаги, либо вернитесь в меню, если передумали"
-    new_message_text = "Введите количество месяцев для аренды"
+    edit_message_text = strings.COMPLETE_ALL_STEPS_TO_MAKE_REQUEST
+    new_message_text = strings.INPUT_RENT_PERIOD
 
     await update.callback_query.edit_message_text(
         edit_message_text,
@@ -427,15 +387,14 @@ async def handle_input_period(update: Update, context: CallbackContext):
 async def validate_period(update: Update, context: CallbackContext):
     period = update.message.text
     if validators.period_is_valid(period):
-        text = (
-            'Выбран период: {period}\n'
-            'Теперь введите промокод, если он у вас есть'
+        text = strings.PERIOD_IS_ACCEPTED_ENTER_PROMO.format(
+            period=period
         )
         context.user_data['period'] = int(period)
         state = State.INPUT_PROMO
         keyboard = keyboards[KeyboardName.PROMO]()
     else:
-        text = 'Введен некорректный период: {period}'
+        text = strings.PERIOD_IS_INCORRECT
         state = State.INPUT_RENT_PERIOD
         keyboard = None
 
@@ -488,15 +447,15 @@ async def handle_rent_box(update: Update, context: CallbackContext):
     size_id = context.user_data['size_id']
     warehouse_id = context.user_data['warehouse_id']
     period = context.user_data['period']
-    
+
     await sync_to_async(bot_db.add_box_to_user)(
         telegram_id,
         warehouse_id,
         size_id, period
     )
-    
-    text = 'Ячейка успешно арендована!'
-    
+
+    text = strings.YOU_HAVE_RENTED_THE_BOX
+
     await update.callback_query.edit_message_text(
         text,
         reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
@@ -521,15 +480,16 @@ async def validate_address(update: Update, context: CallbackContext):
 
     if validators.name_is_valid(address):
         context.user_data['address'] = address
-        text = (
-            f'Ваш адрес: {address}\n\n'
-            'Создать заявку для вызова курьера?'
+        text = strings.CONFIRM_YOUR_ADDRESS_AND_REQUEST.format(
+            address=address
         )
         state = State.CREATE_COURIER_DELIVERY_REQUEST
         keyboard = keyboards[KeyboardName.CREATE_COURIER_DELIVERY_REQUEST]()
         
     else:
-        text = f'Вы ввели некорректный {address}, попробуйте еще раз'
+        text = strings.ADDRESS_IS_NOT_CORRECT.format(
+            address=address
+        )
         state = State.INPUT_ADDRESS
         keyboard = None
 
@@ -546,10 +506,10 @@ async def validate_address(update: Update, context: CallbackContext):
 async def handle_input_name(update: Update, context: CallbackContext):
     await update.callback_query.answer()
 
-    text = "Введите ФИО"
+    text = strings.INPUT_YOUR_FULLNAME_FOR_SIGNUP
 
     await update.callback_query.edit_message_text(
-        "Пройдите все шаги регистрации, либо вернитесь в меню, если передумали",
+        strings.COMPLETE_ALL_STEPS_TO_SIGNUP,
         reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
         parse_mode='HTML'
     )
@@ -567,11 +527,11 @@ async def validate_full_name(update: Update, context: CallbackContext):
     name = update.message.text
 
     if validators.name_is_valid(name):
-        text = f'Вы ввели корректное имя {name}, теперь введите телефон'
+        text = strings.YOUR_NAME_IS_CORRECT.format(name=name)
         state = State.INPUT_PHONE
         context.user_data['full_name'] = name
     else:
-        text = f'Вы ввели некорректное имя {name}, попробуйте еще раз'
+        text = strings.YOUR_NAME_IS_INCORRECT.format(name=name)
         state = State.INPUT_FULL_NAME
 
     await context.bot.send_message(
@@ -586,13 +546,13 @@ async def validate_full_name(update: Update, context: CallbackContext):
 async def validate_phone(update: Update, context: CallbackContext):
     if validators.phone_is_valid(update.message.text):
         await update.message.reply_text(
-            "Вы ввели корректный телефон, теперь введите имейл",
+            strings.YOUR_PHONE_IS_CORRECT,
         )
         context.user_data['phone'] = update.message.text
         return State.INPUT_EMAIL
     else:
         await update.message.reply_text(
-            "введите номер в формате 7(8)1234567890",
+            strings.YOUR_PHONE_IS_INCORRECT,
         )
         return State.INPUT_PHONE
 
@@ -602,17 +562,17 @@ async def validate_email(update: Update, context: CallbackContext):
 
     if validators.email_is_valid(email):
         context.user_data['email'] = email
-        text = (
-            'Введенные данные корректны?\n'
-            f'Имя: {context.user_data['full_name']}\n'
-            f'Телефон: {context.user_data['phone']}\n'
-            f'Имейл: {context.user_data['email']}\n'
-        )
+        text =strings.CONFIRM_SIGNUP.format(
+            full_name=context.user_data['full_name'],
+            phone=context.user_data['phone'],
+            email=context.user_data['email']
+        )        
+
         state = State.SIGN_UP
         keyboard = keyboards[KeyboardName.SIGN_UP]()
 
     else:
-        text = f'Вы ввели некорректный имейл {email}, попробуйте еще раз'
+        text = strings.YOUR_EMAIL_IS_INCORRECT.format(email=email)
         state = State.INPUT_EMAIL
         keyboard = None
 
