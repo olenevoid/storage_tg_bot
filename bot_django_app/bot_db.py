@@ -14,7 +14,8 @@ from bot_django_app.models import (User,
                                    StoredItem,
                                    BoxSize,
                                    BoxAvailability,
-                                   Role
+                                   Role,
+                                   PromoCode
                                    )
 
 
@@ -230,3 +231,17 @@ def _serialize_warehouse(location: StorageLocation) -> dict:
     }
 
     return warehouse
+
+
+def _serialize_promocode(promocode: PromoCode) -> dict:
+    serialized_promocode = {
+        'id': promocode.pk,
+        'code': promocode.code,
+        'discount': promocode.discount_percent,
+        'valid_from': promocode.valid_from.strftime('%d-%m-%Y'),
+        'valid_until': promocode.valid_until.strftime('%d-%m-%Y'),
+        'is_active': promocode.is_active,
+        'is_valid': promocode.is_valid()
+    }
+    
+    return serialized_promocode
