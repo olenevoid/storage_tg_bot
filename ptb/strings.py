@@ -71,6 +71,15 @@ MY_BOXES = (
 )
 
 
+BOX_RENT_CONFIRMATION = (
+        'Выбрана ячейка <b>{size_code}</b> объемом {volume}\n'
+        'По адресу:{warehouse_name} {address}\n'
+        'Цена за месяц: {price}\n'
+        'Срок аренды: {period}\n'
+        'Итоговая сумма: {sum}'
+    )
+
+
 def get_box_details(box: dict):
     box_size = box.get('size')
     text = MY_BOX_DETAILS.format(

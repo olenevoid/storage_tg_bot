@@ -459,20 +459,12 @@ async def handle_confirm_box_rent(update: Update, context: CallbackContext):
 
     warehouse = await sync_to_async(bot_db.get_warehouse)(warehouse_id)
     size = await sync_to_async(bot_db.get_box_size)(size_id)
-
-    raw_text = (
-        'Выбрана ячейка <b>{size_code}</b> объемом {volume}\n'
-        'По адресу:{warehouse_name} {address}\n'
-        'Цена за месяц: {price}\n'
-        'Срок аренды: {period}\n'
-        'Итоговая сумма: {sum}'
-    )
-
+   
     price = float(size.get('price'))
     period = context.user_data['period']
     sum = int(price * period)
 
-    text = raw_text.format(
+    text = strings.BOX_RENT_CONFIRMATION.format(
         size_code=size.get('code'),
         volume=size.get('volume_m3'),
         warehouse_name=warehouse.get('name'),
