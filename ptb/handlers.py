@@ -195,6 +195,7 @@ async def handle_my_box(update: Update, context: CallbackContext):
     params = parse_callback_data_string(update.callback_query.data).params
 
     box_id = params.get('id')
+    context.user_data['box_id'] = box_id
     box = await sync_to_async(bot_db.get_box)(box_id)
     box_size = box.get('size')
 
@@ -212,6 +213,34 @@ async def handle_my_box(update: Update, context: CallbackContext):
     await update.callback_query.edit_message_text(
         text,
         reply_markup=keyboards[KeyboardName.MY_BOX](box_id),
+        parse_mode='HTML'
+    )
+
+    return State.MY_BOX
+
+
+async def handle_open_box(update: Update, context: CallbackContext):
+    await update.callback_query.answer()
+    
+    box_id = context.user_data['box_id']
+    
+    box = await sync_to_async(bot_db.get_box)(box_id)
+    box_size = box.get('size')
+
+    text = (
+        f'Размер ячейки: {box_size.get('code')}\n'
+        f'Цена в месяц: {box_size.get('price')}\n'
+        f'Адрес склада: {box.get('address')}\n'
+        f'Арендована до: {box.get('rented_until')}\n'
+        f'Предметы на хранении:\n'
+    )
+
+    for item in box.get('stored_items'):
+        text += f'{item}\n'
+
+    await update.callback_query.edit_message_text(
+        text,
+        reply_markup=keyboards[KeyboardName.OPEN_BOX](),
         parse_mode='HTML'
     )
 
@@ -649,6 +678,7 @@ def get_handlers():
             ],
             State.MY_BOX: [
                 CallbackQueryHandler(handle_my_orders, get_pattern(CallbackName.MY_ORDERS)),
+                CallbackQueryHandler(handle_open_box, get_pattern(CallbackName.OPEN_BOX)),
                 CallbackQueryHandler(handle_my_box, get_pattern(CallbackName.MY_BOX)),
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
             ],
