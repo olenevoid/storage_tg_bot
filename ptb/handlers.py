@@ -400,7 +400,7 @@ async def handle_confirm_box_rent(update: Update, context: CallbackContext):
 
     text = raw_text.format(
         size_code=size.get('code'),
-        volume=size.get('volume'),
+        volume=size.get('volume_m3'),
         warehouse_name=warehouse.get('name'),
         address=warehouse.get('address'),
         price=price,
@@ -411,6 +411,29 @@ async def handle_confirm_box_rent(update: Update, context: CallbackContext):
     await update.callback_query.edit_message_text(
         text,
         reply_markup=keyboards[KeyboardName.CONFIRM_RENT](),
+        parse_mode='HTML'
+    )
+
+    return State.CONFIRM_BOX_RENT
+
+
+async def handle_rent_box(update: Update, context: CallbackContext):
+    telegram_id = update.effective_chat.id
+    size_id = context.user_data['size_id']
+    warehouse_id = context.user_data['warehouse_id']
+    period = context.user_data['period']
+    
+    await sync_to_async(bot_db.add_box_to_user)(
+        telegram_id,
+        warehouse_id,
+        size_id, period
+    )
+    
+    text = 'Ячейка успешно арендована!'
+    
+    await update.callback_query.edit_message_text(
+        text,
+        reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
         parse_mode='HTML'
     )
 
@@ -612,7 +635,7 @@ def get_handlers():
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
             ],
             State.CONFIRM_BOX_RENT: [
-                
+                CallbackQueryHandler(handle_rent_box, get_pattern(CallbackName.CONFIRM_BOX_RENT)),
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
             ],
             State.INPUT_ADDRESS: [
