@@ -137,7 +137,15 @@ def get_all_sizes():
 def _serialize_stored_items(box_id):
     items = StoredItem.objects.filter(box_id=box_id).all()
 
-    return [f'{item.name} x {item.quantity} шт.' for item in items]
+    return [_serialize_item(item) for item in items]
+
+
+def _serialize_item(item: StoredItem):
+    serialized_item = {
+        'id': item.pk,
+        'name': item.name,
+        'quantity': item.quantity
+    }
 
 
 def _serialize_box(box: Box):
