@@ -155,7 +155,7 @@ def my_orders_keyboard(page: Page):
 def my_box_keyboard(box_id):
 
     self_delivery_callback = CallbackData(
-        CallbackName.SELECT_WAREHOUSE,
+        CallbackName.OPEN_BOX,
         {'box_id': box_id}
     )
 
