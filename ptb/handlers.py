@@ -302,6 +302,36 @@ async def validate_new_items(update: Update, context: CallbackContext):
     return State.MY_BOX
 
 
+async def handle_remove_items_from_box(update: Update, context: CallbackContext):
+    text = ('Нажмите на предметы, которые хотите удалить')    
+    box_id = context.user_data['box_id']
+    params = parse_callback_data_string(update.callback_query.data).params
+
+    item_id = params.get('item_id')
+    if item_id:
+        await sync_to_async(bot_db.delete_item)(item_id)
+
+    box = await sync_to_async(bot_db.get_box)(box_id)
+    box_size = box.get('size')
+
+    text = strings.MY_BOX_DETAILS.format(
+        box_code=box_size.get('code'),
+        box_price=box_size.get('price'),
+        address=box.get('address'),
+        rented_until=box.get('rented_until')
+    )
+
+    for item in box.get('stored_items'):
+        text += f'{item.get('name')}\n'
+
+    await update.callback_query.edit_message_text(
+        text,
+        reply_markup=keyboards[KeyboardName.REMOVE_ITEMS_FROM_BOX](box),
+        parse_mode='HTML'
+    )
+    return State.MY_BOX
+
+
 async def handle_input_address(update: Update, context: CallbackContext):
     telegram_id = update.effective_chat.id
     user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
@@ -737,6 +767,8 @@ def get_handlers():
                 CallbackQueryHandler(handle_open_box, get_pattern(CallbackName.OPEN_BOX)),
                 CallbackQueryHandler(handle_my_box, get_pattern(CallbackName.MY_BOX)),
                 CallbackQueryHandler(handle_send_qr, get_pattern(CallbackName.OPEN_QR)),
+                CallbackQueryHandler(handle_remove_items_from_box, get_pattern(CallbackName.REMOVE_ITEMS)),
+                CallbackQueryHandler(handle_remove_items_from_box, get_pattern(CallbackName.REMOVE_ITEM)),
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
             ],
             State.PUT_ITEMS_INTO_BOX: [
