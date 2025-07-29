@@ -1,6 +1,9 @@
 # сюда функции для работы с бд джанго
 import os
 import django
+from django.utils.timezone import localtime, timedelta
+from django.db import transaction
+
 
 os. environ.setdefault('DJANGO_SETTINGS_MODULE', 'bot_core.settings')
 django.setup()
@@ -36,6 +39,24 @@ async def acreate_user(user: dict, role_name: str = 'Клиент'):
 
 async def aphone_number_exists(phone: str):
     return await User.objects.filter(phone).aexists()
+
+
+@transaction.atomic
+def add_box_to_user(telegram_id, warehouse_id, size_id, period):
+    user = User.objects.get(telegram_id=telegram_id)
+    location = StorageLocation.objects.get(pk=warehouse_id)
+    size = BoxSize.objects.get(pk=size_id)
+    box_availability = BoxAvailability.objects.get(location=location)
+
+    box = Box()
+    box.user = user
+    box.location = location
+    box.size = size
+    box.end_date = localtime() + timedelta(days=period*30)
+    box.save()
+    
+    box_availability.occupied_boxes += 1
+    box_availability.save()
 
 
 def find_user_by_tg(telegram_id) -> dict | None:
