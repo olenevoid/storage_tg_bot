@@ -76,6 +76,12 @@ def add_new_items_to_box(items: list, box_id):
             box=box,
             name=item
         )
+
+
+def delete_item(item_id):
+    StoredItem.objects.get(pk=item_id).delete()
+
+
 async def auser_exists(telegram_id) -> bool:
     user_exists = await User.objects.filter(telegram_id=telegram_id).aexists()
     return user_exists
