@@ -40,7 +40,7 @@ BUTTONS = {
       callback_data=CallbackData(CallbackName.ADD_THINGS).to_str()
     ),
     ButtonName.OPEN_QR: InlineKeyboardButton(
-        'Открыть через QR',
+        'Получить QR для открытия',
         callback_data=CallbackData(CallbackName.OPEN_QR).to_str()
     ),
     ButtonName.CONFIRM_RENT: InlineKeyboardButton(
