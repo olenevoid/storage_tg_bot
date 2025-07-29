@@ -40,6 +40,10 @@ class CallbackName(Enum):
     SELECT_RENT_PERIOD = 'select_period'
     CONFIRM_BOX_RENT = 'confirm_box_rent'
     NO_PROMO = 'no_promo'
+    OPEN_BOX = 'open_box'
+    OPEN_QR = 'open_qr'
+    ADD_THINGS = 'add_things'
+    REMOVE_THINGS = 'remove_things'
     # Эти, возможно, не нужны
     BACK = 'back'
     PERSONAL_DATA_AGREE = 'pd_yes'
