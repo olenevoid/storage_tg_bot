@@ -308,7 +308,7 @@ def remove_items_from_box(box):
     buttons.append([back_to_box_button])
 
     buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
-    print(buttons)
+
     return InlineKeyboardMarkup(buttons)
 
 
