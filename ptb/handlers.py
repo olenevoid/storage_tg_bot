@@ -553,7 +553,7 @@ async def handle_signup(update: Update, context: CallbackContext):
         'telegram_id': update.callback_query.from_user.id
     }
 
-    await bot_db.acreate_user(client)
+    await bot_db.acreate_user(client, settings.CLIENT)
 
     await update.callback_query.edit_message_text(
         text,
