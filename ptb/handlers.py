@@ -255,6 +255,53 @@ async def handle_send_qr(update: Update, context: CallbackContext):
     return State.MY_BOX
 
 
+async def handle_put_items_to_box(update: Update, context: CallbackContext):
+    text = ('Введите через запятую названия предметов, которые положили в хранилище')
+    
+    menu_message = await update.callback_query.edit_message_text(
+        text,
+        reply_markup=keyboards[KeyboardName.OPEN_BOX](),
+        parse_mode='HTML'
+    )
+    
+    context.user_data['menu_message_id'] = menu_message.message_id
+
+    return State.PUT_ITEMS_INTO_BOX
+
+
+async def validate_new_items(update: Update, context: CallbackContext):
+    box_id = context.user_data['box_id']
+    
+    items: list[str] = update.message.text.split(',')
+    
+    parsed_items = [item.strip() for item in items if item]
+    
+    await sync_to_async(bot_db.add_new_items_to_box)(parsed_items, box_id)
+    
+    box = await sync_to_async(bot_db.get_box)(box_id)
+    box_size = box.get('size')
+
+    text = strings.MY_BOX_DETAILS.format(
+        box_code=box_size.get('code'),
+        box_price=box_size.get('price'),
+        address=box.get('address'),
+        rented_until=box.get('rented_until')
+    )
+
+    for item in box.get('stored_items'):
+        text += f'{item}\n'
+
+    await context.bot.edit_message_text(
+            chat_id=update.effective_chat.id,
+            message_id=context.user_data['menu_message_id'],
+            text=text,
+            parse_mode='HTML',
+            reply_markup=keyboards[KeyboardName.OPEN_BOX]()
+    )
+
+    return State.MY_BOX
+
+
 async def handle_input_address(update: Update, context: CallbackContext):
     telegram_id = update.effective_chat.id
     user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
@@ -685,10 +732,15 @@ def get_handlers():
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.MY_BOX: [
+                CallbackQueryHandler(handle_put_items_to_box, get_pattern(CallbackName.PUT_NEW_ITEMS)),
                 CallbackQueryHandler(handle_my_orders, get_pattern(CallbackName.MY_ORDERS)),
                 CallbackQueryHandler(handle_open_box, get_pattern(CallbackName.OPEN_BOX)),
                 CallbackQueryHandler(handle_my_box, get_pattern(CallbackName.MY_BOX)),
                 CallbackQueryHandler(handle_send_qr, get_pattern(CallbackName.OPEN_QR)),
+                CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
+            ],
+            State.PUT_ITEMS_INTO_BOX: [
+                MessageHandler(filters.TEXT, validate_new_items),
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
             ],
             State.PERSONAL_DATA_AGREEMENT: [
