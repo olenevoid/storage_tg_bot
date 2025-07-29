@@ -42,8 +42,8 @@ class CallbackName(Enum):
     NO_PROMO = 'no_promo'
     OPEN_BOX = 'open_box'
     OPEN_QR = 'open_qr'
-    ADD_THINGS = 'add_things'
-    REMOVE_THINGS = 'remove_things'
+    PUT_NEW_ITEMS = 'add_things'
+    REMOVE_ITEMS = 'remove_things'
     # Эти, возможно, не нужны
     BACK = 'back'
     PERSONAL_DATA_AGREE = 'pd_yes'
