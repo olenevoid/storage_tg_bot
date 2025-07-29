@@ -146,6 +146,7 @@ def _serialize_item(item: StoredItem):
         'name': item.name,
         'quantity': item.quantity
     }
+    return serialized_item
 
 
 def _serialize_box(box: Box):
