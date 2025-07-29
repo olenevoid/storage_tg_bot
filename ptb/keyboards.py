@@ -129,12 +129,13 @@ def my_orders_keyboard(page: Page):
     boxes = page.object_list
 
     for box in boxes:
+        size = box.get('size')
         callback_data = CallbackData(
             CallbackName.MY_BOX,
             {'id': box.get('id')}
         )
 
-        text = f'Размер {box.get('size')} на {box.get('location')}'
+        text = f'Размер {size.get('code')} на {box.get('location')}'
 
         button = [
             InlineKeyboardButton(
