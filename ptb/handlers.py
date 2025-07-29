@@ -182,7 +182,7 @@ async def handle_my_orders(update: Update, context: CallbackContext):
     page = Paginator(boxes, per_page=2).page(page_number)
 
     await update.callback_query.edit_message_text(
-        "Мои заказы",
+        strings.MY_BOXES,
         reply_markup=keyboards[KeyboardName.MY_ORDERS](page),
         parse_mode='HTML'
     )
