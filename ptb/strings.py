@@ -69,3 +69,23 @@ MY_BOX_DETAILS = (
 MY_BOXES = (
     'Ваши активные заказы:'
 )
+
+
+def get_box_details(box: dict):
+    box_size = box.get('size')
+    text = MY_BOX_DETAILS.format(
+        box_code=box_size.get('code'),
+        box_price=box_size.get('price'),
+        address=box.get('address'),
+        rented_until=box.get('rented_until')
+    )
+
+    for item in box.get('stored_items'):
+        text += f'{item.get('name')}\n'
+        
+    text += (
+        '\n<b>Список вещей составляется пользователем для собственных нужд\n'
+        'Мы не несем отвестсвенность за его достоверность</b>'
+    )
+        
+    return text

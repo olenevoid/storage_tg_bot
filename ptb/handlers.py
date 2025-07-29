@@ -197,17 +197,7 @@ async def handle_my_box(update: Update, context: CallbackContext):
     box_id = params.get('id')
     context.user_data['box_id'] = box_id
     box = await sync_to_async(bot_db.get_box)(box_id)
-    box_size = box.get('size')
-
-    text = strings.MY_BOX_DETAILS.format(
-        box_code=box_size.get('code'),
-        box_price=box_size.get('price'),
-        address=box.get('address'),
-        rented_until=box.get('rented_until')
-    )
-
-    for item in box.get('stored_items'):
-        text += f'{item.get('name')}\n'
+    text = strings.get_box_details(box)
 
     await update.callback_query.edit_message_text(
         text,
@@ -224,17 +214,7 @@ async def handle_open_box(update: Update, context: CallbackContext):
     box_id = context.user_data['box_id']
     
     box = await sync_to_async(bot_db.get_box)(box_id)
-    box_size = box.get('size')
-
-    text = strings.MY_BOX_DETAILS.format(
-        box_code=box_size.get('code'),
-        box_price=box_size.get('price'),
-        address=box.get('address'),
-        rented_until=box.get('rented_until')
-    )
-
-    for item in box.get('stored_items'):
-        text += f'{item.get('name')}\n'
+    text = strings.get_box_details(box)
 
     await update.callback_query.edit_message_text(
         text,
@@ -279,17 +259,7 @@ async def validate_new_items(update: Update, context: CallbackContext):
     await sync_to_async(bot_db.add_new_items_to_box)(parsed_items, box_id)
     
     box = await sync_to_async(bot_db.get_box)(box_id)
-    box_size = box.get('size')
-
-    text = strings.MY_BOX_DETAILS.format(
-        box_code=box_size.get('code'),
-        box_price=box_size.get('price'),
-        address=box.get('address'),
-        rented_until=box.get('rented_until')
-    )
-
-    for item in box.get('stored_items'):
-        text += f'{item.get('name')}\n'
+    text = strings.get_box_details(box)
 
     await context.bot.edit_message_text(
             chat_id=update.effective_chat.id,
@@ -312,17 +282,7 @@ async def handle_remove_items_from_box(update: Update, context: CallbackContext)
         await sync_to_async(bot_db.delete_item)(item_id)
 
     box = await sync_to_async(bot_db.get_box)(box_id)
-    box_size = box.get('size')
-
-    text = strings.MY_BOX_DETAILS.format(
-        box_code=box_size.get('code'),
-        box_price=box_size.get('price'),
-        address=box.get('address'),
-        rented_until=box.get('rented_until')
-    )
-
-    for item in box.get('stored_items'):
-        text += f'{item.get('name')}\n'
+    text = strings.get_box_details(box)
 
     await update.callback_query.edit_message_text(
         text,
