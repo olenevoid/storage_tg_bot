@@ -57,3 +57,11 @@ USER_REGISTRATION_COMPLETE = (
 SELECT_WAREHOUSE = (
     'Выберите удобный вам склад из списка ниже:'
 )
+
+MY_BOX_DETAILS = (
+        '<b>Размер ячейки:</b> {box_code}\n'
+        '<b>Цена в месяц:</b> {box_price}\n'
+        '<b>Адрес склада:</b> {address}\n'
+        '<b>Арендована до:</b> {rented_until}\n'
+        '<b>Предметы на хранении:</b>\n'
+)

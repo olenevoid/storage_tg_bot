@@ -199,12 +199,11 @@ async def handle_my_box(update: Update, context: CallbackContext):
     box = await sync_to_async(bot_db.get_box)(box_id)
     box_size = box.get('size')
 
-    text = (
-        f'Размер ячейки: {box_size.get('code')}\n'
-        f'Цена в месяц: {box_size.get('price')}\n'
-        f'Адрес склада: {box.get('address')}\n'
-        f'Арендована до: {box.get('rented_until')}\n'
-        f'Предметы на хранении:\n'
+    text = strings.MY_BOX_DETAILS.format(
+        box_code=box_size.get('code'),
+        box_price=box_size.get('price'),
+        address=box.get('address'),
+        rented_until=box.get('rented_until')
     )
 
     for item in box.get('stored_items'):
@@ -227,12 +226,11 @@ async def handle_open_box(update: Update, context: CallbackContext):
     box = await sync_to_async(bot_db.get_box)(box_id)
     box_size = box.get('size')
 
-    text = (
-        f'Размер ячейки: {box_size.get('code')}\n'
-        f'Цена в месяц: {box_size.get('price')}\n'
-        f'Адрес склада: {box.get('address')}\n'
-        f'Арендована до: {box.get('rented_until')}\n'
-        f'Предметы на хранении:\n'
+    text = strings.MY_BOX_DETAILS.format(
+        box_code=box_size.get('code'),
+        box_price=box_size.get('price'),
+        address=box.get('address'),
+        rented_until=box.get('rented_until')
     )
 
     for item in box.get('stored_items'):
