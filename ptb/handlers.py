@@ -248,9 +248,9 @@ async def handle_open_box(update: Update, context: CallbackContext):
 async def handle_send_qr(update: Update, context: CallbackContext):
     qr_path = path.join(BASE_DIR, f'{settings.STATIC}/qr_code.png')
     with open(qr_path, 'rb') as file:
-        await context.bot.send_document(
+        await context.bot.send_photo(
             chat_id=update.effective_chat.id,
-            document=file
+            photo=file
         )
     return State.MY_BOX
 
