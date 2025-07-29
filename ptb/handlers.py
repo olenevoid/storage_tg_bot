@@ -563,23 +563,6 @@ async def handle_signup(update: Update, context: CallbackContext):
     return State.SIGN_UP
 
 
-async def handle_yes(update: Update, context: CallbackContext):
-    await update.callback_query.answer()
-    await update.callback_query.edit_message_text(
-        "ВВедите адрес от куда забрать вещи",
-        reply_markup=keyboards[KeyboardName.BACK_TO_MENU]()
-    )
-    return State.INPUT_ADDRESS
-
-
-async def handle_final(update: Update, context: CallbackContext):
-    await update.callback_query.answer()
-    await update.callback_query.edit_message_text(
-        "С вами скоро свяжутся",
-        reply_markup=keyboards[KeyboardName.BACK_TO_MENU]()
-    )
-
-
 def get_handlers():
     return ConversationHandler(
         entry_points=[CommandHandler("start", start)],
