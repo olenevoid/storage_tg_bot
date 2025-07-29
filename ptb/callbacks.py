@@ -44,6 +44,7 @@ class CallbackName(Enum):
     OPEN_QR = 'open_qr'
     PUT_NEW_ITEMS = 'add_things'
     REMOVE_ITEMS = 'remove_things'
+    REMOVE_ITEM = 'remove_item'
     # Эти, возможно, не нужны
     BACK = 'back'
     PERSONAL_DATA_AGREE = 'pd_yes'
