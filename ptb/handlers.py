@@ -245,6 +245,16 @@ async def handle_open_box(update: Update, context: CallbackContext):
     return State.MY_BOX
 
 
+async def handle_send_qr(update: Update, context: CallbackContext):
+    qr_path = path.join(BASE_DIR, f'{settings.STATIC}/qr_code.png')
+    with open(qr_path, 'rb') as file:
+        await context.bot.send_document(
+            chat_id=update.effective_chat.id,
+            document=file
+        )
+    return State.MY_BOX
+
+
 async def handle_input_address(update: Update, context: CallbackContext):
     telegram_id = update.effective_chat.id
     user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
@@ -678,6 +688,7 @@ def get_handlers():
                 CallbackQueryHandler(handle_my_orders, get_pattern(CallbackName.MY_ORDERS)),
                 CallbackQueryHandler(handle_open_box, get_pattern(CallbackName.OPEN_BOX)),
                 CallbackQueryHandler(handle_my_box, get_pattern(CallbackName.MY_BOX)),
+                CallbackQueryHandler(handle_send_qr, get_pattern(CallbackName.OPEN_QR)),
                 CallbackQueryHandler(handle_back_menu, get_pattern(CallbackName.MAIN_MENU)),
             ],
             State.PERSONAL_DATA_AGREEMENT: [
