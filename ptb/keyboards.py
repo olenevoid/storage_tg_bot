@@ -276,6 +276,47 @@ def open_box():
     return InlineKeyboardMarkup(buttons)
 
 
+def remove_items_from_box(box):
+    buttons = []
+    items = box.get('stored_items')
+
+    for item in items:
+        item_callback_data = CallbackData(
+            CallbackName.REMOVE_ITEM,
+            {'item_id': item.get('id')}
+        )
+        button = InlineKeyboardButton(
+            item.get('name'),
+            callback_data=item_callback_data.to_str()
+        )
+        
+        buttons.append(button)
+
+    buttons = _split_to_sublists(buttons)
+
+    box_callback_data = CallbackData(
+        CallbackName.MY_BOX,
+        {'id': box.get('id')}
+    )
+
+    back_to_box_button = InlineKeyboardButton(
+        'Назад',
+        callback_data=box_callback_data.to_str()
+    )
+    
+
+    buttons.append([back_to_box_button])
+
+    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    print(buttons)
+    return InlineKeyboardMarkup(buttons)
+
+
+# В идеале надо перенести в хэлперы, но я не придумал, что там еще хранить
+def _split_to_sublists(items: list, chunk_size: int = 2):
+    return [items[i:i + chunk_size] for i in range(0, len(items), chunk_size)]
+
+
 class KeyboardName(Enum):
     MAIN_MENU = auto()
     MY_ACCOUNT = auto()
@@ -294,6 +335,7 @@ class KeyboardName(Enum):
     PROMO = auto()
     CONFIRM_RENT = auto()
     OPEN_BOX = auto()
+    REMOVE_ITEMS_FROM_BOX = auto()
 
 
 keyboards: dict[KeyboardName, callable] = {
@@ -312,5 +354,6 @@ keyboards: dict[KeyboardName, callable] = {
     KeyboardName.SELECT_BOX: select_box,
     KeyboardName.PROMO: promo,
     KeyboardName.CONFIRM_RENT: confirm_rent,
-    KeyboardName.OPEN_BOX: open_box
+    KeyboardName.OPEN_BOX: open_box,
+    KeyboardName.REMOVE_ITEMS_FROM_BOX: remove_items_from_box
 }
