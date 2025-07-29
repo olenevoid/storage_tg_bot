@@ -207,7 +207,7 @@ async def handle_my_box(update: Update, context: CallbackContext):
     )
 
     for item in box.get('stored_items'):
-        text += f'{item}\n'
+        text += f'{item.get('name')}\n'
 
     await update.callback_query.edit_message_text(
         text,
@@ -234,7 +234,7 @@ async def handle_open_box(update: Update, context: CallbackContext):
     )
 
     for item in box.get('stored_items'):
-        text += f'{item}\n'
+        text += f'{item.get('name')}\n'
 
     await update.callback_query.edit_message_text(
         text,
@@ -289,7 +289,7 @@ async def validate_new_items(update: Update, context: CallbackContext):
     )
 
     for item in box.get('stored_items'):
-        text += f'{item}\n'
+        text += f'{item.get('name')}\n'
 
     await context.bot.edit_message_text(
             chat_id=update.effective_chat.id,
