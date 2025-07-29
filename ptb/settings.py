@@ -29,6 +29,7 @@ class State(Enum):
     INPUT_RENT_PERIOD = auto()
     INPUT_PROMO = auto()
     CONFIRM_BOX_RENT = auto()
+    PUT_ITEMS_INTO_BOX = auto()
 
 
 # Значения должны совпадать с ролями в БД
