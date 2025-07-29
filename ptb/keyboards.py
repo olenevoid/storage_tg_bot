@@ -2,7 +2,6 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from ptb.callbacks import CallbackData, CallbackName
 from django.core.paginator import Page
 from ptb.buttons import BUTTONS, ButtonName
-from ptb.settings import State
 from enum import Enum, auto
 
 
@@ -228,7 +227,10 @@ def select_box(boxes: list[dict]):
 
     for box in boxes:
         size = box.get('size')
-        callback_data = CallbackData(CallbackName.SELECT_BOX, {'size_id': size.get('id')})
+        callback_data = CallbackData(
+            CallbackName.SELECT_BOX,
+            {'size_id': size.get('id')}
+        )
 
         button = InlineKeyboardButton(
             size.get('code'),
@@ -289,7 +291,7 @@ def remove_items_from_box(box):
             item.get('name'),
             callback_data=item_callback_data.to_str()
         )
-        
+
         buttons.append(button)
 
     buttons = _split_to_sublists(buttons)
@@ -303,7 +305,6 @@ def remove_items_from_box(box):
         'Назад',
         callback_data=box_callback_data.to_str()
     )
-    
 
     buttons.append([back_to_box_button])
 
