@@ -349,6 +349,7 @@ async def handle_warehouse(update: Update, context: CallbackContext):
     warehouse_id = params.get('id')
     context.user_data['warehouse_id'] = warehouse_id
     warehouse = await sync_to_async(bot_db.get_warehouse)(warehouse_id)
+    boxes = warehouse.get('boxes')
     text = strings.get_warehouse_details(warehouse)
 
     await update.callback_query.edit_message_text(
