@@ -3,7 +3,7 @@ import django
 from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 from telegram import Bot
-from dotenv import load_dotenv
+from ptb.settings import TG_BOT_TOKEN
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bot_core.settings")
@@ -12,9 +12,7 @@ django.setup()
 from bot_django_app.models import Box, Notification
 
 
-load_dotenv()
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-bot = Bot(token=TELEGRAM_TOKEN)
+bot = Bot(token=TG_BOT_TOKEN)
 
 
 def monthly_reminder_job():
