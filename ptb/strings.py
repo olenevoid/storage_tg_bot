@@ -186,6 +186,15 @@ YOUR_EMAIL_IS_INCORRECT = (
 )
 
 
+def get_main_menu(client: dict):
+    text = f'{MAIN_MENU}\n'
+    
+    if not client:
+        text += (
+            f'<b>Внимание:</b> доступ к аренде ячеек открывается только после регистрации\n'
+        )
+
+
 def get_box_details(box: dict):
     box_size = box.get('size')
     text = MY_BOX_DETAILS.format(
