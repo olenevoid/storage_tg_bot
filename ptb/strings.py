@@ -71,13 +71,7 @@ MY_BOXES = (
 )
 
 
-BOX_RENT_CONFIRMATION = (
-        'Выбрана ячейка <b>{size_code}</b> объемом {volume}\n'
-        'По адресу:{warehouse_name} {address}\n'
-        'Цена за месяц: {price}\n'
-        'Срок аренды: {period}\n'
-        'Итоговая сумма: {sum}'
-    )
+
 
 
 WRITE_DOWN_STORED_ITEMS = (
@@ -251,3 +245,43 @@ def get_warehouse_details(warehouse: dict):
             f'Цена: {size.get('price')}\n'
             f'Свободно: {box.get('available')}\n\n'
         )
+    
+    return text
+
+
+def get_box_rent_confirmation(warehouse, size, period, promocode = None):
+    price = float(size.get('price'))
+    sum = int(price * period)
+    
+    sum_text = (
+        f'Итоговая сумма: {sum}\n'
+    )
+    
+    if promocode:
+        discount_sum = sum - (sum / 100 * promocode.get('discount'))
+        sum_text = f'Итоговая сумма: <s>{sum}</s> <b>{discount_sum}</b>'
+    
+    raw_text = (
+        'Выбрана ячейка <b>{size_code}</b> объемом {volume} куб.м.\n'
+        'По адресу: {warehouse_name} {address}\n'
+        'Цена за месяц: {price}\n'
+        'Срок аренды (мес): {period}\n'
+        '{sum_text}\n\n'
+    )
+
+    text = raw_text.format(
+        size_code=size.get('code'),
+        volume=size.get('volume_m3'),
+        warehouse_name=warehouse.get('name'),
+        address=warehouse.get('address'),
+        price=price,
+        period=period,
+        sum_text=sum_text
+    )
+
+    if promocode:
+        text += (
+            f'Применен промокод: <b>{promocode.get('code')}</b>'
+        )
+
+    return text
