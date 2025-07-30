@@ -410,7 +410,40 @@ async def validate_period(update: Update, context: CallbackContext):
 
 
 async def validate_promo(update: Update, context: CallbackContext):
-    pass
+    code = update.message.text
+    promocode = await sync_to_async(bot_db.find_promocode)(code)
+
+    if promocode.get('is_valid'):
+        context.user_data['promocode'] = promocode
+        size_id = context.user_data['size_id']
+        warehouse_id = context.user_data['warehouse_id']
+
+        warehouse = await sync_to_async(bot_db.get_warehouse)(warehouse_id)
+        size = await sync_to_async(bot_db.get_box_size)(size_id)
+        period = context.user_data['period']
+
+        text = strings.get_box_rent_confirmation(
+            warehouse,
+            size,
+            period,
+            promocode
+        )
+
+        keyboard = keyboards[KeyboardName.CONFIRM_RENT]()
+        state = State.CONFIRM_BOX_RENT
+    else:
+        state = State.INPUT_PROMO
+        text = 'Извините, но такого промокода нет. Попробуйте еще раз'
+        keyboard = None
+
+    await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=text,
+            parse_mode='HTML',
+            reply_markup=keyboard
+    )
+
+    return state
 
 
 async def handle_confirm_box_rent(update: Update, context: CallbackContext):
