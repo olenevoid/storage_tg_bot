@@ -24,11 +24,11 @@ from ptb.settings import State
 async def start(update: Update, context: CallbackContext):
     await update.message.delete()
     telegram_id = update.message.from_user.id
-    client = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
+    user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
 
     await update.message.reply_text(
-        strings.MAIN_MENU,
-        reply_markup=keyboards[KeyboardName.MAIN_MENU](client)
+        strings.get_main_menu(user),
+        reply_markup=keyboards[KeyboardName.MAIN_MENU](user)
     )
     return State.MAIN_MENU
 
@@ -48,7 +48,7 @@ async def handle_back_menu(update: Update, context: CallbackContext):
     user = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
 
     await update.callback_query.edit_message_text(
-        strings.MAIN_MENU,
+        strings.get_main_menu(user),
         reply_markup=keyboards[KeyboardName.MAIN_MENU](user)
     )
     return State.MAIN_MENU
