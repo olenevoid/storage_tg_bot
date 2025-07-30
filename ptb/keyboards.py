@@ -9,12 +9,13 @@ def main_keyboard(client: dict = None):
 
     buttons = [
         [BUTTONS[ButtonName.TOS]],
-        [BUTTONS[ButtonName.ORDER_STORAGE]],
     ]
 
     if client:
+        buttons.append([BUTTONS[ButtonName.ORDER_STORAGE]])
         buttons.append([BUTTONS[ButtonName.MY_ACCOUNT]])
     else:
+        buttons.append([BUTTONS[ButtonName.SHOW_PRICES]])
         buttons.append([BUTTONS[ButtonName.SIGNUP]])
 
     return InlineKeyboardMarkup(buttons)
