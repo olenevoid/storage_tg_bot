@@ -1,11 +1,12 @@
 from enum import Enum, auto
+from telegram import InlineKeyboardButton
 
 
 NAME_SEPARATOR = '__'
 PARAM_SEPARATOR = ','
 
 
-# Enum для управления коллбэками. 
+# Enum для управления коллбэками
 # Можно быстро переименовать в одном месте, если понадобится
 # Текст коллбэка должен быть уникальным
 class CallbackName(Enum):
@@ -75,6 +76,42 @@ class CallbackData:
             return f'{self.name.value}{NAME_SEPARATOR}{self.param_string}'
 
         return self.name.value
+
+
+class CallbackButton(InlineKeyboardButton):
+    def __init__(
+        self,
+        text: str,
+        callback_name: CallbackName,
+        params: dict = {}
+    ):
+
+        url = None
+        switch_inline_query = None
+        switch_inline_query_current_chat = None
+        callback_game = None
+        pay = None
+        login_url = None
+        web_app = None
+        switch_inline_query_chosen_chat = None
+        copy_text = None
+        api_kwargs = None
+
+        callback_data = CallbackData(callback_name, params).to_str()
+
+        super().__init__(
+            text,
+            url,
+            callback_data,
+            switch_inline_query,
+            switch_inline_query_current_chat,
+            callback_game,
+            pay,
+            login_url,
+            web_app,
+            switch_inline_query_chosen_chat,
+            copy_text,
+            api_kwargs=api_kwargs)
 
 
 def get_pattern(callback_name: CallbackName):
