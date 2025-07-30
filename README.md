@@ -19,11 +19,17 @@
 * Управление заявками (через Django-админку)
 
 ## Запуск проекта
-1. Установите зависимости:
+1. Клонируй репозиторий:
+```
+git clone https://github.com/yourusername/STORAGE_TG_BOT.git
+
+cd STORAGE_TG_BOT
+```
+2. Установите зависимости:
 ```
 pip install -r requirements.txt
 ```
-2. Настройте .env (или ptb/settings.py):
+3. Настройте .env (или ptb/settings.py):
    
 ```TG_BOT_TOKEN=...``` — токен Telegram-бота
 
@@ -31,11 +37,11 @@ pip install -r requirements.txt
 
 ```ADMIN_ID=...``` — ID админа (для прав доступа)
 
-3. Примените миграции:
+4. Примените миграции:
 ```
 python manage.py migrate
 ```
-4. Запустите бота:
+5. Запустите бота:
 ```
 python ptb/bot.py
 ```
