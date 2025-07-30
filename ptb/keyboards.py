@@ -1,22 +1,22 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from ptb.callbacks import CallbackData, CallbackName
 from django.core.paginator import Page
-from ptb.buttons import BUTTONS, ButtonName
+import ptb.static_buttons as static_buttons
 from enum import Enum, auto
 
 
 def main_keyboard(client: dict = None):
 
     buttons = [
-        [BUTTONS[ButtonName.TOS]],
+        [static_buttons.TOS],
     ]
 
     if client:
-        buttons.append([BUTTONS[ButtonName.ORDER_STORAGE]])
-        buttons.append([BUTTONS[ButtonName.MY_ACCOUNT]])
+        buttons.append([static_buttons.ORDER_STORAGE])
+        buttons.append([static_buttons.MY_ACCOUNT])
     else:
-        buttons.append([BUTTONS[ButtonName.SHOW_PRICES]])
-        buttons.append([BUTTONS[ButtonName.SIGNUP]])
+        buttons.append([static_buttons.SHOW_PRICES])
+        buttons.append([static_buttons.SIGNUP])
 
     return InlineKeyboardMarkup(buttons)
 
@@ -24,10 +24,10 @@ def main_keyboard(client: dict = None):
 def tos_keyboard():
     return InlineKeyboardMarkup(
         [
-            [BUTTONS[ButtonName.TOS_DOWNLOAD]],
-            [BUTTONS[ButtonName.FAQ]],
-            [BUTTONS[ButtonName.FORBIDDEN]],
-            [BUTTONS[ButtonName.BACK_TO_MENU]],
+            [static_buttons.TOS_DOWNLOAD],
+            [static_buttons.FAQ],
+            [static_buttons.FORBIDDEN],
+            [static_buttons.BACK_TO_MENU],
         ]
     )
 
@@ -35,7 +35,7 @@ def tos_keyboard():
 def back_to_menu_keyboard():
     return InlineKeyboardMarkup(
         [
-            [BUTTONS[ButtonName.BACK_TO_MENU]],
+            [static_buttons.BACK_TO_MENU],
         ]
     )
 
@@ -43,10 +43,10 @@ def back_to_menu_keyboard():
 def order_storage_keyboard():
     return InlineKeyboardMarkup(
         [
-            [BUTTONS[ButtonName.SHOW_PRICES]],
-            [BUTTONS[ButtonName.COURIER_DELIVERY]],
-            [BUTTONS[ButtonName.SELF_DELIVERY]],
-            [BUTTONS[ButtonName.BACK_TO_MENU]],
+            [static_buttons.SHOW_PRICES],
+            [static_buttons.COURIER_DELIVERY],
+            [static_buttons.SELF_DELIVERY],
+            [static_buttons.BACK_TO_MENU],
         ]
     )
 
@@ -54,10 +54,10 @@ def order_storage_keyboard():
 def ppd_peyboard():
     return InlineKeyboardMarkup(
         [
-            [BUTTONS[ButtonName.PPD_DOWNLOAD]],
+            [static_buttons.PPD_DOWNLOAD],
             [
-                BUTTONS[ButtonName.PPD_YES],
-                BUTTONS[ButtonName.PPD_NO]
+                static_buttons.PPD_YES,
+                static_buttons.PPD_NO
             ],
         ]
     )
@@ -66,8 +66,8 @@ def ppd_peyboard():
 def call_courirer_keyboard():
     return InlineKeyboardMarkup(
         [
-            [BUTTONS[ButtonName.HAND_OVER_THINGS]],
-            [BUTTONS[ButtonName.BACK_TO_MENU]],
+            [static_buttons.HAND_OVER_THINGS],
+            [static_buttons.BACK_TO_MENU],
         ]
     )
 
@@ -118,7 +118,7 @@ def warehouses_keyboard(page: Page):
 
     buttons.append(_get_page_buttons(page, CallbackName.SELECT_WAREHOUSE))
 
-    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    buttons.append([static_buttons.BACK_TO_MENU])
 
     return InlineKeyboardMarkup(buttons)
 
@@ -148,7 +148,7 @@ def my_orders_keyboard(page: Page):
 
     buttons.append(_get_page_buttons(page, CallbackName.MY_ORDERS))
 
-    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    buttons.append([static_buttons.BACK_TO_MENU])
 
     return InlineKeyboardMarkup(buttons)
 
@@ -184,7 +184,7 @@ def my_box_keyboard(box_id):
         ],
     ]
 
-    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    buttons.append([static_buttons.BACK_TO_MENU])
 
     return InlineKeyboardMarkup(buttons)
 
@@ -192,12 +192,12 @@ def my_box_keyboard(box_id):
 def signup_keyboard():
     buttons = [
         [
-            BUTTONS[ButtonName.CONFIRM_SIGNUP],
-            BUTTONS[ButtonName.CHANGE_PERSONAL_DATA]
+            static_buttons.CONFIRM_SIGNUP,
+            static_buttons.CHANGE_PERSONAL_DATA
         ]
     ]
 
-    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    buttons.append([static_buttons.BACK_TO_MENU])
 
     return InlineKeyboardMarkup(buttons)
 
@@ -206,19 +206,19 @@ def my_account(user: dict):
     buttons = []
 
     if user.get('boxes'):
-        buttons.append([BUTTONS[ButtonName.MY_ORDERS]])
+        buttons.append([static_buttons.MY_ORDERS])
 
-    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    buttons.append([static_buttons.BACK_TO_MENU])
 
     return InlineKeyboardMarkup(buttons)
 
 
 def courier_delivery_request():
     buttons = [
-        [BUTTONS[ButtonName.COURIER_DELIVERY_YES]]
+        [static_buttons.COURIER_DELIVERY_YES]
     ]
 
-    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    buttons.append([static_buttons.BACK_TO_MENU])
 
     return InlineKeyboardMarkup(buttons)
 
@@ -240,41 +240,41 @@ def select_box(boxes: list[dict]):
 
         buttons.append([button])
 
-    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    buttons.append([static_buttons.BACK_TO_MENU])
 
     return InlineKeyboardMarkup(buttons)
 
 
 def promo():
     buttons = [
-        [BUTTONS[ButtonName.NO_PROMO]],
+        [static_buttons.NO_PROMO],
     ]
 
-    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    buttons.append([static_buttons.BACK_TO_MENU])
 
     return InlineKeyboardMarkup(buttons)
 
 
 def confirm_rent():
     buttons = [
-        [BUTTONS[ButtonName.CONFIRM_RENT]]
+        [static_buttons.CONFIRM_RENT]
     ]
 
-    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    buttons.append([static_buttons.BACK_TO_MENU])
 
     return InlineKeyboardMarkup(buttons)
 
 
 def open_box():
     buttons = [
-        [BUTTONS[ButtonName.OPEN_QR]],
+        [static_buttons.OPEN_QR],
         [
-            BUTTONS[ButtonName.ADD_THINGS],
-            BUTTONS[ButtonName.REMOVE_THINGS]
+            static_buttons.ADD_THINGS,
+            static_buttons.REMOVE_THINGS
         ]
     ]
 
-    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    buttons.append([static_buttons.BACK_TO_MENU])
 
     return InlineKeyboardMarkup(buttons)
 
@@ -309,7 +309,7 @@ def remove_items_from_box(box):
 
     buttons.append([back_to_box_button])
 
-    buttons.append([BUTTONS[ButtonName.BACK_TO_MENU]])
+    buttons.append([static_buttons.BACK_TO_MENU])
 
     return InlineKeyboardMarkup(buttons)
 
