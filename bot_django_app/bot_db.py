@@ -15,7 +15,8 @@ from bot_django_app.models import (User,
                                    BoxSize,
                                    BoxAvailability,
                                    Role,
-                                   PromoCode
+                                   PromoCode,
+                                   PickupRequest
                                    )
 
 
@@ -44,6 +45,23 @@ async def acreate_user(user: dict, role_name: str = 'Клиент'):
 
 async def aphone_number_exists(phone: str):
     return await User.objects.filter(phone).aexists()
+
+
+def create_pickup_request(
+    address: str,
+    client_tg_id: int,
+    request_type = 'deliver'
+    ):
+
+    client = get_user_by_tg(client_tg_id)
+
+    pickup_request = PickupRequest()
+    pickup_request.user = client
+    pickup_request.address = address
+    pickup_request.preferred_date = localtime()
+    pickup_request.type = request_type
+    
+    pickup_request.save()
 
 
 @transaction.atomic
