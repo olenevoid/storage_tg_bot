@@ -144,7 +144,7 @@ def my_box_keyboard(box_id):
             )
         ],
         [
-            CallbackButton('Назад',CallbackName.MY_ORDERS)
+            CallbackButton('Назад', CallbackName.MY_ORDERS)
         ],
     ]
 
