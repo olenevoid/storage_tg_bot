@@ -2,7 +2,6 @@ from telegram import InlineKeyboardMarkup
 from ptb.callbacks import CallbackName, CallbackButton
 from django.core.paginator import Page
 import ptb.static_buttons as static_buttons
-from enum import Enum, auto
 
 
 def main_keyboard(client: dict = None):
@@ -272,43 +271,3 @@ def remove_items_from_box(box):
 # В идеале надо перенести в хэлперы, но я не придумал, что там еще хранить
 def _split_to_sublists(items: list, chunk_size: int = 2):
     return [items[i:i + chunk_size] for i in range(0, len(items), chunk_size)]
-
-
-class KeyboardName(Enum):
-    MAIN_MENU = auto()
-    MY_ACCOUNT = auto()
-    TERMS_OF_SERVICE = auto()
-    MY_BOX = auto()
-    SELECT_WAREHOUSE = auto()
-    SELECT_BOX = auto()
-    ORDER_STORAGE = auto()
-    MY_ORDERS = auto()
-    BACK_TO_MENU = auto()
-    PERSONAL_DATA_AGREEMENT = auto()
-    WAREHOUSE = auto()
-    SIGN_UP = auto()
-    CREATE_COURIER_DELIVERY_REQUEST = auto()
-    PROMO = auto()
-    CONFIRM_RENT = auto()
-    OPEN_BOX = auto()
-    REMOVE_ITEMS_FROM_BOX = auto()
-
-
-keyboards: dict[KeyboardName, callable] = {
-    KeyboardName.MAIN_MENU: main_keyboard,
-    KeyboardName.TERMS_OF_SERVICE: tos_keyboard,
-    KeyboardName.MY_BOX: my_box_keyboard,
-    KeyboardName.SELECT_WAREHOUSE: warehouses_keyboard,
-    KeyboardName.MY_ORDERS: my_orders_keyboard,
-    KeyboardName.ORDER_STORAGE: order_storage_keyboard,
-    KeyboardName.BACK_TO_MENU: back_to_menu_keyboard,
-    KeyboardName.PERSONAL_DATA_AGREEMENT: ppd_peyboard,
-    KeyboardName.SIGN_UP: signup_keyboard,
-    KeyboardName.MY_ACCOUNT: my_account,
-    KeyboardName.CREATE_COURIER_DELIVERY_REQUEST: courier_delivery_request,
-    KeyboardName.SELECT_BOX: select_box,
-    KeyboardName.PROMO: promo,
-    KeyboardName.CONFIRM_RENT: confirm_rent,
-    KeyboardName.OPEN_BOX: open_box,
-    KeyboardName.REMOVE_ITEMS_FROM_BOX: remove_items_from_box
-}
