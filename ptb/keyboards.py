@@ -63,15 +63,6 @@ def ppd_peyboard():
     )
 
 
-def call_courirer_keyboard():
-    return InlineKeyboardMarkup(
-        [
-            [static_buttons.HAND_OVER_THINGS],
-            [static_buttons.BACK_TO_MENU],
-        ]
-    )
-
-
 def _get_page_buttons(page: Page, callback_name: CallbackName):
     page_buttons = []
 
@@ -332,7 +323,6 @@ class KeyboardName(Enum):
     PERSONAL_DATA_AGREEMENT = auto()
     WAREHOUSE = auto()
     SIGN_UP = auto()
-    CALL_COURIER = auto()
     CREATE_COURIER_DELIVERY_REQUEST = auto()
     PROMO = auto()
     CONFIRM_RENT = auto()
@@ -349,7 +339,6 @@ keyboards: dict[KeyboardName, callable] = {
     KeyboardName.ORDER_STORAGE: order_storage_keyboard,
     KeyboardName.BACK_TO_MENU: back_to_menu_keyboard,
     KeyboardName.PERSONAL_DATA_AGREEMENT: ppd_peyboard,
-    KeyboardName.CALL_COURIER: call_courirer_keyboard,
     KeyboardName.SIGN_UP: signup_keyboard,
     KeyboardName.MY_ACCOUNT: my_account,
     KeyboardName.CREATE_COURIER_DELIVERY_REQUEST: courier_delivery_request,

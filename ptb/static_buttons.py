@@ -1,100 +1,85 @@
 from telegram import InlineKeyboardButton
-from ptb.callbacks import CallbackData, CallbackName
+from ptb.callbacks import CallbackData, CallbackName, CallbackButton
 
 
-REMOVE_THINGS = InlineKeyboardButton(
-    'Забрать вещи',
-    callback_data=CallbackData(CallbackName.REMOVE_ITEMS).to_str()
-)
-ADD_THINGS = InlineKeyboardButton(
-    'Положить вещи',
-    callback_data=CallbackData(CallbackName.PUT_NEW_ITEMS).to_str()
-)
-OPEN_QR = InlineKeyboardButton(
-    'Получить QR для открытия',
-    callback_data=CallbackData(CallbackName.OPEN_QR).to_str()
-)
-CONFIRM_RENT = InlineKeyboardButton(
+REMOVE_THINGS = CallbackButton('Забрать вещи', CallbackName.REMOVE_ITEMS)
+ADD_THINGS = CallbackButton('Положить вещи', CallbackName.PUT_NEW_ITEMS)
+OPEN_QR = CallbackButton('Получить QR для открытия', CallbackName.OPEN_QR)
+CONFIRM_RENT = CallbackButton(
     'Подтвердить аренду',
-    callback_data=CallbackData(CallbackName.CONFIRM_BOX_RENT).to_str()
+    CallbackName.CONFIRM_BOX_RENT
 )
-NO_PROMO = InlineKeyboardButton(
+NO_PROMO = CallbackButton(
     'Нет промокода',
-    callback_data=CallbackData(CallbackName.NO_PROMO).to_str()
+    CallbackName.NO_PROMO
 )
-COURIER_DELIVERY_YES = InlineKeyboardButton(
+COURIER_DELIVERY_YES = CallbackButton(
     'Подтвердить',
-    callback_data=CallbackData(
-        CallbackName.CREATE_COURIER_DELIVERY_REQUEST
-        ).to_str()
+    CallbackName.CREATE_COURIER_DELIVERY_REQUEST
 )
-MY_ACCOUNT = InlineKeyboardButton(
+MY_ACCOUNT = CallbackButton(
     'Личный кабинет',
-    callback_data=CallbackData(CallbackName.MY_ACCOUNT).to_str()
+    CallbackName.MY_ACCOUNT
 )
-SHOW_PRICES = InlineKeyboardButton(
+SHOW_PRICES = CallbackButton(
     'Показать расценки',
-    callback_data=CallbackData(CallbackName.SHOW_PRICES).to_str()
+    CallbackName.SHOW_PRICES
 )
-TOS = InlineKeyboardButton(
-    'Условия хранения/FAQ',
-    callback_data=CallbackData(CallbackName.TERMS_OF_SERVICE).to_str()
-)
-FAQ = InlineKeyboardButton(
-    'Частые вопросы',
-    callback_data=CallbackData(CallbackName.FAQ).to_str()
-)
-ORDER_STORAGE = InlineKeyboardButton(
-    'Заказать ячейку',
-    callback_data=CallbackData(CallbackName.ORDER_STORAGE).to_str()
-)
-MY_ORDERS = InlineKeyboardButton(
-    'Мои заказы',
-    callback_data=CallbackData(CallbackName.MY_ORDERS).to_str()
-)
-TOS_DOWNLOAD = InlineKeyboardButton(
-    'Скачать условия',
-    callback_data=CallbackData(CallbackName.DOWNLOAD_TOS).to_str()
-)
-BACK_TO_MENU = InlineKeyboardButton(
-    'В главное меню',
-    callback_data=CallbackData(CallbackName.MAIN_MENU).to_str()
-)
-FORBIDDEN = InlineKeyboardButton(
-    'Запрещенные к хранению вещества',
-    callback_data=CallbackData(CallbackName.FORBIDDEN_TO_STORE).to_str()
-)
-COURIER_DELIVERY = InlineKeyboardButton(
-    'Вывоз курьером',
-    callback_data=CallbackData(CallbackName.COURIER_DELIVERY).to_str()
-)
-SELF_DELIVERY = InlineKeyboardButton(
-    'Привезу сам',
-    callback_data=CallbackData(CallbackName.SELECT_WAREHOUSE).to_str()
-    )
-PPD_YES = InlineKeyboardButton(
-    'Да',
-    callback_data=CallbackData(CallbackName.INPUT_FULL_NAME).to_str()
-)
-PPD_NO = InlineKeyboardButton(
-    'Нет',
-    callback_data=CallbackData(CallbackName.MAIN_MENU).to_str()
-)
-PPD_DOWNLOAD = InlineKeyboardButton(
-    'Скачать полную версию',
-    callback_data=CallbackData(CallbackName.DOWNLOAD_PPD).to_str()
-)
-HAND_OVER_THINGS = InlineKeyboardButton('Сдать вещи', callback_data='hand_over_things')
-SIGNUP = InlineKeyboardButton(
-    'Зарегистрироваться',
-    callback_data=CallbackData(CallbackName.PERSONAL_DATA_AGREEMENT).to_str()
-)
-CONFIRM_SIGNUP = InlineKeyboardButton(
-    'Подтвердить регистрацию',
-    callback_data=CallbackData(CallbackName.SIGN_UP).to_str()
-)
-CHANGE_PERSONAL_DATA = InlineKeyboardButton(
-    'Ввести данные заново',
-    callback_data=CallbackData(CallbackName.PERSONAL_DATA_AGREEMENT).to_str()
-)
+TOS = CallbackButton('Условия хранения/FAQ', CallbackName.TERMS_OF_SERVICE)
 
+FAQ = CallbackButton(
+    'Частые вопросы',
+    CallbackName.FAQ
+)
+ORDER_STORAGE = CallbackButton(
+    'Заказать ячейку',
+    CallbackName.ORDER_STORAGE
+)
+MY_ORDERS = CallbackButton(
+    'Мои заказы',
+    CallbackName.MY_ORDERS
+)
+TOS_DOWNLOAD = CallbackButton(
+    'Скачать условия',
+    CallbackName.DOWNLOAD_TOS
+)
+BACK_TO_MENU = CallbackButton(
+    'В главное меню',
+    CallbackName.MAIN_MENU
+)
+FORBIDDEN = CallbackButton(
+    'Запрещенные к хранению вещества',
+    CallbackName.FORBIDDEN_TO_STORE
+)
+COURIER_DELIVERY = CallbackButton(
+    'Вывоз курьером',
+    CallbackName.COURIER_DELIVERY
+)
+SELF_DELIVERY = CallbackButton(
+    'Привезу сам',
+    CallbackName.SELECT_WAREHOUSE
+    )
+PPD_YES = CallbackButton(
+    'Да',
+    CallbackName.INPUT_FULL_NAME
+)
+PPD_NO = CallbackButton(
+    'Нет',
+    CallbackName.MAIN_MENU
+)
+PPD_DOWNLOAD = CallbackButton(
+    'Скачать полную версию',
+    CallbackName.DOWNLOAD_PPD
+)
+SIGNUP = CallbackButton(
+    'Зарегистрироваться',
+    CallbackName.PERSONAL_DATA_AGREEMENT
+)
+CONFIRM_SIGNUP = CallbackButton(
+    'Подтвердить регистрацию',
+    CallbackName.SIGN_UP
+)
+CHANGE_PERSONAL_DATA = CallbackButton(
+    'Ввести данные заново',
+    CallbackName.PERSONAL_DATA_AGREEMENT
+)
