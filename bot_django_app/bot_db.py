@@ -26,6 +26,10 @@ def get_user(pk):
     return User.objects.get(pk=pk)
 
 
+def get_user_by_tg(telegram_id):
+    return User.objects.get(telegram_id=telegram_id)
+
+
 async def acreate_user(user: dict, role_name: str = 'Клиент'):
     new_user = User()
     new_user.full_name = user.get('full_name')
