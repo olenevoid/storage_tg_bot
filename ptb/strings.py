@@ -254,7 +254,7 @@ def get_box_rent_confirmation(warehouse, size, period, promocode = None):
     sum = int(price * period)
     
     sum_text = (
-        f'Итоговая сумма: {sum}\n'
+        f'Итоговая сумма: <b>{sum}</b>'
     )
     
     if promocode:
@@ -262,10 +262,10 @@ def get_box_rent_confirmation(warehouse, size, period, promocode = None):
         sum_text = f'Итоговая сумма: <s>{sum}</s> <b>{discount_sum}</b>'
     
     raw_text = (
-        'Выбрана ячейка <b>{size_code}</b> объемом {volume} куб.м.\n'
-        'По адресу: {warehouse_name} {address}\n'
-        'Цена за месяц: {price}\n'
-        'Срок аренды (мес): {period}\n'
+        'Выбрана ячейка <b>{size_code}</b> объемом <b>{volume}</b> куб.м.\n'
+        'По адресу: <b>"{warehouse_name}" {address}</b>\n'
+        'Цена за месяц: <b>{price} руб.</b>\n'
+        'Срок аренды (мес): <b>{period}</b>\n'
         '{sum_text}\n\n'
     )
 
