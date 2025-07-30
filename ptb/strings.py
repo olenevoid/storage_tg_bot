@@ -193,6 +193,8 @@ def get_main_menu(client: dict):
         text += (
             f'<b>Внимание:</b> доступ к аренде ячеек открывается только после регистрации\n'
         )
+    
+    return text
 
 
 def get_box_details(box: dict):
