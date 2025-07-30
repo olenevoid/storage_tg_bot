@@ -28,7 +28,8 @@ async def start(update: Update, context: CallbackContext):
 
     await update.message.reply_text(
         strings.get_main_menu(user),
-        reply_markup=keyboards[KeyboardName.MAIN_MENU](user)
+        reply_markup=keyboards[KeyboardName.MAIN_MENU](user),
+        parse_mode='HTML'
     )
     return State.MAIN_MENU
 
