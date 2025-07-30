@@ -49,6 +49,11 @@ FORBIDDEN = (
     
 )
 
+WITHDRAW_REQUEST_CREATED = (
+    'Наш менеджер скоро с вами свяжется для уточнения деталей'
+)
+
+
 USER_REGISTRATION_COMPLETE = (
         'Пользователь зарегистрирован\n'
         'Имя: {full_name}\n'
