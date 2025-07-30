@@ -83,7 +83,7 @@ class CallbackButton(InlineKeyboardButton):
         self,
         text: str,
         callback_name: CallbackName,
-        params: dict = {}
+        **params
     ):
 
         url = None
