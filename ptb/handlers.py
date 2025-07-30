@@ -138,14 +138,20 @@ async def handle_order_storage(update: Update, context: CallbackContext):
 
 async def handle_show_prices(update: Update, context: CallbackContext):
     await update.callback_query.answer()
+    telegram_id = update.callback_query.from_user.id
+    client = await sync_to_async(bot_db.find_user_by_tg)(telegram_id)
 
     sizes = await sync_to_async(bot_db.get_all_sizes)()
 
     text = strings.get_sizes_with_details(sizes)
+    if client:
+        keyboard = keyboards[KeyboardName.ORDER_STORAGE]()
+    else:
+        keyboard = keyboards[KeyboardName.BACK_TO_MENU]()
 
     await update.callback_query.edit_message_text(
         text,
-        reply_markup=keyboards[KeyboardName.ORDER_STORAGE](),
+        reply_markup=keyboard,
         parse_mode='HTML'
     )
     return State.ORDER_STORAGE
@@ -680,6 +686,7 @@ def get_handlers():
                 CallbackQueryHandler(handle_my_account, get_pattern(CallbackName.MY_ACCOUNT)),
                 CallbackQueryHandler(handle_order_storage, get_pattern(CallbackName.ORDER_STORAGE)),
                 CallbackQueryHandler(handle_ppd_agreement, get_pattern(CallbackName.PERSONAL_DATA_AGREEMENT)),
+                CallbackQueryHandler(handle_show_prices, get_pattern(CallbackName.SHOW_PRICES)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.MY_ACCOUNT: [
