@@ -299,11 +299,19 @@ async def handle_input_address(update: Update, context: CallbackContext):
 
 async def handle_create_courier_delivery_request(update: Update, context: CallbackContext):
     address = context.user_data.get('address')
+    telegram_id = update.effective_chat.id
+    
+    await sync_to_async(bot_db.create_pickup_request)(
+        address=address,
+        client_tg_id=telegram_id,
+        request_type='deliver'
+    )
 
     text = strings.DELIVERY_REQUEST_CREATED
 
-    await context.bot.send_message(
+    await context.bot.edit_message_text(
             chat_id=update.effective_chat.id,
+            message_id=context.user_data['address_message_id'],
             text=text,
             reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
             parse_mode='HTML'
@@ -522,12 +530,14 @@ async def validate_address(update: Update, context: CallbackContext):
         state = State.INPUT_ADDRESS
         keyboard = None
 
-    await context.bot.send_message(
+    address_message = await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=text,
             parse_mode='HTML',
             reply_markup=keyboard
     )
+    
+    context.user_data['address_message_id'] = address_message.message_id
 
     return state
 
