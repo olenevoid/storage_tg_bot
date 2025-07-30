@@ -1,5 +1,4 @@
-from telegram import InlineKeyboardButton
-from ptb.callbacks import CallbackData, CallbackName, CallbackButton
+from ptb.callbacks import CallbackName, CallbackButton
 
 
 REMOVE_THINGS = CallbackButton('Забрать вещи', CallbackName.REMOVE_ITEMS)
