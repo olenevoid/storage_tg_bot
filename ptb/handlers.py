@@ -419,19 +419,14 @@ async def handle_confirm_box_rent(update: Update, context: CallbackContext):
 
     warehouse = await sync_to_async(bot_db.get_warehouse)(warehouse_id)
     size = await sync_to_async(bot_db.get_box_size)(size_id)
-   
-    price = float(size.get('price'))
+    promocode = context.user_data.get('promocode')
     period = context.user_data['period']
-    sum = int(price * period)
 
-    text = strings.BOX_RENT_CONFIRMATION.format(
-        size_code=size.get('code'),
-        volume=size.get('volume_m3'),
-        warehouse_name=warehouse.get('name'),
-        address=warehouse.get('address'),
-        price=price,
-        period=period,
-        sum=sum
+    text = strings.get_box_rent_confirmation(
+        warehouse,
+        size,
+        period,
+        promocode
     )
 
     await update.callback_query.edit_message_text(
