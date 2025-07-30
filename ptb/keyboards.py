@@ -1,5 +1,5 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from ptb.callbacks import CallbackData, CallbackName
+from telegram import InlineKeyboardMarkup
+from ptb.callbacks import CallbackName, CallbackButton
 from django.core.paginator import Page
 import ptb.static_buttons as static_buttons
 from enum import Enum, auto
@@ -67,22 +67,14 @@ def _get_page_buttons(page: Page, callback_name: CallbackName):
     page_buttons = []
 
     if page.has_previous():
-        callback_data = CallbackData(
-            callback_name,
-            params={'page': page.previous_page_number()}
-        )
-        page_buttons.append(
-            InlineKeyboardButton('<--', callback_data=callback_data.to_str())
-        )
+        page_number = page.previous_page_number()
+        previous_page = CallbackButton('<--', callback_name, page=page_number)
+        page_buttons.append(previous_page)
 
     if page.has_next():
-        callback_data = CallbackData(
-            callback_name,
-            params={'page': page.next_page_number()}
-        )
-        page_buttons.append(
-            InlineKeyboardButton('-->', callback_data=callback_data.to_str())
-        )
+        page_number = page.next_page_number()
+        next_page = CallbackButton('-->', callback_name, page=page_number)
+        page_buttons.append(next_page)
 
     return page_buttons
 
@@ -94,15 +86,11 @@ def warehouses_keyboard(page: Page):
 
     for warehouse in warehouses:
 
-        callback_data = CallbackData(
-            CallbackName.WAREHOUSE,
-            {'id': warehouse.get('id')}
-        )
-
         button = [
-            InlineKeyboardButton(
+            CallbackButton(
                 warehouse.get('name'),
-                callback_data=callback_data.to_str()
+                CallbackName.WAREHOUSE,
+                id=warehouse.get('id')
             ),
         ]
         buttons.append(button)
@@ -121,17 +109,14 @@ def my_orders_keyboard(page: Page):
 
     for box in boxes:
         size = box.get('size')
-        callback_data = CallbackData(
-            CallbackName.MY_BOX,
-            {'id': box.get('id')}
-        )
 
         text = f'Размер {size.get('code')} на {box.get('location')}'
 
         button = [
-            InlineKeyboardButton(
+            CallbackButton(
                 text,
-                callback_data=callback_data.to_str()
+                CallbackName.MY_BOX,
+                id=box.get('id')
             )
         ]
 
@@ -146,32 +131,21 @@ def my_orders_keyboard(page: Page):
 
 def my_box_keyboard(box_id):
 
-    self_delivery_callback = CallbackData(
-        CallbackName.OPEN_BOX,
-        {'box_id': box_id}
-    )
-
-    order_delivery_callback = CallbackData(
-        CallbackName.ORDER_DELIVERY,
-        {'box_id': box_id}
-    )
-
     buttons = [
         [
-            InlineKeyboardButton(
+            CallbackButton(
                 'Самовывоз',
-                callback_data=self_delivery_callback.to_str()
+                CallbackName.OPEN_BOX,
+                box_id=box_id
             ),
-            InlineKeyboardButton(
+            CallbackButton(
                 'Вывоз курьером',
-                callback_data=order_delivery_callback.to_str()
+                CallbackName.ORDER_DELIVERY,
+                box_id=box_id
             )
         ],
         [
-            InlineKeyboardButton(
-                'Назад',
-                callback_data=CallbackData(CallbackName.MY_ORDERS).to_str()
-            )
+            CallbackButton('Назад',CallbackName.MY_ORDERS)
         ],
     ]
 
@@ -219,14 +193,11 @@ def select_box(boxes: list[dict]):
 
     for box in boxes:
         size = box.get('size')
-        callback_data = CallbackData(
-            CallbackName.SELECT_BOX,
-            {'size_id': size.get('id')}
-        )
 
-        button = InlineKeyboardButton(
+        button = CallbackButton(
             size.get('code'),
-            callback_data=callback_data.to_str()
+            CallbackName.SELECT_BOX,
+            size_id=size.get('id')
         )
 
         buttons.append([button])
@@ -275,27 +246,20 @@ def remove_items_from_box(box):
     items = box.get('stored_items')
 
     for item in items:
-        item_callback_data = CallbackData(
-            CallbackName.REMOVE_ITEM,
-            {'item_id': item.get('id')}
-        )
-        button = InlineKeyboardButton(
+        button = CallbackButton(
             item.get('name'),
-            callback_data=item_callback_data.to_str()
+            CallbackName.REMOVE_ITEM,
+            item_id=item.get('id')
         )
 
         buttons.append(button)
 
     buttons = _split_to_sublists(buttons)
 
-    box_callback_data = CallbackData(
-        CallbackName.MY_BOX,
-        {'id': box.get('id')}
-    )
-
-    back_to_box_button = InlineKeyboardButton(
+    back_to_box_button = CallbackButton(
         'Назад',
-        callback_data=box_callback_data.to_str()
+        CallbackName.MY_BOX,
+        id=box.get('id')
     )
 
     buttons.append([back_to_box_button])
