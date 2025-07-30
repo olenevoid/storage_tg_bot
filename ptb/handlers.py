@@ -208,6 +208,26 @@ async def handle_open_box(update: Update, context: CallbackContext):
     return State.MY_BOX
 
 
+async def handle_courier_withdraw_request(update: Update, context: CallbackContext):
+    text = strings.WITHDRAW_REQUEST_CREATED
+    
+    telegram_id = update.effective_chat.id
+    
+    await sync_to_async(bot_db.create_pickup_request)(
+        address='уточнить при звонке',
+        client_tg_id=telegram_id,
+        request_type='withdraw'
+    )
+
+    await update.callback_query.edit_message_text(
+        text,
+        reply_markup=keyboards[KeyboardName.BACK_TO_MENU](),
+        parse_mode='HTML'
+    )
+
+    return State.MY_BOX
+
+
 async def handle_send_qr(update: Update, context: CallbackContext):
     qr_path = path.join(BASE_DIR, f'{settings.STATIC}/qr_code.png')
     with open(qr_path, 'rb') as file:
@@ -714,6 +734,7 @@ def get_handlers():
             ],
             State.MY_BOX: [
                 CallbackQueryHandler(handle_put_items_to_box, get_pattern(CallbackName.PUT_NEW_ITEMS)),
+                CallbackQueryHandler(handle_courier_withdraw_request, get_pattern(CallbackName.ORDER_DELIVERY)),
                 CallbackQueryHandler(handle_my_orders, get_pattern(CallbackName.MY_ORDERS)),
                 CallbackQueryHandler(handle_open_box, get_pattern(CallbackName.OPEN_BOX)),
                 CallbackQueryHandler(handle_my_box, get_pattern(CallbackName.MY_BOX)),
