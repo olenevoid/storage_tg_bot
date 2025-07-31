@@ -9,7 +9,7 @@ PARAM_SEPARATOR = ','
 # Enum для управления коллбэками
 # Можно быстро переименовать в одном месте, если понадобится
 # Текст коллбэка должен быть уникальным
-class CallbackName(Enum):
+class Callback(Enum):
     TERMS_OF_SERVICE = 'tos'
     ORDER_STORAGE = 'order_storage'
     MY_ORDERS = 'my_orders'
@@ -56,8 +56,8 @@ class CallbackName(Enum):
 # Класс для создания строки коллбэков с параметрами 
 # и для удобного доступа к имени коллбэка и параметрам
 class CallbackData:
-    def __init__(self, name: CallbackName, params: dict = {}):
-        self.name: CallbackName = name
+    def __init__(self, name: Callback, params: dict = {}):
+        self.name: Callback = name
         self.params: dict = params
 
     @property
@@ -79,7 +79,7 @@ class CallbackData:
 
 
 class CallbackButton(InlineKeyboardButton):
-    def __init__(self, text: str, callback_name: CallbackName, **params):
+    def __init__(self, text: str, callback_name: Callback, **params):
 
         callback_data = CallbackData(callback_name, params).to_str()
 
@@ -89,14 +89,14 @@ class CallbackButton(InlineKeyboardButton):
         )
 
 
-def get_pattern(callback_name: CallbackName):
+def get_pattern(callback_name: Callback):
     return f'^({callback_name.value})(?:__.*)?$'
 
 
 # Парсит строку в класс CallbackData
 def parse_callback_data_string(callback_data: str) -> CallbackData:
     parsed_callback = callback_data.split(NAME_SEPARATOR)
-    callback_name = CallbackName(parsed_callback[0])
+    callback_name = Callback(parsed_callback[0])
     callback_params = {}
 
     if len(parsed_callback) > 1:

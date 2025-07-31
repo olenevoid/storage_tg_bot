@@ -1,5 +1,5 @@
 from telegram import InlineKeyboardMarkup
-from ptb.callbacks import CallbackName, CallbackButton
+from ptb.callbacks import Callback, CallbackButton
 from django.core.paginator import Page
 import ptb.static_buttons as static_buttons
 
@@ -62,7 +62,7 @@ def ppd_peyboard():
     )
 
 
-def _get_page_buttons(page: Page, callback_name: CallbackName):
+def _get_page_buttons(page: Page, callback_name: Callback):
     page_buttons = []
 
     if page.has_previous():
@@ -88,13 +88,13 @@ def warehouses_keyboard(page: Page):
         button = [
             CallbackButton(
                 warehouse.get('name'),
-                CallbackName.WAREHOUSE,
+                Callback.WAREHOUSE,
                 id=warehouse.get('id')
             ),
         ]
         buttons.append(button)
 
-    buttons.append(_get_page_buttons(page, CallbackName.SELECT_WAREHOUSE))
+    buttons.append(_get_page_buttons(page, Callback.SELECT_WAREHOUSE))
 
     buttons.append([static_buttons.BACK_TO_MENU])
 
@@ -114,14 +114,14 @@ def my_orders_keyboard(page: Page):
         button = [
             CallbackButton(
                 text,
-                CallbackName.MY_BOX,
+                Callback.MY_BOX,
                 id=box.get('id')
             )
         ]
 
         buttons.append(button)
 
-    buttons.append(_get_page_buttons(page, CallbackName.MY_ORDERS))
+    buttons.append(_get_page_buttons(page, Callback.MY_ORDERS))
 
     buttons.append([static_buttons.BACK_TO_MENU])
 
@@ -134,17 +134,17 @@ def my_box_keyboard(box_id):
         [
             CallbackButton(
                 'Самовывоз',
-                CallbackName.OPEN_BOX,
+                Callback.OPEN_BOX,
                 box_id=box_id
             ),
             CallbackButton(
                 'Вывоз курьером',
-                CallbackName.ORDER_DELIVERY,
+                Callback.ORDER_DELIVERY,
                 box_id=box_id
             )
         ],
         [
-            CallbackButton('Назад', CallbackName.MY_ORDERS)
+            CallbackButton('Назад', Callback.MY_ORDERS)
         ],
     ]
 
@@ -195,7 +195,7 @@ def select_box(boxes: list[dict]):
 
         button = CallbackButton(
             size.get('code'),
-            CallbackName.SELECT_BOX,
+            Callback.SELECT_BOX,
             size_id=size.get('id')
         )
 
@@ -247,7 +247,7 @@ def remove_items_from_box(box):
     for item in items:
         button = CallbackButton(
             item.get('name'),
-            CallbackName.REMOVE_ITEM,
+            Callback.REMOVE_ITEM,
             item_id=item.get('id')
         )
 
@@ -257,7 +257,7 @@ def remove_items_from_box(box):
 
     back_to_box_button = CallbackButton(
         'Назад',
-        CallbackName.MY_BOX,
+        Callback.MY_BOX,
         id=box.get('id')
     )
 
