@@ -692,52 +692,42 @@ def get_handlers():
             ],
             State.MY_ACCOUNT: [
                 CallbackQueryHandler(handle_my_orders, get_pattern(Callback.MY_ORDERS)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.TERMS_OF_SERVICE: [
                 CallbackQueryHandler(handle_download_tos, get_pattern(Callback.DOWNLOAD_TOS)),
                 CallbackQueryHandler(handle_faq, get_pattern(Callback.FAQ)),
                 CallbackQueryHandler(handle_forbidden, get_pattern(Callback.FORBIDDEN_TO_STORE)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.ORDER_STORAGE: [
                 CallbackQueryHandler(handle_show_prices, get_pattern(Callback.SHOW_PRICES)),
                 CallbackQueryHandler(handle_input_address, get_pattern(Callback.COURIER_DELIVERY)),
                 CallbackQueryHandler(handle_select_warehouse, get_pattern(Callback.SELECT_WAREHOUSE)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.SELECT_WAREHOUSE: [
                 CallbackQueryHandler(handle_select_warehouse, get_pattern(Callback.SELECT_WAREHOUSE)),
                 CallbackQueryHandler(handle_warehouse, get_pattern(Callback.WAREHOUSE)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.WAREHOUSE: [
                 CallbackQueryHandler(handle_input_period, get_pattern(Callback.SELECT_BOX)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.INPUT_RENT_PERIOD: [
                 MessageHandler(filters.TEXT, validate_period),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.INPUT_PROMO: [
                 MessageHandler(filters.TEXT, validate_promo),
                 CallbackQueryHandler(handle_confirm_box_rent, get_pattern(Callback.NO_PROMO)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.CONFIRM_BOX_RENT: [
                 CallbackQueryHandler(handle_rent_box, get_pattern(Callback.CONFIRM_BOX_RENT)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.INPUT_ADDRESS: [
                 MessageHandler(filters.ALL, validate_address),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.MY_ORDERS: [
                 CallbackQueryHandler(handle_my_box, get_pattern(Callback.MY_BOX)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.MY_BOX: [
@@ -749,44 +739,37 @@ def get_handlers():
                 CallbackQueryHandler(handle_send_qr, get_pattern(Callback.OPEN_QR)),
                 CallbackQueryHandler(handle_remove_items_from_box, get_pattern(Callback.REMOVE_ITEMS)),
                 CallbackQueryHandler(handle_remove_items_from_box, get_pattern(Callback.REMOVE_ITEM)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.PUT_ITEMS_INTO_BOX: [
                 MessageHandler(filters.TEXT, validate_new_items),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.PERSONAL_DATA_AGREEMENT: [
                 CallbackQueryHandler(handle_input_name, get_pattern(Callback.INPUT_FULL_NAME)),
                 CallbackQueryHandler(handle_download_ppd, get_pattern(Callback.DOWNLOAD_PPD)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
             State.INPUT_FULL_NAME: [
                 MessageHandler(filters.ALL, validate_full_name),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.INPUT_PHONE: [
                 MessageHandler(filters.ALL, validate_phone),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.INPUT_EMAIL: [
                 MessageHandler(filters.ALL, validate_email),
                 CallbackQueryHandler(handle_signup, get_pattern(Callback.SIGN_UP)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.SIGN_UP: [
                 CallbackQueryHandler(handle_signup, get_pattern(Callback.SIGN_UP)),
                 CallbackQueryHandler(handle_ppd_agreement, get_pattern(Callback.PERSONAL_DATA_AGREEMENT)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
             ],
             State.CREATE_COURIER_DELIVERY_REQUEST: [
                 CallbackQueryHandler(
                     handle_create_courier_delivery_request,
                     get_pattern(Callback.CREATE_COURIER_DELIVERY_REQUEST)
                 ),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
+                
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
         },
-        fallbacks=[CommandHandler("start", start)],
+        fallbacks=[CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU))],
     )
