@@ -24,7 +24,6 @@ class Callback(StrEnum):
     INPUT_ADDRESS = auto()
     INPUT_PHONE = auto()
     INPUT_EMAIL = auto()
-    FINAL = auto()
     BACK_TO_MENU = auto()
     CALL_COURIER = auto()
     SIGN_UP = auto()
@@ -43,11 +42,6 @@ class Callback(StrEnum):
     PUT_NEW_ITEMS = auto()
     REMOVE_ITEMS = auto()
     REMOVE_ITEM = auto()
-    # Эти, возможно, не нужны
-    BACK = auto()
-    PERSONAL_DATA_AGREE = auto()
-    PERSONAL_DATA_DISAGREE = auto()
-    OK = auto()
 
 
 # Класс для создания строки коллбэков с параметрами 

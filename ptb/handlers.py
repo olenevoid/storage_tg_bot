@@ -758,7 +758,6 @@ def get_handlers():
             State.PERSONAL_DATA_AGREEMENT: [
                 CallbackQueryHandler(handle_input_name, get_pattern(Callback.INPUT_FULL_NAME)),
                 CallbackQueryHandler(handle_download_ppd, get_pattern(Callback.DOWNLOAD_PPD)),
-                CallbackQueryHandler(handle_back_menu, get_pattern(Callback.PERSONAL_DATA_DISAGREE)),
                 CallbackQueryHandler(handle_back_menu, get_pattern(Callback.MAIN_MENU)),
                 MessageHandler(filters.Regex(r'^(?!\/start).*'), unknown_cmd),
             ],
