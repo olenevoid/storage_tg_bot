@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import StrEnum, auto
 from telegram import InlineKeyboardButton
 
 
@@ -6,51 +6,48 @@ NAME_SEPARATOR = '__'
 PARAM_SEPARATOR = ','
 
 
-# Enum для управления коллбэками
-# Можно быстро переименовать в одном месте, если понадобится
-# Текст коллбэка должен быть уникальным
-class Callback(Enum):
-    TERMS_OF_SERVICE = 'tos'
-    ORDER_STORAGE = 'order_storage'
-    MY_ORDERS = 'my_orders'
-    MAIN_MENU = 'main_menu'
-    COURIER_DELIVERY = 'free_removal'    
-    SELF_DELIVERY = 'self_delivery'
-    ORDER_DELIVERY = 'order_delivery'
-    PERSONAL_DATA_AGREEMENT = 'ppd'
-    DOWNLOAD_PPD = 'download_ppd'
-    HAND_OVER_THINGS = 'hand_over_things'
-    SELECT_WAREHOUSE = 'select_warehouse'
-    WAREHOUSE = 'warehouse_details'
-    MY_BOX = 'my_box'
-    INPUT_FULL_NAME = 'input_full_name'
-    INPUT_ADDRESS = 'input_address'
-    INPUT_PHONE = 'input_phone'
-    INPUT_EMAIL = 'input_email'
-    FINAL = 'final'
-    BACK_TO_MENU = 'unknown'
-    CALL_COURIER = 'call_courier'
-    SIGN_UP = 'sign_up'
-    FAQ = 'faq'
-    FORBIDDEN_TO_STORE = 'forbidden'
-    DOWNLOAD_TOS = 'tos_download'
-    SHOW_PRICES = 'show_prices'
-    MY_ACCOUNT = 'my_account'
-    CREATE_COURIER_DELIVERY_REQUEST = 'create_delivery_request'
-    SELECT_BOX = 'select_box'
-    SELECT_RENT_PERIOD = 'select_period'
-    CONFIRM_BOX_RENT = 'confirm_box_rent'
-    NO_PROMO = 'no_promo'
-    OPEN_BOX = 'open_box'
-    OPEN_QR = 'open_qr'
-    PUT_NEW_ITEMS = 'add_things'
-    REMOVE_ITEMS = 'remove_things'
-    REMOVE_ITEM = 'remove_item'
+class Callback(StrEnum):
+    TERMS_OF_SERVICE = auto()
+    ORDER_STORAGE = auto()
+    MY_ORDERS = auto()
+    MAIN_MENU = auto()
+    COURIER_DELIVERY = auto()    
+    SELF_DELIVERY = auto()
+    ORDER_DELIVERY = auto()
+    PERSONAL_DATA_AGREEMENT = auto()
+    DOWNLOAD_PPD = auto()
+    HAND_OVER_THINGS = auto()
+    SELECT_WAREHOUSE = auto()
+    WAREHOUSE = auto()
+    MY_BOX = auto()
+    INPUT_FULL_NAME = auto()
+    INPUT_ADDRESS = auto()
+    INPUT_PHONE = auto()
+    INPUT_EMAIL = auto()
+    FINAL = auto()
+    BACK_TO_MENU = auto()
+    CALL_COURIER = auto()
+    SIGN_UP = auto()
+    FAQ = auto()
+    FORBIDDEN_TO_STORE = auto()
+    DOWNLOAD_TOS = auto()
+    SHOW_PRICES = auto()
+    MY_ACCOUNT = auto()
+    CREATE_COURIER_DELIVERY_REQUEST = auto()
+    SELECT_BOX = auto()
+    SELECT_RENT_PERIOD = auto()
+    CONFIRM_BOX_RENT = auto()
+    NO_PROMO = auto()
+    OPEN_BOX = auto()
+    OPEN_QR = auto()
+    PUT_NEW_ITEMS = auto()
+    REMOVE_ITEMS = auto()
+    REMOVE_ITEM = auto()
     # Эти, возможно, не нужны
-    BACK = 'back'
-    PERSONAL_DATA_AGREE = 'pd_yes'
-    PERSONAL_DATA_DISAGREE = 'pd_no'
-    OK = 'ok'
+    BACK = auto()
+    PERSONAL_DATA_AGREE = auto()
+    PERSONAL_DATA_DISAGREE = auto()
+    OK = auto()
 
 
 # Класс для создания строки коллбэков с параметрами 
