@@ -79,39 +79,14 @@ class CallbackData:
 
 
 class CallbackButton(InlineKeyboardButton):
-    def __init__(
-        self,
-        text: str,
-        callback_name: CallbackName,
-        **params
-    ):
-
-        url = None
-        switch_inline_query = None
-        switch_inline_query_current_chat = None
-        callback_game = None
-        pay = None
-        login_url = None
-        web_app = None
-        switch_inline_query_chosen_chat = None
-        copy_text = None
-        api_kwargs = None
+    def __init__(self, text: str, callback_name: CallbackName, **params):
 
         callback_data = CallbackData(callback_name, params).to_str()
 
         super().__init__(
             text,
-            url,
-            callback_data,
-            switch_inline_query,
-            switch_inline_query_current_chat,
-            callback_game,
-            pay,
-            login_url,
-            web_app,
-            switch_inline_query_chosen_chat,
-            copy_text,
-            api_kwargs=api_kwargs)
+            callback_data=callback_data,
+        )
 
 
 def get_pattern(callback_name: CallbackName):
